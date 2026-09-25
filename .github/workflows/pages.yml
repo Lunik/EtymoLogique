@@ -3,7 +3,7 @@ name: Publish documentation
 on:
   push:
     branches:
-      - "**"
+      - master
   delete:
   workflow_dispatch:
   schedule:
