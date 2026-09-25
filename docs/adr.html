@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Les décisions d’architecture et de produit d’ÉtymoLogique.">
+  <meta name="theme-color" content="#f3eee3">
+  <title>ADR · ÉtymoLogique</title>
+  <link rel="stylesheet" href="assets/site-nav.css">
+  <link rel="stylesheet" href="assets/etymo.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="rar-commune" viewBox="0 0 16 16"><path d="M8 1.8 14.8 14H1.2Z"/></symbol>
+  <symbol id="rar-peu" viewBox="0 0 16 16"><rect x="2.3" y="2.3" width="11.4" height="11.4" rx="0.6"/></symbol>
+  <symbol id="rar-rare" viewBox="0 0 16 16"><path d="M8 1.3 14.8 6.3 12.2 14.4H3.8L1.2 6.3Z"/></symbol>
+  <symbol id="rar-legendaire" viewBox="0 0 16 16"><path d="M4.4 2h7.2L15.2 6.3 8 14.8.8 6.3Z"/><path fill="none" d="M.8 6.3h14.4M5.8 6.3 8 14.8l2.2-8.5M5.8 6.3 8 2l2.2 4.3"/></symbol>
+</svg>
+<div class="progress" aria-hidden="true"></div>
+<a class="skip-link" href="#contenu">Aller au contenu</a>
+<header class="site-nav"></header>
+
+<main id="contenu">
+  <section class="section" id="adr">
+    <div class="wrap">
+      <div class="sec-head">
+        <div data-reveal><span class="sec-num">Décisions · ADR</span><h2>Décider, <em>puis s’y tenir</em></h2></div>
+        <div class="sec-intro" data-reveal style="--d:120ms"><p>Les Architecture Decision Records consignent chaque décision structurante : son contexte, les options écartées et ses conséquences. Chaque ADR renvoie aux pages où la décision se voit.</p><p class="xrefs"><span>Voir aussi</span><a class="xref" href="boussole.html">La boussole</a><a class="xref" href="design-system.html#principes">Principes d’expérience</a><a class="xref" href="game-design.md">Vision du jeu (Markdown)</a></p></div>
+      </div>
+<!-- ADR:START -->
+<div class="adr-layout"><nav class="adr-toc" id="adr-index" aria-label="Liste des ADR"><a href="#adr-0001"><span>0001</span>PWA responsive comme plateforme MVP</a><a href="#adr-0002"><span>0002</span>Graphe linguistique éditorial et versionné</a><a href="#adr-0003"><span>0003</span>Recettes explicites et transformations expliquées</a><a href="#adr-0004"><span>0004</span>Progression pilotée par un graphe d'obtention vérifiable</a><a href="#adr-0005"><span>0005</span>Pipeline de contenu validé avant publication</a><a href="#adr-0006"><span>0006</span>Architecture multilingue indépendante du lancement</a><a href="#adr-0007"><span>0007</span>État persistant et économie sous autorité serveur</a><a href="#adr-0008"><span>0008</span>Énergie et plis gratuits, paiements hors MVP</a><a href="#adr-0009"><span>0009</span>Séparation des faits linguistiques et de l'équilibrage</a><a href="#adr-0010"><span>0010</span>Observabilité minimale et respectueuse de la vie privée</a><a href="#adr-0011"><span>0011</span>Plis à raretés, doublons convertis en encre</a><a href="#adr-0012"><span>0012</span>Briques rationnées, exemplaires obtenus par les plis</a></nav><div class="adr-list"><article class="adr" id="adr-0001"><div class="adr-head"><span class="adr-num">ADR 0001</span><span class="adr-status">Accepté</span><a class="xref" href="adr/0001-pwa-responsive.md">Source Markdown</a></div><h2>PWA responsive comme plateforme MVP</h2><div class="adr-body"><ul><li><strong>Statut</strong> : Accepté</li><li><strong>Portée</strong> : MVP</li></ul>
+<h3>Contexte</h3>
+<p>ÉtymoLogique doit tester rapidement une interaction de manipulation utilisable au toucher comme à la souris. Le produit vise des sessions courtes, mais le codex et les explications bénéficient aussi d'un grand écran. Maintenir plusieurs applications natives retarderait la validation du cœur ludique.</p>
+<h3>Décision</h3>
+<p>Le MVP sera une application web responsive installable en tant que Progressive Web App.</p>
+<p>L'interface partagera le même modèle d'interaction sur mobile et ordinateur, avec des alternatives accessibles :</p>
+<ul><li>glisser-déposer ou sélection suivie de « Ajouter à la table » ;</li><li>réorganisation au pointeur, au toucher ou au clavier ;</li><li>confirmation explicite de la fusion ;</li><li>mise en page adaptée plutôt que réduction uniforme de l'écran desktop.</li></ul>
+<p>Le shell de l'application et le dernier catalogue publié pourront être mis en cache. La consultation du codex et la préparation d'une fusion pourront fonctionner hors connexion. Les opérations modifiant l'état autoritaire — ouverture de pli, consommation d'énergie, attribution d'une découverte et synchronisation — nécessiteront une validation serveur.</p>
+<p>Une tentative préparée hors connexion peut être conservée localement, mais elle ne doit pas afficher un succès définitif avant validation si le client ne possède pas une version de contenu autorisée pour ce calcul.</p>
+<h3>Options envisagées</h3>
+<h4>Applications natives iOS et Android</h4>
+<p>Écartées pour le MVP : elles offrent une intégration système supérieure, mais multiplient les surfaces à maintenir avant validation du gameplay.</p>
+<h4>Application desktop</h4>
+<p>Écartée : elle facilite le glisser-déposer, mais correspond moins bien aux sessions courtes et réduit la portée du test.</p>
+<h4>Site web non installable</h4>
+<p>Écarté : proche techniquement, mais moins adapté au retour régulier lié aux plis et à la reprise de session.</p>
+<h3>Conséquences</h3>
+<h4>Positives</h4>
+<ul><li>une base d'interface pour mobile et desktop ;</li><li>déploiement et expérimentation rapides ;</li><li>installation facultative ;</li><li>partage simple d'un prototype ;</li><li>stratégie hors connexion progressive.</li></ul>
+<h4>Négatives</h4>
+<ul><li>comportement variable des PWA selon les plateformes ;</li><li>gestes tactiles et glisser-déposer à tester soigneusement ;</li><li>notifications et tâches d'arrière-plan non garanties partout ;</li><li>nécessité de gérer cache, migration et incompatibilité de catalogue.</li></ul>
+<h3>Critères de réévaluation</h3>
+<p>Réévaluer si les tests montrent une limitation critique des interactions, si une fonctionnalité native devient centrale ou si la distribution en boutique devient une exigence produit.</p></div><p class="xrefs"><span>En situation</span><a class="xref" href="index.html">Le dossier, pensé mobile d’abord</a><a class="xref" href="design-system.html#ds-1-7">Grille et points de rupture</a></p></article><article class="adr" id="adr-0002"><div class="adr-head"><span class="adr-num">ADR 0002</span><span class="adr-status">Accepté</span><a class="xref" href="adr/0002-graphe-linguistique-editorial.md">Source Markdown</a></div><h2>Graphe linguistique éditorial et versionné</h2><div class="adr-body"><ul><li><strong>Statut</strong> : Accepté</li></ul>
+<h3>Contexte</h3>
+<p>Une simple liste de chaînes ne peut pas représenter les changements de langue, les graphies, les sens ni les relations historiques. Interroger une source externe à chaque tentative rendrait la jouabilité et la qualité imprévisibles. Une génération automatique risquerait de valider des rapprochements faux.</p>
+<h3>Décision</h3>
+<p>Le contenu linguistique jouable sera un graphe éditorial publié par versions immuables. Une nouvelle publication crée une nouvelle version ; elle ne modifie pas silencieusement le sens d'une partie déjà jouée.</p>
+<p>Le modèle distingue au minimum :</p>
+<div class="table-scroll"><table><thead><tr><th>Entité</th><th>Responsabilité</th></tr></thead><tbody><tr><td><code>Language</code></td><td>Langue, période et métadonnées d'affichage.</td></tr><tr><td><code>WritingSystem</code></td><td>Système d'écriture d'une forme.</td></tr><tr><td><code>Lexeme</code></td><td>Unité lexicale abstraite rattachée à une langue.</td></tr><tr><td><code>Sense</code></td><td>Acception contextualisée d'un lexème ou morphème.</td></tr><tr><td><code>Form</code></td><td>Graphie attestée, normalisée pour l'identification mais conservée telle qu'affichée.</td></tr><tr><td><code>Transliteration</code></td><td>Représentation d'une forme selon une convention nommée.</td></tr><tr><td><code>Morpheme</code></td><td>Unité liée ou libre utilisable dans une composition documentée.</td></tr><tr><td><code>EtymologicalRelation</code></td><td>Relation typée entre deux objets linguistiques.</td></tr><tr><td><code>SourceReference</code></td><td>Provenance bibliographique ou éditoriale.</td></tr><tr><td><code>EditorialAssessment</code></td><td>Niveau de confiance, note et état de relecture.</td></tr></tbody></table></div>
+<p>Les relations utilisent un vocabulaire contrôlé, notamment : héritage, emprunt, dérivation, composition, adaptation et apparentement. « Ressemble à » n'est pas une relation étymologique jouable.</p>
+<p>Les identifiants sont stables et indépendants de la graphie. Corriger un accent ou une translittération ne doit pas créer artificiellement une nouvelle brique.</p>
+<p>Chaque fait publié possède :</p>
+<ul><li>une ou plusieurs sources ;</li><li>un niveau de confiance : établi, probable ou discuté ;</li><li>un état de relecture ;</li><li>la version dans laquelle il apparaît ;</li><li>si nécessaire, une note expliquant la simplification ludique.</li></ul>
+<h3>Options envisagées</h3>
+<h4>Liste de mots et préfixes</h4>
+<p>Écartée : simple au début, mais incapable de distinguer formes, sens et relations.</p>
+<h4>Dictionnaires externes interrogés à la volée</h4>
+<p>Écartés comme autorité d'exécution. Ils peuvent aider l'édition, mais leurs schémas, licences, disponibilité et analyses diffèrent.</p>
+<h4>Validation par modèle génératif</h4>
+<p>Écartée : non déterministe, difficile à sourcer et insuffisante pour garantir l'exactitude.</p>
+<h3>Conséquences</h3>
+<h4>Positives</h4>
+<ul><li>résultats déterministes et explicables ;</li><li>contenu testable et reproductible ;</li><li>corrections et migrations traçables ;</li><li>prise en charge de plusieurs écritures et analyses concurrentes ;</li><li>séparation entre fait linguistique et représentation ludique.</li></ul>
+<h4>Négatives</h4>
+<ul><li>coût éditorial important ;</li><li>modèle plus riche qu'un dictionnaire de chaînes ;</li><li>besoin d'outils de saisie, de revue et de migration ;</li><li>impossibilité de promettre une couverture exhaustive.</li></ul>
+<h3>Critères de réévaluation</h3>
+<p>Le vocabulaire et les entités pourront évoluer après un premier lot réel de contenu. La nature éditoriale et versionnée du graphe ne devra être remise en cause que si une autre approche offre la même traçabilité et la même qualité.</p></div><p class="xrefs"><span>En situation</span><a class="xref" href="codex.html#filiation">La filiation dans le codex</a><a class="xref" href="codex.html#carte-etymologique">Une carte et ses formes</a></p></article><article class="adr" id="adr-0003"><div class="adr-head"><span class="adr-num">ADR 0003</span><span class="adr-status">Accepté</span><a class="xref" href="adr/0003-recettes-de-fusion.md">Source Markdown</a></div><h2>Recettes explicites et transformations expliquées</h2><div class="adr-body"><ul><li><strong>Statut</strong> : Accepté</li></ul>
+<h3>Contexte</h3>
+<p>La concaténation stricte est facile à comprendre, mais elle ne représente ni les variations de forme ni les chemins historiques. À l'inverse, une évaluation libre rendrait les résultats arbitraires et difficiles à expliquer.</p>
+<h3>Décision</h3>
+<p>Une fusion réussit uniquement lorsqu'elle correspond à une recette éditoriale publiée et accessible.</p>
+<p>Une recette contient :</p>
+<ul><li>un identifiant stable ;</li><li>une liste <strong>ordonnée</strong> d'emplacements ;</li><li>pour chaque emplacement, les briques ou variantes acceptées ;</li><li>les préconditions de progression ;</li><li>une suite de transformations contrôlées ;</li><li>un résultat linguistique ;</li><li>les objets et pistes débloqués ;</li><li>une définition courte du résultat dans son sens actuel, et son sens littéral lorsqu'il diffère ;</li><li>une explication courte et une explication détaillée ;</li><li>les références aux faits linguistiques qui la justifient.</li></ul>
+<p>Les transformations sont des données explicites, pas du code libre. Leur vocabulaire initial peut inclure :</p>
+<ul><li>ajout ou retrait d'une voyelle de liaison ;</li><li>allomorphie ;</li><li>adaptation de graphie ;</li><li>adaptation phonétique décrite ;</li><li>suffixation ou préfixation ;</li><li>emprunt via une forme intermédiaire ;</li><li>composition avec ordre documenté.</li></ul>
+<p>Le moteur compare des identifiants et variantes autorisées, jamais des saisies libres. Toutes les entrées reçues par l'API sont validées côté serveur : nombre d'ingrédients, type, ordre, appartenance au catalogue actif et possession des briques.</p>
+<p>Une recette ne prétend pas nécessairement que le mot a été historiquement « fabriqué » par l'opération que réalise le joueur. L'explication distingue l'analogie ludique du chemin attesté.</p>
+<h3>Résultats de tentative</h3>
+<ul><li><code>discovery</code> : recette valide et résultat nouveau ;</li><li><code>known</code> : recette valide déjà découverte ;</li><li><code>hintable</code> : proposition correspondant à un indice éditorial sûr ;</li><li><code>locked</code> : recette réelle mais préconditions non remplies ;</li><li><code>invalid</code> : aucune correspondance.</li></ul>
+<p>Le serveur ne renvoie pas l'identifiant ou les ingrédients secrets d'une recette verrouillée.</p>
+<h3>Options envisagées</h3>
+<h4>Concaténation stricte</h4>
+<p>Écartée comme règle unique : trop peu expressive et pédagogiquement trompeuse dans de nombreux cas.</p>
+<h4>Évaluation libre par dictionnaire ou IA</h4>
+<p>Écartée : résultats non maîtrisés, couverture incohérente et risques d'erreurs.</p>
+<h4>Grammaire linguistique universelle</h4>
+<p>Écartée pour le MVP : complexe, fragile et inutile pour un catalogue éditorial fini.</p>
+<h3>Conséquences</h3>
+<h4>Positives</h4>
+<ul><li>logique déterministe, testable et expliquée ;</li><li>difficulté contrôlable ;</li><li>transformations rendues visibles ;</li><li>aucune saisie arbitraire à modérer.</li></ul>
+<h4>Négatives</h4>
+<ul><li>chaque solution doit être conçue ;</li><li>les variantes acceptables doivent être anticipées ;</li><li>le moteur ne reconnaît pas automatiquement une solution réelle absente du catalogue ;</li><li>frustration possible si une variante plausible n'est pas éditée.</li></ul>
+<h3>Critères de réévaluation</h3>
+<p>Enrichir le vocabulaire de transformations à partir des besoins réels du contenu. N'introduire une évaluation ouverte que si elle peut rester déterministe, sourcée et sûre.</p></div><p class="xrefs"><span>En situation</span><a class="xref" href="jeu.html#table">Des recettes ordonnées sur la table</a><a class="xref" href="codex.html#carte-geologie">Une transformation expliquée</a></p></article><article class="adr" id="adr-0004"><div class="adr-head"><span class="adr-num">ADR 0004</span><span class="adr-status is-partial">Accepté · modifié depuis</span><a class="xref" href="adr/0004-progression-atteignable.md">Source Markdown</a></div><h2>Progression pilotée par un graphe d'obtention vérifiable</h2><div class="adr-body"><ul><li><strong>Statut</strong> : Accepté, complété par l'<a href="#adr-0012">ADR 0012</a> : les briques étant rationnées, la fermeture est complétée par une simulation de réserve.</li></ul>
+<h3>Contexte</h3>
+<p>Le joueur ne peut pas saisir un mot arbitraire pour créer une brique. Toute brique indispensable doit donc provenir d'une graine, d'une fusion, d'un jalon ou d'un pli. Une dépendance circulaire ou un tirage manquant peut bloquer définitivement la progression.</p>
+<h3>Décision</h3>
+<p>Chaque version du contenu définit un graphe d'obtention distinct du graphe linguistique :</p>
+<ul><li>les nœuds sont les objets déblocables ;</li><li>une hyperarête de recette relie plusieurs ingrédients à ses résultats ;</li><li>les graines, jalons et récompenses déterministes sont des sources ;</li><li>les plis sont des sources conditionnelles avec un ensemble d'éligibilité explicite.</li></ul>
+<p>Avant publication, un validateur calcule une fermeture par point fixe :</p>
+<ol><li>initialiser l'ensemble avec les graines et récompenses garanties ;</li><li>ajouter le résultat de toute recette dont les ingrédients et préconditions sont satisfaits ;</li><li>ajouter les récompenses de jalons devenus satisfaits ;</li><li>répéter jusqu'à ce qu'aucun objet ne soit ajouté ;</li><li>comparer l'ensemble obtenu aux objets déclarés atteignables.</li></ol>
+<p>Le validateur échoue si :</p>
+<ul><li>une brique requise n'est pas atteignable ;</li><li>une recette du chemin critique dépend uniquement d'un tirage aléatoire ;</li><li>un cycle n'a aucun point d'entrée ;</li><li>un pli peut se retrouver sans récompense valide ni compensation ;</li><li>une précondition référence un contenu absent ou d'une autre version ;</li><li>une recette accessible exige une brique que le joueur ne peut posséder à ce stade.</li></ul>
+<p>Le système doit aussi simuler les états importants, notamment nouveau joueur, joueur ayant épuisé un pool de pli et migration depuis la version précédente.</p>
+<p>Les contenus optionnels peuvent être volontairement inatteignables seulement s'ils sont explicitement marqués comme non publiés ou réservés à une future version. Ils ne comptent alors pas dans le codex visible.</p>
+<h3>Options envisagées</h3>
+<h4>Relecture manuelle</h4>
+<p>Écartée comme seul contrôle : les chemins combinatoires dépassent rapidement ce qu'une revue peut garantir.</p>
+<h4>Déblocage de secours universel</h4>
+<p>Écarté : masquerait les erreurs de graphe et rendrait la progression incohérente.</p>
+<h4>Plis purement aléatoires</h4>
+<p>Écartés pour les briques indispensables : aucune garantie de progression ni de test reproductible.</p>
+<h3>Conséquences</h3>
+<h4>Positives</h4>
+<ul><li>absence d'impasse connue dans une version publiée ;</li><li>changements de contenu testables en intégration continue ;</li><li>visualisation possible des zones trop linéaires ou trop dépendantes des graines ;</li><li>base solide pour calculer des plis utiles.</li></ul>
+<h4>Négatives</h4>
+<ul><li>modèle de progression et outils dédiés à maintenir ;</li><li>fermeture simple insuffisante pour certaines contraintes temporelles ou quantitatives ;</li><li>besoin de scénarios supplémentaires lorsque l'économie se complexifie.</li></ul>
+<h3>Critères de réévaluation</h3>
+<p>Ajouter une simulation d'états ou un solveur plus riche si des coûts, choix exclusifs ou événements temporels rendent la fermeture monotone insuffisante.</p></div><p class="xrefs"><span>En situation</span><a class="xref" href="plis.html#chances">Garantie et filet d’utilité</a><a class="xref" href="jeu.html#table">La réserve de départ</a></p></article><article class="adr" id="adr-0005"><div class="adr-head"><span class="adr-num">ADR 0005</span><span class="adr-status">Accepté</span><a class="xref" href="adr/0005-pipeline-de-contenu.md">Source Markdown</a></div><h2>Pipeline de contenu validé avant publication</h2><div class="adr-body"><ul><li><strong>Statut</strong> : Accepté</li></ul>
+<h3>Contexte</h3>
+<p>Le contenu relie exactitude linguistique, règles de fusion et progression. Une erreur de saisie peut créer une fausse explication ou bloquer une branche. Modifier directement les données de production ne permet ni revue ni reproduction.</p>
+<h3>Décision</h3>
+<p>Le contenu suit un pipeline distinct du déploiement applicatif :</p>
+<ol><li><strong>édition</strong> dans un format structuré soumis à un schéma ;</li><li><strong>validation locale</strong> des types, références, identifiants et vocabulaires contrôlés ;</li><li><strong>revue linguistique</strong> des sources, relations, formulations et niveaux de confiance ;</li><li><strong>validation ludique</strong> des recettes, préconditions, récompenses et indices ;</li><li><strong>analyse globale</strong> de l'atteignabilité, des cycles et des pools de plis ;</li><li><strong>compilation</strong> en artefact immuable optimisé pour le client et le serveur ;</li><li><strong>publication</strong> avec un identifiant de version et un rapport de validation ;</li><li><strong>migration</strong> explicite des progressions si les identifiants ou déblocages changent.</li></ol>
+<p>Les identifiants sont opaques et stables. Ils ne contiennent pas de graphie susceptible d'être corrigée.</p>
+<p>La publication est refusée en cas :</p>
+<ul><li>de référence cassée ;</li><li>de source obligatoire absente ;</li><li>de relation non relue ;</li><li>de recette ambiguë dans le même état de progression ;</li><li>d'objet visible inatteignable ;</li><li>de translittération sans convention déclarée ;</li><li>de récompense de pli invalide.</li></ul>
+<p>Les avertissements peuvent couvrir les niveaux de confiance discutés, les familles incomplètes et les déséquilibres non bloquants.</p>
+<p>Le catalogue publié ne contient que les données nécessaires à l'expérience. Les notes internes, brouillons et informations sensibles restent hors de l'artefact client.</p>
+<h3>Options envisagées</h3>
+<h4>Modification directe en base de production</h4>
+<p>Écartée : peu révisable, non reproductible et risquée.</p>
+<h4>Contenu embarqué dans le code</h4>
+<p>Écarté : mélange les cycles de publication, complique la revue éditoriale et empêche les outils spécialisés.</p>
+<h4>CMS générique comme unique validation</h4>
+<p>Écarté : utile comme interface future, mais insuffisant pour valider un hypergraphe de progression.</p>
+<h3>Conséquences</h3>
+<h4>Positives</h4>
+<ul><li>qualité contrôlée avant exposition ;</li><li>catalogue reproductible côté client et serveur ;</li><li>retour arrière vers une version connue ;</li><li>possibilité d'ajouter ensuite une interface éditoriale sans changer les règles.</li></ul>
+<h4>Négatives</h4>
+<ul><li>investissement initial dans schémas, compilateur et validations ;</li><li>publication moins immédiate ;</li><li>migrations nécessaires pour certaines corrections.</li></ul>
+<h3>Critères de réévaluation</h3>
+<p>Le format d'édition et l'interface pourront changer. Les étapes de validation et la production d'un artefact versionné restent obligatoires.</p></div><p class="xrefs"><span>En situation</span><a class="xref" href="codex.html">Les cartes éditoriales du codex</a></p></article><article class="adr" id="adr-0006"><div class="adr-head"><span class="adr-num">ADR 0006</span><span class="adr-status">Accepté</span><a class="xref" href="adr/0006-architecture-multilingue.md">Source Markdown</a></div><h2>Architecture multilingue indépendante du lancement</h2><div class="adr-body"><ul><li><strong>Statut</strong> : Accepté</li></ul>
+<h3>Contexte</h3>
+<p>L'étymologie traverse plusieurs langues et systèmes d'écriture. La langue de l'interface, la langue d'un mot et la convention utilisée pour translittérer une forme sont trois dimensions différentes. Le premier lot de contenu n'est pas encore choisi.</p>
+<h3>Décision</h3>
+<p>L'architecture de données sera multilingue dès le MVP, sans exiger que plusieurs langues d'interface ou un grand nombre de langues jouables soient livrés.</p>
+<p>Le système distingue :</p>
+<ul><li><strong>locale d'interface</strong> : libellés, explications et formats destinés au joueur ;</li><li><strong>langue linguistique</strong> : langue d'un lexème ou d'un morphème, avec période ou variété si nécessaire ;</li><li><strong>système d'écriture</strong> : alphabet, abjad, syllabaire ou autre système d'une forme ;</li><li><strong>forme originale</strong> : texte éditorial conservé en Unicode ;</li><li><strong>translittération</strong> : représentation selon une convention identifiée ;</li><li><strong>traduction ou glose</strong> : sens présenté dans une locale d'interface.</li></ul>
+<p>Les références utilisent des identifiants stables plutôt que les libellés traduits. Le modèle autorise plusieurs formes et translittérations pour un même objet, sans les transformer en briques distinctes par défaut.</p>
+<p>Le rendu :</p>
+<ul><li>affiche toujours le nom complet de la langue dans la locale d'interface (« grec ancien », « latin », « français ») ; les codes de langue restent strictement internes et n'apparaissent jamais au joueur, même sous forme abrégée ;</li><li>respecte la direction d'écriture au niveau du fragment ;</li><li>utilise des polices de repli couvrant les écritures publiées ;</li><li>n'impose pas une translittération lorsqu'une forme originale suffit ;</li><li>affiche ensemble forme originale et translittération lorsque cela aide le public visé ;</li><li>applique une normalisation Unicode uniquement aux comparaisons techniques prévues, jamais en remplaçant silencieusement la graphie éditoriale.</li></ul>
+<p>Les règles de fusion ne dépendent pas de chaînes localisées. Une recette référence des objets linguistiques et ses explications possèdent leurs propres traductions.</p>
+<h3>Options envisagées</h3>
+<h4>Modèle centré uniquement sur le français</h4>
+<p>Écarté : il conduirait à mélanger traduction, translittération et identité linguistique, puis à une migration coûteuse.</p>
+<h4>Tout traduire dès le MVP</h4>
+<p>Écarté : l'architecture générique ne justifie pas le coût d'une interface et d'un catalogue entièrement localisés avant validation.</p>
+<h4>Translittération comme objet collectionnable indépendant</h4>
+<p>Écartée par défaut : elle dupliquerait artificiellement les découvertes. Une convention de lecture peut toutefois être récompensée comme connaissance, séparément des briques.</p>
+<h3>Conséquences</h3>
+<h4>Positives</h4>
+<ul><li>ajout de langues sans refonte du domaine ;</li><li>meilleure fidélité des formes historiques ;</li><li>localisation de l'interface indépendante du contenu jouable ;</li><li>recettes stables entre locales.</li></ul>
+<h4>Négatives</h4>
+<ul><li>contraintes Unicode, directionnelles et typographiques dès le départ ;</li><li>tests nécessaires avec plusieurs écritures même si le lot initial est restreint ;</li><li>coût de traduction des explications à anticiper.</li></ul>
+<h3>Critères de réévaluation</h3>
+<p>Réviser les conventions d'affichage avec des spécialistes des écritures effectivement publiées. Ne pas réduire la séparation entre locale, langue, écriture et translittération.</p></div><p class="xrefs"><span>En situation</span><a class="xref" href="codex.html#carte-grec">Une carte de langue</a><a class="xref" href="typographie.html">Chaque écriture garde sa forme</a></p></article><article class="adr" id="adr-0007"><div class="adr-head"><span class="adr-num">ADR 0007</span><span class="adr-status">Accepté</span><a class="xref" href="adr/0007-etat-et-economie-autoritaires.md">Source Markdown</a></div><h2>État persistant et économie sous autorité serveur</h2><div class="adr-body"><ul><li><strong>Statut</strong> : Accepté</li></ul>
+<h3>Contexte</h3>
+<p>Le jeu doit reprendre une progression, calculer la recharge d'énergie et empêcher qu'un changement d'horloge locale ou une requête falsifiée n'accorde des récompenses. La PWA doit néanmoins rester réactive et tolérer une connexion intermittente.</p>
+<h3>Décision</h3>
+<p>Le serveur est l'autorité sur :</p>
+<ul><li>la version de catalogue active pour une partie ;</li><li>les graines, découvertes et briques possédées ;</li><li>la résolution finale d'une fusion ;</li><li>l'énergie, sa prochaine échéance et l'ouverture des plis ;</li><li>les récompenses, jalons et migrations de progression.</li></ul>
+<p>Le client conserve un cache local pour :</p>
+<ul><li>le catalogue autorisé ;</li><li>une projection de la progression confirmée ;</li><li>l'état visuel de la table ;</li><li>les préférences non sensibles ;</li><li>les opérations en attente qui peuvent être rejouées sans ambiguïté.</li></ul>
+<p>Toute commande serveur contient un identifiant d'idempotence généré par le client. Le serveur valide le schéma, l'identité technique, la version du catalogue, les préconditions et les droits avant une mutation. Une réponse en conflit provoque une resynchronisation explicite ; le client ne transforme pas un échec en succès local.</p>
+<p>Le MVP peut utiliser un profil invité associé à un identifiant aléatoire d'installation et à un secret stocké de manière adaptée à la plateforme. Ce profil ne contient pas de nom, d'adresse électronique ou d'autre donnée personnelle. La récupération multi-appareil et la conversion vers un compte feront l'objet d'une décision séparée avant collecte de données d'identité.</p>
+<p>Les écritures côté serveur sont transactionnelles : consommation d'énergie, tirage et attribution de récompense réussissent ou échouent ensemble.</p>
+<h3>Options envisagées</h3>
+<h4>État uniquement local</h4>
+<p>Écarté : simple et très privé, mais incompatible avec une économie fiable, les migrations contrôlées et une future synchronisation.</p>
+<h4>Client autoritaire avec synchronisation occasionnelle</h4>
+<p>Écarté : l'horloge, l'énergie et les récompenses seraient facilement incohérentes ou falsifiables.</p>
+<h4>Compte obligatoire dès le premier lancement</h4>
+<p>Écarté pour le MVP : friction et collecte de données non nécessaires pour tester le jeu.</p>
+<h3>Conséquences</h3>
+<h4>Positives</h4>
+<ul><li>économie cohérente ;</li><li>commandes rejouables sans doubles récompenses ;</li><li>collecte d'identité minimale ;</li><li>client réactif grâce aux projections locales ;</li><li>chemin futur vers la synchronisation.</li></ul>
+<h4>Négatives</h4>
+<ul><li>backend requis même pour un jeu essentiellement solo ;</li><li>ouverture de pli indisponible sans connexion ;</li><li>perte possible du profil invité si le stockage local disparaît ;</li><li>résolution de conflits et migrations à concevoir.</li></ul>
+<h3>Critères de réévaluation</h3>
+<p>Créer un nouvel ADR avant d'ajouter compte nominatif, authentification fédérée, synchronisation multi-appareil ou récupération de progression.</p></div><p class="xrefs"><span>En situation</span><a class="xref" href="plis.html">Tirages et énergie de la démo</a></p></article><article class="adr" id="adr-0008"><div class="adr-head"><span class="adr-num">ADR 0008</span><span class="adr-status is-partial">Accepté · modifié depuis</span><a class="xref" href="adr/0008-energie-et-plis.md">Source Markdown</a></div><h2>Énergie et plis gratuits, paiements hors MVP</h2><div class="adr-body"><ul><li><strong>Statut</strong> : Accepté, partiellement remplacé par l’<a href="#adr-0011">ADR 0011</a>. Le contenu des plis, les doublons et les raretés relèvent désormais de l’ADR 0011. L’énergie, la recharge et l’absence de paiement restent régies par le présent ADR. Depuis l’<a href="#adr-0012">ADR 0012</a>, les plis sont aussi la seule source d’exemplaires de briques ; l’énergie ne limite toujours pas les fusions, et une tentative ratée ne consomme rien.</li></ul>
+<h3>Contexte</h3>
+<p>Les plis peuvent relancer l'exploration en apportant une nouvelle brique, mais un hasard non maîtrisé peut bloquer la progression. L'énergie fournit un rythme de retour, avec un risque de frustration ou de conception manipulatrice. La monétisation n'est pas nécessaire pour valider le cœur du jeu.</p>
+<h3>Décision</h3>
+<p>Le MVP inclut des plis gratuits limités par une énergie dédiée. Cette énergie n'est jamais requise pour fusionner des briques déjà obtenues.</p>
+<p>Principes :</p>
+<ul><li>la capacité, la durée de recharge et le contenu des plis sont des paramètres versionnés d'équilibrage ;</li><li>douze heures constitue la première hypothèse de recharge, sans être codée en dur ;</li><li>le serveur calcule l'énergie à partir d'instants fiables ;</li><li>l'interface affiche la disponibilité et l'heure estimée sans fausse urgence ;</li><li>aucun paiement, publicité récompensée, monnaie premium ou achat de recharge ;</li><li>le chemin critique dispose toujours d'une voie déterministe.</li></ul>
+<p>Lors de l'ouverture, le serveur construit un pool à partir :</p>
+<ul><li>des règles d'équilibrage actives ;</li><li>des briques que le joueur ne possède pas ;</li><li>de ses préconditions satisfaites ou du niveau auquel la brique peut être utile ;</li><li>d'au moins une recette ou piste que la récompense peut ouvrir ;</li><li>des exclusions éditoriales et de la protection contre les doublons inutiles.</li></ul>
+<p>Le tirage et l'attribution sont atomiques et idempotents. Le résultat enregistre la règle d'équilibrage utilisée afin de permettre un diagnostic sans journaliser de donnée personnelle.</p>
+<p>Si aucun objet n'est éligible, le pli fournit une compensation définie, par exemple un indice, ou est remplacé par une récompense déterministe. Il ne renvoie jamais silencieusement un pli vide.</p>
+<h3>Options envisagées</h3>
+<h4>Aucun pli</h4>
+<p>Non retenu pour le MVP : il empêcherait de tester cette boucle secondaire importante, bien qu'elle puisse être retirée si elle dégrade le jeu.</p>
+<h4>Plis purement aléatoires</h4>
+<p>Écartés : ils peuvent produire doublons, impasses et frustration.</p>
+<h4>Monétisation immédiate</h4>
+<p>Écartée : elle ajoute conformité, attentes économiques et biais de conception avant validation du plaisir.</p>
+<h4>Énergie consommée à chaque fusion</h4>
+<p>Écartée : elle décourage l'expérimentation, qui est le cœur du jeu.</p>
+<h3>Conséquences</h3>
+<h4>Positives</h4>
+<ul><li>boucle de retour testable sans pression financière ;</li><li>récompenses adaptées à la progression ;</li><li>expérimentation illimitée sur le contenu possédé ;</li><li>paramètres ajustables sans modifier les faits linguistiques.</li></ul>
+<h4>Négatives</h4>
+<ul><li>économie serveur à construire et observer ;</li><li>système potentiellement perçu comme artificiel même sans paiement ;</li><li>calcul d'éligibilité plus complexe qu'une table aléatoire ;</li><li>obligation de concevoir une fin de catalogue satisfaisante.</li></ul>
+<h3>Critères de réévaluation</h3>
+<p>Retirer ou modifier l'énergie si les tests ne montrent pas de valeur ludique. Toute monétisation future exige un ADR couvrant éthique, conformité, contrôle parental, transparence des probabilités et politique de remboursement.</p></div><p class="xrefs"><span>En situation</span><a class="xref" href="plis.html">L’atelier des plis</a><a class="xref" href="mouvement.html">Le rituel d’ouverture</a></p></article><article class="adr" id="adr-0009"><div class="adr-head"><span class="adr-num">ADR 0009</span><span class="adr-status">Accepté</span><a class="xref" href="adr/0009-contenu-et-equilibrage.md">Source Markdown</a></div><h2>Séparation des faits linguistiques et de l'équilibrage</h2><div class="adr-body"><ul><li><strong>Statut</strong> : Accepté</li></ul>
+<h3>Contexte</h3>
+<p>La rareté d'une brique, son apparition dans un pli et le moment où elle est jouable peuvent changer après un test. Ces paramètres ne sont pas des propriétés linguistiques. Les mélanger aux faits rendrait une correction d'équilibrage difficile à distinguer d'une correction scientifique.</p>
+<h3>Décision</h3>
+<p>Le catalogue comporte deux couches référencées par identifiants :</p>
+<h4>Couche linguistique</h4>
+<p>Elle contient formes, langues, sens, morphèmes, relations, sources, niveaux de confiance et explications factuelles.</p>
+<h4>Couche ludique</h4>
+<p>Elle contient recettes jouables, graines, jalons, visibilité, difficulté, indices, groupes de progression, poids de rareté et de type des plis, garantie de nouveauté, conversion des doublons en encre et récompenses.</p>
+<p>La couche ludique référence la couche linguistique, jamais l'inverse. Un objet linguistique peut exister sans être jouable. Une brique ou une recette ne peut pas inventer un fait absent de la couche linguistique validée.</p>
+<p>Les versions des deux couches sont associées dans un manifeste de publication. Un ajustement de poids de pli peut publier une nouvelle version ludique réutilisant exactement la même version linguistique. Une correction de relation publie une nouvelle version linguistique et déclenche la revue des recettes dépendantes.</p>
+<p>Le niveau de confiance d'une étymologie ne détermine pas sa rareté. La rareté reflète uniquement la progression du jeu et doit employer un vocabulaire visuel différent.</p>
+<h3>Options envisagées</h3>
+<h4>Un document unique par mot</h4>
+<p>Écarté : pratique pour l'affichage, mais mélange vérité linguistique, état du joueur et paramètres temporaires.</p>
+<h4>Copier les faits dans chaque recette</h4>
+<p>Écarté : duplication, divergences et corrections incomplètes.</p>
+<h4>Déduire automatiquement tout l'équilibrage du graphe</h4>
+<p>Écarté : des métriques peuvent assister l'équipe, mais la qualité d'une progression reste une décision de design.</p>
+<h3>Conséquences</h3>
+<h4>Positives</h4>
+<ul><li>rééquilibrage sans altération des sources ;</li><li>audit clair des corrections ;</li><li>réutilisation d'un même fait dans plusieurs recettes ;</li><li>possibilité de tester plusieurs progressions sur un catalogue commun.</li></ul>
+<h4>Négatives</h4>
+<ul><li>deux cycles de version à coordonner ;</li><li>compilation nécessaire pour une vue client efficace ;</li><li>dépendances à invalider lorsqu'un fait change.</li></ul>
+<h3>Critères de réévaluation</h3>
+<p>Le format physique peut être combiné pour le déploiement, mais les responsabilités et versions logiques doivent rester séparées.</p></div><p class="xrefs"><span>En situation</span><a class="xref" href="plis.html#chances">Poids et chances affichés</a></p></article><article class="adr" id="adr-0010"><div class="adr-head"><span class="adr-num">ADR 0010</span><span class="adr-status">Accepté</span><a class="xref" href="adr/0010-observabilite-et-vie-privee.md">Source Markdown</a></div><h2>Observabilité minimale et respectueuse de la vie privée</h2><div class="adr-body"><ul><li><strong>Statut</strong> : Accepté</li></ul>
+<h3>Contexte</h3>
+<p>Le MVP doit vérifier si les joueurs comprennent la fusion, utilisent les indices et reviennent ouvrir un pli. Une collecte exhaustive ou des journaux contenant les propositions brutes créeraient un risque de vie privée sans améliorer nécessairement les décisions.</p>
+<h3>Décision</h3>
+<p>L'observabilité suit les principes de minimisation, finalité explicite, durée limitée et agrégation.</p>
+<p>Les événements produit autorisés couvrent :</p>
+<ul><li>démarrage et fin des étapes du tutoriel ;</li><li>tentative de fusion classée par résultat ;</li><li>découverte d'une recette ;</li><li>demande d'un niveau d'indice ;</li><li>ouverture de pli et catégorie de récompense ;</li><li>reprise après disponibilité d'un pli ;</li><li>erreur technique catégorisée.</li></ul>
+<p>Un événement contient uniquement :</p>
+<ul><li>un identifiant d'événement ;</li><li>un identifiant technique pseudonyme à rotation ou portée limitée ;</li><li>un horodatage ;</li><li>la version de l'application, du catalogue et de l'équilibrage ;</li><li>des identifiants internes nécessaires à l'analyse ;</li><li>des propriétés énumérées et validées.</li></ul>
+<p>Il ne contient jamais de nom, adresse électronique, adresse réseau complète conservée comme propriété analytique, texte libre, contenu de stockage local, en-têtes d'authentification ou autre donnée personnelle inutile.</p>
+<p>Les journaux applicatifs utilisent des codes d'erreur et identifiants de corrélation non personnels. Les charges utiles utilisateur, secrets et jetons sont exclus ou expurgés avant émission. Les erreurs de validation sont visibles par des métriques structurées, pas par la copie de la requête.</p>
+<p>Le serveur :</p>
+<ul><li>valide chaque événement selon un schéma et une liste de propriétés autorisées ;</li><li>limite le débit et la taille ;</li><li>rejette les propriétés inconnues au lieu de les stocker ;</li><li>sépare télémétrie produit et journaux opérationnels ;</li><li>applique des durées de conservation documentées ;</li><li>restreint les accès et trace les consultations administratives.</li></ul>
+<p>Le produit explique la collecte et offre les contrôles requis avant une diffusion publique. Les métriques agrégées sont privilégiées lorsqu'un suivi individuel n'est pas indispensable.</p>
+<h3>Options envisagées</h3>
+<h4>Aucune télémétrie</h4>
+<p>Non retenue : elle rendrait les hypothèses du MVP difficiles à évaluer. Les tests qualitatifs restent néanmoins indispensables.</p>
+<h4>Enregistrement de toutes les sessions</h4>
+<p>Écarté : intrusif, volumineux et susceptible de capturer des données imprévues.</p>
+<h4>Fournisseur analytique choisi immédiatement</h4>
+<p>Écarté : le besoin et le contrat de données doivent précéder le choix d'un service tiers.</p>
+<h3>Conséquences</h3>
+<h4>Positives</h4>
+<ul><li>indicateurs utiles avec exposition réduite ;</li><li>schémas auditables et testables ;</li><li>moindre risque de fuite dans les journaux ;</li><li>indépendance initiale vis-à-vis d'un fournisseur.</li></ul>
+<h4>Négatives</h4>
+<ul><li>certaines analyses exploratoires seront impossibles a posteriori ;</li><li>effort de gouvernance, rétention et contrôle d'accès ;</li><li>identifiants limités moins adaptés aux cohortes longues.</li></ul>
+<h3>Critères de réévaluation</h3>
+<p>Tout nouvel événement doit justifier sa finalité et sa durée. Toute session replay, expérimentation personnalisée ou intégration tierce nécessite une revue dédiée de la vie privée et de la sécurité.</p></div><p class="xrefs"><span>En situation</span><a class="xref" href="design-system.html#accessibilite">Accessibilité et respect du joueur</a></p></article><article class="adr" id="adr-0011"><div class="adr-head"><span class="adr-num">ADR 0011</span><span class="adr-status is-partial">Accepté · modifié depuis</span><a class="xref" href="adr/0011-plis-raretes-et-doublons.md">Source Markdown</a></div><h2>Plis à raretés, doublons convertis en encre</h2><div class="adr-body"><ul><li><strong>Statut</strong> : Accepté, partiellement remplacé par l'<a href="#adr-0012">ADR 0012</a>. Un doublon ajoute désormais un exemplaire à la réserve, et l'encre ne vient que des exemplaires reçus au-delà du plafond. Le tirage, les raretés, la garantie et la transparence restent régis par le présent ADR.</li><li><strong>Remplace partiellement</strong> : <a href="#adr-0008">ADR 0008</a>, pour le contenu des plis</li></ul>
+<h3>Contexte</h3>
+<p>L'ADR 0008 prévoyait des plis qui ne donnent que des briques nouvelles et utiles, sans doublon. Ce fonctionnement remplit le codex trop vite : chaque pli est une nouveauté garantie, et la découverte perd de sa valeur. Or l'attente, la surprise et la rareté font partie du plaisir de collection.</p>
+<p>Il faut ralentir le remplissage sans rendre le jeu frustrant, ni bloquer la progression.</p>
+<h3>Décision</h3>
+<h4>Tirage</h4>
+<p>Chaque pli tire une brique dans <strong>tout le catalogue du pli</strong>, y compris les briques déjà possédées. Les doublons sont donc possibles et assumés.</p>
+<p>La probabilité d'une brique dépend de deux paramètres d'équilibrage :</p>
+<div class="table-scroll"><table><thead><tr><th>Rareté</th><th>Symbole</th><th>Poids indicatif</th><th>Encre rendue par un doublon</th></tr></thead><tbody><tr><td>Commune</td><td>triangle</td><td>62</td><td>2 gouttes</td></tr><tr><td>Peu commune</td><td>carré</td><td>26</td><td>4 gouttes</td></tr><tr><td>Rare</td><td>pentagone</td><td>10</td><td>8 gouttes</td></tr><tr><td>Légendaire</td><td>diamant taillé</td><td>2</td><td>20 gouttes</td></tr></tbody></table></div>
+<ul><li><strong>Type</strong> : les suffixes ont un poids légèrement supérieur aux préfixes (1,25 contre 1), car ils se combinent plus souvent.</li><li><strong>Poids d'une brique</strong> : poids de sa rareté × poids de son type, réparti entre les briques de même rareté et de même type.</li></ul>
+<p>Ces valeurs sont des paramètres versionnés de la couche d'équilibrage (<a href="#adr-0009">ADR 0009</a>). La rareté ne dépend jamais du niveau de confiance d'une étymologie.</p>
+<p>Il y a exactement quatre niveaux de rareté, chacun avec sa forme. Le nombre de côtés croît avec la rareté : triangle, carré, pentagone, puis un diamant taillé. Ce vocabulaire reste distinct du losange des états de retour et des traits de la confiance éditoriale. La forme, remplie d'Ambre et cernée d'Encre, est toujours accompagnée de son libellé ou d'un nom accessible.</p>
+<h4>Doublons et encre</h4>
+<blockquote><p>Remplacé par l'<a href="#adr-0012">ADR 0012</a> : un doublon ajoute un exemplaire (5 au plus par brique) ; le barème d'encre ci-dessus ne s'applique qu'au-delà de ce plafond.</p></blockquote>
+<ul><li>Un doublon augmente le nombre d'exemplaires de la brique (×2, ×3…) et rapporte des <strong>gouttes d'encre</strong>, d'autant plus que la brique est rare.</li><li>L'encre s'échange contre des <strong>indices</strong>, 10 gouttes dans la démonstration.</li><li>Plus tard, elle pourra peut-être servir à forger une brique choisie, sous réserve d'un ADR dédié.</li><li>L'encre n'est ni achetable ni convertible en argent.</li></ul>
+<h4>Garantie de nouveauté</h4>
+<ul><li>Tant qu'il reste des briques inconnues, une brique nouvelle est <strong>garantie au plus tard au 6ᵉ pli</strong> après la dernière nouveauté.</li><li>Le compteur est visible par le joueur.</li><li>Quand toutes les briques sont connues, chaque pli donne un doublon et de l'encre.</li></ul>
+<h4>Transparence</h4>
+<p>L'écran des plis affiche en permanence :</p>
+<ul><li>les chances par rareté et par type ;</li><li>les chances exactes de chaque brique, les briques inconnues restant en silhouette avec leur rareté ;</li><li>l'état de la garantie ;</li><li>l'encre disponible ;</li><li>l'historique des tirages.</li></ul>
+<p>Les pourcentages affichés sont calculés à partir des poids réels, jamais arrondis de manière trompeuse.</p>
+<h4>Garde-fous conservés</h4>
+<ul><li>Les briques indispensables au tutoriel et au chemin critique ne dépendent jamais d'un tirage aléatoire (<a href="#adr-0004">ADR 0004</a>) : elles viennent de la réserve de départ et des plis de jalon, dont le contenu est déterministe (<a href="#adr-0012">ADR 0012</a>).</li><li>L'énergie ne limite que les plis, jamais les fusions.</li><li>Aucun paiement, aucune publicité et aucune monnaie premium dans le MVP.</li><li>Le tirage et l'attribution restent atomiques, idempotents et calculés par le serveur.</li></ul>
+<h4>Rythme visé</h4>
+<p>Une simulation de 20 000 parties sur le catalogue de démonstration (4 briques de départ, 5 à découvrir) donne :</p>
+<div class="table-scroll"><table><thead><tr><th>Garantie</th><th>Plis pour tout découvrir (médiane)</th><th>90ᵉ centile</th></tr></thead><tbody><tr><td>au 6ᵉ pli</td><td>24</td><td>29</td></tr><tr><td>au 10ᵉ pli</td><td>34</td><td>43</td></tr><tr><td>aucune</td><td>92</td><td>154</td></tr></tbody></table></div>
+<p>Avec la garantie au 6ᵉ pli et un pli toutes les 12 heures, le catalogue de démonstration se complète en environ deux semaines, sans série de malchance interminable. Ces chiffres seront recalculés à chaque version du catalogue.</p>
+<h3>Options envisagées</h3>
+<h4>Nouveauté garantie à chaque pli (ADR 0008)</h4>
+<p>Écartée : le codex se remplit trop vite et les plis perdent leur intérêt.</p>
+<h4>Hasard pur, sans garantie</h4>
+<p>Écarté : la simulation montre des séries de plus de 150 plis pour 10 % des joueurs, ce qui est trop frustrant.</p>
+<h4>Doublons sans compensation</h4>
+<p>Écartés : un doublon doit toujours rapporter quelque chose.</p>
+<h3>Conséquences</h3>
+<h4>Positives</h4>
+<ul><li>La découverte redevient rare et désirable, et les briques rares créent de vrais moments forts.</li><li>Les doublons gardent une valeur grâce à l'encre et aux indices.</li><li>Le rythme de remplissage est réglable par les poids et la garantie, sans toucher aux faits linguistiques.</li><li>Toutes les chances sont transparentes.</li></ul>
+<h4>Négatives</h4>
+<ul><li>Une économie de plus (l'encre) à équilibrer et à surveiller.</li><li>Le risque d'une perception « machine à sous » si les chances ou la garantie ne sont pas clairement affichées.</li><li>Le rythme doit être recalculé à chaque ajout de briques.</li></ul>
+<h3>Critères de réévaluation</h3>
+<p>Revoir les poids et la garantie si le taux de nouveauté observé s'écarte nettement de la simulation, ou si les tests montrent de la frustration. Toute monétisation liée aux plis ou à l'encre exige un nouvel ADR couvrant l'éthique, la conformité (notamment les règles sur les coffres à butin), le contrôle parental et la transparence des probabilités.</p></div><p class="xrefs"><span>En situation</span><a class="xref" href="plis.html#chances">Chances par rareté et par brique</a><a class="xref" href="identite.html#formes">Les formes de rareté</a></p></article><article class="adr" id="adr-0012"><div class="adr-head"><span class="adr-num">ADR 0012</span><span class="adr-status">Accepté</span><a class="xref" href="adr/0012-briques-rationnees.md">Source Markdown</a></div><h2>Briques rationnées, exemplaires obtenus par les plis</h2><div class="adr-body"><ul><li><strong>Statut</strong> : Accepté</li><li><strong>Remplace partiellement</strong> : <a href="#adr-0011">ADR 0011</a>, pour la valeur des doublons</li><li><strong>Complète</strong> : <a href="#adr-0004">ADR 0004</a> (atteignabilité avec quantités), <a href="#adr-0007">ADR 0007</a> (consommation sous autorité serveur), <a href="#adr-0008">ADR 0008</a> (rôle des plis)</li></ul>
+<h3>Contexte</h3>
+<p>Jusqu'ici, une brique obtenue restait utilisable sans limite. Le joueur pouvait donc tout essayer dès qu'il possédait les briques, et les doublons n'avaient de valeur que par l'encre. Le codex se remplissait vite, et les plis perdaient leur intérêt une fois les briques connues.</p>
+<p>Nous voulons que chaque brique compte : le joueur dispose d'un nombre limité d'exemplaires, et les plis sont le seul moyen d'en obtenir de nouveaux. Il faut le faire sans punir l'expérimentation, qui reste le cœur du jeu, et sans créer d'impasse.</p>
+<h3>Décision</h3>
+<h4>Réserve et exemplaires</h4>
+<ul><li>Chaque brique connue a un nombre d'<strong>exemplaires</strong> : c'est la <strong>réserve</strong> du joueur.</li><li>La connaissance est permanente : une brique à zéro exemplaire reste dans le codex, marquée <strong>épuisée</strong>.</li><li>Au début, le joueur reçoit une <strong>réserve de départ</strong> (démonstration : 4 briques × 2 exemplaires). Elle permet les premières découvertes sans ouvrir de pli.</li><li>Ensuite, <strong>seuls les plis donnent des exemplaires</strong>. Les jalons ne donnent plus de brique directement : ils offrent un pli de jalon, dont le contenu est déterministe et déclaré dans le graphe d'obtention.</li><li><strong>Plafond</strong> : 5 exemplaires par brique. Un exemplaire reçu au-delà se change en gouttes d'encre, selon la rareté (barème de l'ADR 0011).</li></ul>
+<h4>Consommation</h4>
+<div class="table-scroll"><table><thead><tr><th>Situation</th><th>Effet sur la réserve</th></tr></thead><tbody><tr><td>Poser une brique sur la table</td><td>L'exemplaire est <strong>réservé</strong> : le compteur baisse, il revient si on le retire ou si on vide la table.</td></tr><tr><td>Nouvelle découverte</td><td><strong>Un exemplaire de chaque brique utilisée est consommé.</strong></td></tr><tr><td>Recette déjà découverte</td><td>Rien n'est consommé.</td></tr><tr><td>Presque (mauvais ordre) ou échec</td><td>Rien n'est consommé.</td></tr></tbody></table></div>
+<p>Règle d'expérience : <strong>se tromper ne coûte rien, réussir consomme</strong>. Le joueur ne peut pas poser plus d'exemplaires qu'il n'en possède. Quand il ne lui reste qu'un exemplaire d'une brique utile à plusieurs mots, il doit choisir quel mot écrire : c'est une décision de jeu voulue.</p>
+<h4>Plis</h4>
+<ul><li>Chaque pli donne un exemplaire d'une brique :<ul><li>brique nouvelle : 1 exemplaire ;</li><li>brique connue : +1 exemplaire (« De retour ! » si elle était épuisée) ;</li><li>réserve pleine : de l'encre.</li></ul></li><li>La garantie de nouveauté au 6ᵉ pli est conservée (ADR 0011).</li><li><strong>Filet d'utilité</strong> : si la réserve ne permet plus aucune découverte, le 5ᵉ pli consécutif ouvert dans cet état contient forcément une brique qui en rend au moins une possible. Le compteur est visible. Si aucune brique seule ne suffit, le pli donne une brique manquante d'une recette encore à découvrir.</li></ul>
+<h4>Atteignabilité</h4>
+<p>La fermeture monotone de l'ADR 0004 ne suffit plus, puisque des quantités sont consommées. Le validateur ajoute donc une simulation de réserve :</p>
+<ul><li>un joueur qui ouvre des plis finit toujours par pouvoir découvrir chaque mot publié ;</li><li>aucune recette du chemin critique n'exige plus d'exemplaires que le plafond ;</li><li>la réserve de départ permet au moins trois découvertes distinctes ;</li><li>le filet d'utilité trouve toujours une brique éligible.</li></ul>
+<h4>Autorité serveur</h4>
+<p>La réservation est locale et purement visuelle. La consommation, en revanche, fait partie de la transaction de découverte : vérification de la recette, décrément des exemplaires et ajout au codex réussissent ou échouent ensemble, de façon idempotente. Une fusion hors ligne est mise en file d'attente et rejouée à la reconnexion. Elle ne consomme qu'une fois, au moment où le serveur l'accepte.</p>
+<h4>Rythme visé</h4>
+<p>Simulation sur le catalogue de démonstration (9 mots, 9 briques, réserve de départ 4 × 2, plafond 5, un pli toutes les 12 heures, joueur qui découvre dès que c'est possible) :</p>
+<div class="table-scroll"><table><thead><tr><th>Règle</th><th>Plis pour tout découvrir (médiane)</th><th>90ᵉ centile</th><th>Pire cas observé</th></tr></thead><tbody><tr><td>Rationnement sans filet</td><td>33</td><td>59</td><td>175</td></tr><tr><td>Rationnement + filet au 5ᵉ pli</td><td>22</td><td>26</td><td>30</td></tr><tr><td>Rationnement + filet au 3ᵉ pli</td><td>16</td><td>18</td><td>20</td></tr><tr><td>Rationnement + 2 briques par pli</td><td>17</td><td>31</td><td>—</td></tr></tbody></table></div>
+<p>Retenu : <strong>filet au 5ᵉ pli, une brique par pli</strong>. Avec 22 plis en médiane, soit environ onze jours, le rythme reste proche de celui de l'ADR 0011 (24 plis), mais les séries de malchance sont bornées. La taille du pli, le plafond, la réserve de départ et le seuil du filet sont des paramètres d'équilibrage (<a href="#adr-0009">ADR 0009</a>).</p>
+<h3>Options envisagées</h3>
+<h4>Briques illimitées (situation précédente)</h4>
+<p>Écartée : les doublons perdent leur sens et le codex se remplit trop vite.</p>
+<h4>Consommation à chaque tentative</h4>
+<p>Écartée : l'expérimentation deviendrait punitive, et une erreur pourrait vider la réserve en quelques gestes.</p>
+<h4>Rationnement sans filet</h4>
+<p>Écarté : la simulation montre des séries de plus de 150 plis sans progrès possible pour quelques joueurs.</p>
+<h4>Plusieurs briques par pli</h4>
+<p>Non retenue pour l'instant : elle accélère le rythme, mais demande un rituel de révélation multiple. Elle reste une option d'équilibrage.</p>
+<h3>Conséquences</h3>
+<h4>Positives</h4>
+<ul><li>Chaque exemplaire a de la valeur, et les doublons redeviennent désirables.</li><li>Les plis restent utiles même quand toutes les briques sont connues.</li><li>Le choix du mot à écrire avec un exemplaire rare crée de vraies décisions.</li><li>Le rythme est réglable sans toucher aux faits linguistiques.</li></ul>
+<h4>Négatives</h4>
+<ul><li>Un joueur peut se retrouver sans découverte possible pendant quelques plis. Le filet borne cette attente, mais elle existe.</li><li>Une quantité de plus à synchroniser, à valider et à expliquer.</li><li>Le principe « essayer ne coûte rien » devient « se tromper ne coûte rien ». L'interface doit rendre le coût d'une découverte lisible (compteur, « −1 », exemplaires utilisés sur la fiche).</li><li>Le validateur d'atteignabilité devient une simulation, plus coûteuse qu'une fermeture.</li></ul>
+<h3>Critères de réévaluation</h3>
+<p>Revoir le plafond, la réserve de départ, le seuil du filet ou la taille du pli si les tests montrent plus de deux jours sans découverte possible pour un joueur actif, ou si le taux d'abandon augmente après l'épuisement de la réserve de départ.</p></div><p class="xrefs"><span>En situation</span><a class="xref" href="jeu.html#table">Compteurs, « −1 » et briques épuisées</a><a class="xref" href="plis.html">Exemplaires, plafond et filet</a><a class="xref" href="design-system.html#ds-3-2">Réserve et rationnement</a></p></article></div></div>
+<!-- ADR:END -->
+    </div>
+  </section>
+</main>
+<nav class="site-pager" aria-label="Page précédente et page suivante"></nav>
+
+<footer class="footer">
+  <div class="foot-seal" aria-hidden="true">
+    <svg viewBox="0 0 200 200"><defs><path id="circ" d="M100 100 m-78 0 a78 78 0 1 1 156 0 a78 78 0 1 1 -156 0"></path></defs><text textLength="486" lengthAdjust="spacing"><textPath href="#circ">ÉtymoLogique · remonter le fil · ÉtymoLogique · remonter le fil ·</textPath></text></svg>
+    <b>ÉL</b>
+  </div>
+  <p class="foot-phrase"><span class="sr-only">Chaque mot est une piste.</span><span aria-hidden="true">Chaque mot est une <em id="footWord">piste</em>.</span></p>
+  <div class="foot-meta"><span>ÉtymoLogique · Direction visuelle 02</span><span>Cabinet linguistique contemporain</span><span>Dossier de direction · 2026</span></div>
+</footer>
+
+<div class="toast" role="status" aria-live="polite"></div>
+<script src="assets/site-nav.js"></script>
+<script src="assets/etymo.js"></script>
+</body>
+</html>

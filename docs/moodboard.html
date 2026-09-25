@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Moodboard déplacé · ÉtymoLogique</title>
+  <meta http-equiv="refresh" content="3; url=index.html">
+  <link rel="stylesheet" href="assets/site-nav.css">
+  <link rel="stylesheet" href="assets/etymo.css">
+  <script>
+    // L'ancien moodboard d'une seule page est découpé : on redirige chaque ancienne section vers sa page.
+    (() => {
+      const map = { couleur: "identite.html", type: "typographie.html", jeu: "jeu.html", packs: "plis.html", codex: "codex.html", filiation: "codex.html#filiation", mouvement: "mouvement.html", boussole: "boussole.html" };
+      const target = map[location.hash.slice(1)];
+      if (target) location.replace(target);
+    })();
+  </script>
+</head>
+<body>
+<header class="site-nav"></header>
+<main id="contenu">
+  <section class="section">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="sec-num">Page déplacée</span><h2>Le moodboard <em>a été découpé</em></h2></div>
+        <div class="sec-intro"><p>Le dossier de direction tient maintenant en plusieurs pages. Redirection vers le sommaire dans quelques secondes.</p>
+          <p class="xrefs"><span>Aller à</span><a class="xref" href="index.html">Sommaire</a><a class="xref" href="identite.html">Identité visuelle</a><a class="xref" href="jeu.html">Table de fusion</a><a class="xref" href="plis.html">Plis</a><a class="xref" href="codex.html">Codex</a><a class="xref" href="adr.html" data-kind="adr">ADR</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<script src="assets/site-nav.js"></script>
+</body>
+</html>

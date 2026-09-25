@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Le codex d’ÉtymoLogique : cartes, vue globale et filiation.">
+  <meta name="theme-color" content="#f3eee3">
+  <title>Codex · ÉtymoLogique</title>
+  <link rel="stylesheet" href="assets/site-nav.css">
+  <link rel="stylesheet" href="assets/etymo.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="rar-commune" viewBox="0 0 16 16"><path d="M8 1.8 14.8 14H1.2Z"/></symbol>
+  <symbol id="rar-peu" viewBox="0 0 16 16"><rect x="2.3" y="2.3" width="11.4" height="11.4" rx="0.6"/></symbol>
+  <symbol id="rar-rare" viewBox="0 0 16 16"><path d="M8 1.3 14.8 6.3 12.2 14.4H3.8L1.2 6.3Z"/></symbol>
+  <symbol id="rar-legendaire" viewBox="0 0 16 16"><path d="M4.4 2h7.2L15.2 6.3 8 14.8.8 6.3Z"/><path fill="none" d="M.8 6.3h14.4M5.8 6.3 8 14.8l2.2-8.5M5.8 6.3 8 2l2.2 4.3"/></symbol>
+</svg>
+<div class="progress" aria-hidden="true"></div>
+<a class="skip-link" href="#contenu">Aller au contenu</a>
+<header class="site-nav"></header>
+
+<main id="contenu">
+  <section class="section" id="codex">
+    <div class="wrap">
+      <div class="sec-head">
+        <div data-reveal><span class="sec-num">Jeu · Codex</span><h2>Cartes à <em>collectionner</em></h2></div>
+        <div class="sec-intro" data-reveal style="--d:120ms"><p>Dans le codex, chaque entrée est une carte éditoriale qui réagit à la main. Les états — découvert, nouveau, silhouette, famille — se lisent sans texte.</p><p class="xrefs"><span>Voir aussi</span><a class="xref" href="jeu.html#table">Découvrir de nouveaux mots</a><a class="xref" href="identite.html#ressources">La couleur des bandeaux</a><a class="xref" href="adr.html#adr-0002" data-kind="adr">ADR 0002 : graphe éditorial</a><a class="xref" href="adr.html#adr-0006" data-kind="adr">ADR 0006 : multilingue</a></p></div>
+      </div>
+      <div class="cards">
+        <article class="ccard tilt" data-reveal>
+          <div class="cc-top"><span>N° 014</span><span class="chip"><i style="--c:var(--c-lang)"></i>Français</span></div>
+          <div><p class="cc-word">biologie</p><p class="cc-def">Science qui étudie les êtres vivants.</p><p class="cc-formula"><span class="bformula"><span class="bchip" data-kind="préfixe">bio-</span><span class="bplus">+</span><span class="bchip" data-kind="suffixe">-logie</span></span></p><p class="cc-lit">« étude de la vie »</p></div>
+          <div class="cc-foot"><span>Découvert</span><span class="conf"><i></i><i></i><i></i></span></div>
+        </article>
+        <article class="ccard tilt new" data-reveal style="--d:100ms">
+          <span class="ribbon">Nouveau</span>
+          <div class="cc-top"><span>N° 027</span><span class="chip"><i style="--c:var(--c-lang)"></i>Français</span></div>
+          <div><p class="cc-word">philosophie</p><p class="cc-def">Réflexion sur le savoir, l’existence et les valeurs.</p><p class="cc-formula"><span class="bformula"><span class="bchip" data-kind="préfixe">philo-</span><span class="bplus">+</span><span class="bchip" data-kind="suffixe">-sophie</span></span></p><p class="cc-lit">« amour de la sagesse »</p></div>
+          <div class="cc-foot"><span>2 pistes ouvertes</span><span class="conf"><i></i><i></i><i></i></span></div>
+        </article>
+        <article class="ccard tilt locked" data-reveal style="--d:200ms">
+          <div class="cc-top"><span>N° 031</span><span class="chip"><i style="--c:var(--ink-3)"></i>Inconnu</span></div>
+          <div><span class="lock" aria-hidden="true">?</span><p class="cc-word" aria-hidden="true">astronomie</p><p class="cc-formula"><span class="bformula"><span class="bchip" data-kind="préfixe">astro-</span><span class="bplus">+</span><span class="bchip missing" data-kind="suffixe">?</span></span></p></div>
+          <div class="cc-foot"><span>Piste : « loi, règle »</span><span>Silhouette</span></div>
+        </article>
+        <article class="ccard tilt family" data-reveal style="--d:300ms">
+          <div class="cc-top"><span>Famille</span><span>7 / 12 formes</span></div>
+          <div>
+            <div class="fam-ring"><svg viewBox="0 0 104 104" aria-hidden="true"><circle class="bg" cx="52" cy="52" r="44"></circle><circle class="fg" cx="52" cy="52" r="44"></circle></svg><b>7/12</b></div>
+            <p class="cc-brick"><span class="bchip" data-kind="suffixe">-logie</span></p>
+            <p class="cc-def">Suffixe des sciences et des études : biologie, géologie…</p>
+            <p class="cc-formula">« étude, discours »</p>
+          </div>
+          <div class="cc-foot"><span>5 formes à trouver</span><span>58 %</span></div>
+        </article>
+      </div>
+
+      <div class="codex-browser" data-reveal>
+        <div class="cb-head">
+          <div>
+            <h3 class="cb-title">Vue <em>globale</em></h3>
+            <p class="cb-sub">Touchez une carte pour l’agrandir, puis retournez-la pour voir toutes les formes trouvées.</p>
+          </div>
+          <span class="cb-count" id="cbCount"></span>
+        </div>
+        <div class="cb-toolbar">
+          <div class="cb-filters" id="cbFilters" role="group" aria-label="Filtrer les cartes par type"></div>
+          <div class="cb-sort-wrap">
+            <span class="cb-sort-label">Trier</span>
+            <div class="cb-sort" id="cbSort" role="group" aria-label="Trier les cartes">
+              <button type="button" data-sort="n" aria-pressed="true">N°</button>
+              <button type="button" data-sort="az" aria-pressed="false">A → Z</button>
+              <button type="button" data-sort="type" aria-pressed="false">Type</button>
+            </div>
+          </div>
+        </div>
+        <div class="cb-grid" id="cbGrid"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="filiation">
+    <div class="wrap">
+      <div class="sec-head">
+        <div data-reveal><span class="sec-num">Codex · Filiation</span><h2>Des mots <em>qui voyagent</em></h2></div>
+        <div class="sec-intro" data-reveal style="--d:120ms"><p>Le graphe se dessine comme une ligne d’encre. Des étincelles parcourent les relations : composition, dérivation, emprunt, adaptation.</p><p class="xrefs"><span>Voir aussi</span><a class="xref" href="codex.html#carte-etymologique">La carte « étymologique »</a><a class="xref" href="adr.html#adr-0003" data-kind="adr">ADR 0003 : transformations expliquées</a><a class="xref" href="mouvement.html">Le trait qui se dessine</a></p></div>
+      </div>
+      <div class="graph-wrap" data-reveal>
+        <svg viewBox="0 0 1210 400" role="img" aria-label="Filiation simplifiée d’étymologique : ἔτυμον et -λογία forment ἐτυμολογία, puis ἐτυμολογικός, emprunté en latin etymologicus, adapté en français étymologique.">
+          <path id="e1" class="edge" style="--d:200ms" d="M175 80 C250 80 240 190 305 190"></path>
+          <path id="e2" class="edge" style="--d:300ms" d="M175 300 C250 300 240 190 305 190"></path>
+          <path id="e3" class="edge" style="--d:700ms" d="M455 190 L585 190"></path>
+          <path id="e4" class="edge" style="--d:800ms" d="M560 298 C560 260 660 262 660 222"></path>
+          <path id="e5" class="edge" style="--d:1100ms" d="M735 190 L815 190"></path>
+          <path id="e6" class="edge" style="--d:1400ms" d="M965 190 L1040 190"></path>
+
+          <text class="elabel" style="--d:900ms" x="212" y="194">composition</text>
+          <text class="elabel" style="--d:1000ms" x="520" y="178">dérivé</text>
+          <text class="elabel" style="--d:1000ms" x="705" y="276">suffixe</text>
+          <text class="elabel" style="--d:1300ms" x="775" y="178">emprunt</text>
+          <text class="elabel" style="--d:1600ms" x="1002" y="176">adaptation</text>
+
+          <g class="node" style="--d:0ms"><rect x="25" y="48" width="150" height="64" rx="12" fill="#fffbf3"></rect><text class="n-main" x="100" y="80" lang="grc">ἔτυμον</text><text class="n-sub" x="100" y="98">GREC ANCIEN · SENS VRAI</text></g>
+          <g class="node" style="--d:100ms"><rect x="30" y="273" width="150" height="64" rx="12" fill="#0f1f19"></rect><rect x="25" y="268" width="150" height="64" rx="12" fill="#4fd1c5"></rect><text class="n-main" x="100" y="300" lang="grc">-λογία</text><text class="n-sub" x="100" y="318">GREC ANCIEN · ÉTUDE</text></g>
+          <g class="node" style="--d:500ms"><rect x="305" y="158" width="150" height="64" rx="12" fill="#fffbf3"></rect><text class="n-main" x="380" y="190" lang="grc">ἐτυμολογία</text><text class="n-sub" x="380" y="208">GREC ANCIEN</text></g>
+          <g class="node" style="--d:600ms"><rect x="490" y="303" width="150" height="64" rx="12" fill="#0f1f19"></rect><rect x="485" y="298" width="150" height="64" rx="12" fill="#4fd1c5"></rect><text class="n-main" x="560" y="330" lang="grc">-ικός</text><text class="n-sub" x="560" y="348">GREC ANCIEN · SUFFIXE</text></g>
+          <g class="node" style="--d:900ms"><rect x="585" y="158" width="150" height="64" rx="12" fill="#fffbf3"></rect><text class="n-main" x="660" y="190" lang="grc">ἐτυμολογικός</text><text class="n-sub" x="660" y="208">GREC ANCIEN</text></g>
+          <g class="node" style="--d:1200ms"><rect x="815" y="158" width="150" height="64" rx="12" fill="#fffbf3"></rect><text class="n-main" x="890" y="190" lang="la">etymologicus</text><text class="n-sub" x="890" y="208">LATIN</text></g>
+          <g class="node" style="--d:1500ms"><rect x="1040" y="152" width="160" height="76" rx="14" fill="#fffbf3" style="stroke:#ff6b4a;stroke-width:4"></rect><text class="n-main" x="1120" y="190" style="font-weight:700">étymologique</text><text class="n-sub" x="1120" y="210">FRANÇAIS · DÉCOUVERTE</text></g>
+
+          <circle class="spark" r="4"><animateMotion dur="2.6s" repeatCount="indefinite"><mpath href="#e1"></mpath></animateMotion></circle>
+          <circle class="spark" r="4"><animateMotion dur="2.6s" begin="0.8s" repeatCount="indefinite"><mpath href="#e2"></mpath></animateMotion></circle>
+          <circle class="spark" r="4"><animateMotion dur="1.8s" begin="0.4s" repeatCount="indefinite"><mpath href="#e3"></mpath></animateMotion></circle>
+          <circle class="spark" r="4"><animateMotion dur="2.2s" begin="1.2s" repeatCount="indefinite"><mpath href="#e4"></mpath></animateMotion></circle>
+          <circle class="spark" r="4"><animateMotion dur="1.6s" begin="0.2s" repeatCount="indefinite"><mpath href="#e5"></mpath></animateMotion></circle>
+          <circle class="spark" r="4"><animateMotion dur="1.6s" begin="1s" repeatCount="indefinite"><mpath href="#e6"></mpath></animateMotion></circle>
+        </svg>
+      </div>
+      <p class="graph-note"><span class="swipe-hint">↔ Faites glisser le graphe · </span>Maquette : filiation simplifiée, à valider éditorialement avant publication.</p>
+    </div>
+  </section>
+</main>
+<nav class="site-pager" aria-label="Page précédente et page suivante"></nav>
+
+<footer class="footer">
+  <div class="foot-seal" aria-hidden="true">
+    <svg viewBox="0 0 200 200"><defs><path id="circ" d="M100 100 m-78 0 a78 78 0 1 1 156 0 a78 78 0 1 1 -156 0"></path></defs><text textLength="486" lengthAdjust="spacing"><textPath href="#circ">ÉtymoLogique · remonter le fil · ÉtymoLogique · remonter le fil ·</textPath></text></svg>
+    <b>ÉL</b>
+  </div>
+  <p class="foot-phrase"><span class="sr-only">Chaque mot est une piste.</span><span aria-hidden="true">Chaque mot est une <em id="footWord">piste</em>.</span></p>
+  <div class="foot-meta"><span>ÉtymoLogique · Direction visuelle 02</span><span>Cabinet linguistique contemporain</span><span>Dossier de direction · 2026</span></div>
+</footer>
+<div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-labelledby="vTitle" hidden>
+  <div class="viewer-backdrop" data-close></div>
+  <p class="sr-only" id="vTitle"></p>
+  <button class="viewer-close" type="button" data-close aria-label="Fermer la carte">×</button>
+  <button class="viewer-nav prev" type="button" id="vPrev" aria-label="Carte précédente">←</button>
+  <nav class="viewer-trail" id="vTrail" aria-label="Parcours entre les cartes" data-empty></nav>
+  <div class="big-wrap" id="bigWrap">
+    <div class="big-card" id="bigCard">
+      <div class="big-face big-front" id="bigFront"></div>
+      <div class="big-face big-back" id="bigBack"></div>
+    </div>
+  </div>
+  <button class="viewer-nav next" type="button" id="vNext" aria-label="Carte suivante">→</button>
+  <p class="viewer-hint">Touchez la carte pour la retourner · touchez une brique ou un lien pour changer de carte<span class="kbd-hint"> · ← → pour naviguer · Échap pour fermer</span></p>
+</div>
+<div class="toast" role="status" aria-live="polite"></div>
+<script src="assets/site-nav.js"></script>
+<script src="assets/etymo.js"></script>
+</body>
+</html>

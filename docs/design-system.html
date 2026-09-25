@@ -1,0 +1,1588 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Design système complet du jeu ÉtymoLogique.">
+  <meta name="theme-color" content="#f3eee3">
+  <title>ÉtymoLogique — Design système</title>
+  <link rel="stylesheet" href="assets/site-nav.css">
+  <style>
+:root {
+  /* Neutres */
+  --ink: #0f1f19;
+  --ink-2: #44564d;
+  --ink-3: #5c6b62;
+  --night: #0c1814;
+  --paper: #f3eee3;
+  --paper-2: #e8dfcc;
+  --cream: #fffbf3;
+  --line: rgba(15, 31, 25, 0.14);
+  --line-strong: rgba(15, 31, 25, 0.9);
+  --fixed-ink: #0f1f19;
+  --pop-shadow: #0f1f19;
+  /* Ressources */
+  --c-prefix: #cdf25a; --c-prefix-tint: #eef9c4; --c-prefix-deep: #5c7600;
+  --c-suffix: #4fd1c5; --c-suffix-tint: #d4f3ef; --c-suffix-deep: #0d746a;
+  --c-lang: #8f7bf0; --c-lang-tint: #e5e0fc; --c-lang-deep: #5541c2;
+  --c-family: #f59ac1; --c-family-tint: #fde3ee; --c-family-deep: #a8336a;
+  --c-pli: #f4b740; --c-pli-tint: #fcecc6; --c-pli-deep: #8f6200;
+  /* Action */
+  --c-action: #ff6b4a; --c-action-hover: #ff8667; --c-action-active: #e24e2d; --c-action-tint: #ffe2d9; --c-action-deep: #c23d1f;
+  /* Danger : Corail profond de la palette, réservé aux actions irréversibles */
+  --c-danger: #c23d1f; --c-danger-line: #c23d1f;
+  /* Typographie */
+  --serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+  --sans: "Avenir Next", "Segoe UI", Futura, "Helvetica Neue", sans-serif;
+  --mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", Menlo, monospace;
+  --script: "Snell Roundhand", "Apple Chancery", "Segoe Script", "Brush Script MT", cursive;
+  /* Espacements */
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 20px; --space-6: 24px; --space-7: 32px; --space-8: 48px; --space-9: 80px;
+  /* Rayons */
+  --radius-xs: 6px; --radius-s: 10px; --radius-m: 14px; --radius-l: 22px; --radius-pill: 999px;
+  /* Bordures */
+  --border-hair: 1px; --border: 1.5px; --border-strong: 2px;
+  /* Ombres dures */
+  --shadow-press: 1px 1px 0 var(--pop-shadow);
+  --shadow-chip: 2px 2px 0 var(--pop-shadow);
+  --shadow-rest: 4px 4px 0 var(--pop-shadow);
+  --shadow-hover: 6px 6px 0 var(--pop-shadow);
+  --shadow-overlay: 0 40px 80px -20px rgba(15, 31, 25, 0.45);
+  /* Mouvement */
+  --dur-instant: 120ms; --dur-fast: 240ms; --dur-base: 360ms; --dur-slow: 480ms; --dur-reveal: 700ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-in: cubic-bezier(0.5, 0, 0.75, 0);
+  /* Plans */
+  --z-base: 0; --z-raised: 10; --z-sticky: 60; --z-toast: 80; --z-overlay: 90; --z-modal: 100;
+  --pad: clamp(20px, 5vw, 80px);
+}
+body.nocturne {
+  --c-danger-line: #ff6b4a;
+  --ink: #f3eee3; --ink-2: #b8c6bd; --ink-3: #93a39a;
+  --paper: #0f1f19; --paper-2: #172a23; --cream: #182c24;
+  --line: rgba(243, 238, 227, 0.14); --line-strong: rgba(243, 238, 227, 0.8);
+  --pop-shadow: #000;
+}
+body.calm *, body.calm *::before, body.calm *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; min-width: 320px; overflow-x: clip; background: var(--paper); color: var(--ink); font-family: var(--sans); line-height: 1.5; -webkit-font-smoothing: antialiased; transition: background-color 0.4s, color 0.4s; }
+h1, h2, h3, h4, p, ul, ol { margin: 0; }
+a, button { color: inherit; }
+button, input { font: inherit; }
+::selection { background: var(--c-action-tint); color: var(--fixed-ink); }
+:focus-visible { outline: 2px solid var(--c-action); outline-offset: 3px; }
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+code, kbd { font-family: var(--mono); font-size: 0.85em; }
+kbd { padding: 1px 6px; border: 1px solid var(--line-strong); border-bottom-width: 2px; border-radius: 5px; background: var(--cream); }
+
+/* ---------- Structure ---------- */
+.ds-nav {
+  position: sticky; z-index: var(--z-sticky); top: 0;
+  display: flex; align-items: center; gap: 16px;
+  padding: 12px var(--pad);
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+}
+.wordmark { display: inline-flex; align-items: center; gap: 10px; font-family: var(--serif); font-size: 19px; font-weight: 700; text-decoration: none; white-space: nowrap; }
+.seal { display: grid; place-items: center; width: 30px; height: 30px; border: 1.5px solid var(--fixed-ink); border-radius: 9px; background: var(--c-action); box-shadow: 3px 3px 0 var(--fixed-ink); color: var(--fixed-ink); font-family: var(--mono); font-size: 11px; font-weight: 700; rotate: -6deg; }
+.wordmark small { padding: 3px 8px; border: 1px solid var(--line-strong); border-radius: 999px; font-family: var(--mono); font-size: 10px; font-weight: 400; letter-spacing: 0.06em; }
+.ds-links { display: flex; gap: 2px; margin-left: auto; overflow-x: auto; scrollbar-width: none; }
+.ds-links a { padding: 7px 11px; border-radius: 999px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; text-decoration: none; text-transform: uppercase; white-space: nowrap; opacity: 0.72; }
+.ds-links a:hover { opacity: 1; }
+.ds-links a.active { background: var(--ink); color: var(--paper); opacity: 1; }
+.ds-tools { display: flex; gap: 8px; }
+.icon-btn {
+  position: relative; display: grid; place-items: center;
+  width: 40px; height: 40px; flex: none;
+  border: 1.5px solid var(--line-strong); border-radius: 50%;
+  background: transparent; color: var(--ink); cursor: pointer;
+  transition: background-color var(--dur-instant), transform var(--dur-fast) var(--ease-spring);
+}
+.icon-btn:hover { background: color-mix(in srgb, var(--ink) 7%, transparent); }
+.icon-btn:active { transform: scale(0.94); }
+.icon-btn[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.icon-btn::after { position: absolute; inset: -4px; content: ""; }
+.ic { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+
+.ds-hero { padding: clamp(56px, 8vw, 110px) var(--pad) clamp(40px, 6vw, 80px); border-bottom: 1px solid var(--line); }
+.ds-hero .wrap { display: grid; grid-template-columns: 1.3fr 1fr; gap: 40px; align-items: end; }
+.kicker { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 20px; color: var(--c-action-deep); font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+.kicker::before { width: 28px; height: 1.5px; background: currentColor; content: ""; }
+.ds-hero h1 { font-family: var(--serif); font-size: clamp(48px, 7vw, 104px); font-weight: 600; letter-spacing: -0.05em; line-height: 0.9; }
+.ds-hero h1 em { color: var(--c-action-deep); }
+.ds-hero p:not(.kicker) { color: var(--ink-2); font-size: clamp(16px, 1.4vw, 19px); line-height: 1.6; }
+.ds-hero .meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+
+.section { padding: clamp(64px, 9vw, 130px) var(--pad); border-bottom: 1px solid var(--line); }
+.wrap { max-width: 1320px; margin: 0 auto; }
+.sec-head { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: end; margin-bottom: clamp(32px, 5vw, 64px); }
+.sec-num { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 12px; color: var(--c-action-deep); font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: 0.14em; }
+.sec-num::before { width: 28px; height: 1.5px; background: currentColor; content: ""; }
+h2 { font-family: var(--serif); font-size: clamp(38px, 5vw, 72px); font-weight: 600; letter-spacing: -0.04em; line-height: 0.95; }
+h2 em { color: var(--c-action-deep); }
+.sec-intro { max-width: 580px; color: var(--ink-2); font-size: clamp(15px, 1.3vw, 18px); line-height: 1.6; }
+.block { margin-top: clamp(40px, 5vw, 72px); }
+.sec-head + .block { margin-top: 0; }
+.block-title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; margin-bottom: 8px; font-family: var(--serif); font-size: clamp(24px, 2.4vw, 32px); font-weight: 600; letter-spacing: -0.02em; }
+.block-title small { color: var(--c-action-deep); font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+.lead { max-width: 76ch; margin-bottom: 20px; color: var(--ink-2); font-size: 15px; line-height: 1.6; }
+.lead strong { color: var(--ink); }
+.grid { display: grid; gap: 12px; }
+.grid > *, .split > * { min-width: 0; }
+.g2 { grid-template-columns: repeat(2, 1fr); }
+.g3 { grid-template-columns: repeat(3, 1fr); }
+.g4 { grid-template-columns: repeat(4, 1fr); }
+.card { padding: 20px; border: 1.5px solid var(--line-strong); border-radius: var(--radius-m); background: var(--cream); }
+.card h3 { margin-bottom: 8px; font-family: var(--serif); font-size: 20px; font-weight: 600; line-height: 1.2; }
+.card p, .card li { color: var(--ink-2); font-size: 13px; line-height: 1.5; }
+.k { display: block; margin-bottom: 8px; color: var(--ink-3); font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; }
+.demo { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; min-height: 90px; margin: 12px 0; padding: 18px; border: 1px dashed var(--line); border-radius: var(--radius-s); background: var(--paper); }
+.demo.center { justify-content: center; }
+.demo.col { flex-direction: column; align-items: stretch; }
+.spec { color: var(--ink-3); font-family: var(--mono); font-size: 10.5px; line-height: 1.6; }
+.list { display: grid; gap: 6px; padding: 0; list-style: none; }
+.list li { display: grid; grid-template-columns: 12px 1fr; gap: 8px; }
+.list li::before { width: 6px; height: 6px; margin-top: 7px; background: var(--ink); content: ""; rotate: 45deg; }
+.list.no li::before { background: transparent; box-shadow: inset 0 0 0 1.5px var(--ink-3); }
+.list li > span { min-width: 0; }
+
+.table-wrap { overflow-x: auto; border: 1.5px solid var(--line-strong); border-radius: var(--radius-m); background: var(--cream); }
+table.t { width: 100%; min-width: 760px; border-collapse: collapse; font-size: 13px; }
+.t th, .t td { padding: 12px 14px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
+.t tr:last-child td { border-bottom: 0; }
+.t.compact { width: 100%; min-width: 0; }
+.t.compact td { padding: 9px 10px; font-size: 13px; }
+.t.compact td:first-child { font-size: 14px; white-space: normal; }
+.t th { color: var(--ink-3); font-family: var(--mono); font-size: 10px; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase; }
+.t td:first-child { font-family: var(--serif); font-size: 15px; font-weight: 600; white-space: nowrap; }
+.t code { color: var(--ink-2); white-space: nowrap; }
+.dot { display: inline-block; width: 12px; height: 12px; margin-right: 6px; border: 1px solid #0f1f19; border-radius: 3px; background: var(--c); vertical-align: -1px; }
+
+/* ---------- Principes ---------- */
+.principle { position: relative; padding: 24px 20px 20px; overflow: hidden; }
+.principle b { display: block; margin-bottom: 14px; color: var(--c-action-deep); font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; }
+.principle h3 { font-size: 22px; }
+.principle .how { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); color: var(--ink); font-size: 12.5px; }
+
+/* ---------- Fondations ---------- */
+.sw-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.sw { display: flex; flex-direction: column; padding: 0; overflow: hidden; border: 1.5px solid var(--line-strong); border-radius: var(--radius-s); background: var(--cream); color: var(--ink); cursor: pointer; text-align: left; transition: transform var(--dur-fast) var(--ease-spring); }
+.sw:hover { transform: translateY(-2px); }
+.sw > i { height: 54px; border-bottom: 1px solid var(--line); background: var(--c); }
+.sw > span { display: grid; gap: 2px; padding: 8px 10px 10px; }
+.sw b { font-size: 12px; }
+.sw code { color: var(--ink-3); font-size: 10px; }
+.type-row { display: grid; grid-template-columns: 170px 1fr 230px; gap: 20px; align-items: baseline; padding: 14px 0; border-top: 1px solid var(--line); }
+.type-row:last-child { border-bottom: 1px solid var(--line); }
+.type-row .spec { text-align: right; }
+.bar-sp { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 14px; }
+.bar-sp span { display: grid; justify-items: center; gap: 6px; color: var(--ink-3); font-family: var(--mono); font-size: 10px; }
+.bar-sp i { width: var(--v); height: var(--v); border-radius: 2px; background: var(--ink); }
+.elev { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.elev > div { display: grid; place-items: center; gap: 8px; min-height: 120px; padding: 16px; border: 1.5px solid var(--fixed-ink); border-radius: var(--radius-m); background: #fffbf3; color: #0f1f19; font-size: 12px; text-align: center; }
+.motion-row { display: grid; grid-template-columns: 150px 1fr 90px; gap: 16px; align-items: center; padding: 10px 0; border-top: 1px solid var(--line); font-size: 13px; }
+.track { position: relative; height: 26px; border-radius: 999px; background: var(--paper-2); overflow: hidden; }
+.track i { position: absolute; top: 4px; left: 4px; width: 18px; height: 18px; border: 1.5px solid #0f1f19; border-radius: 5px; background: var(--c-action); }
+.track.run i { animation: slide var(--d) var(--e) forwards; }
+@keyframes slide { to { left: calc(100% - 22px); } }
+.bp { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.bp > div { padding: 14px; border: 1.5px solid var(--line-strong); border-radius: var(--radius-s); background: var(--cream); }
+.bp b { display: block; font-family: var(--serif); font-size: 18px; }
+.cols { display: grid; gap: 4px; height: 44px; margin-top: 10px; }
+.cols i { border-radius: 3px; background: var(--c-action-tint); border: 1px solid color-mix(in srgb, var(--c-action) 40%, transparent); }
+.icons { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 10px; }
+.icons > div { display: grid; justify-items: center; gap: 8px; padding: 16px 8px 12px; border: 1.5px solid var(--line-strong); border-radius: var(--radius-s); background: var(--cream); font-family: var(--mono); font-size: 10px; text-align: center; }
+.icons .ic { width: 26px; height: 26px; }
+
+/* ---------- Boutons ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 48px; padding: 12px 22px;
+  border: 1.5px solid var(--fixed-ink); border-radius: 12px;
+  font-family: var(--sans); font-size: 13px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none;
+  cursor: pointer; white-space: nowrap;
+  transition: transform var(--dur-fast) var(--ease-spring), box-shadow var(--dur-fast) var(--ease-out), background-color var(--dur-instant);
+}
+.btn:hover { transform: translate(-2px, -2px); }
+.btn:active { transform: translate(2px, 2px); }
+.btn:disabled, .btn.is-disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+.btn-primary { background: var(--c-action); color: var(--fixed-ink); box-shadow: var(--shadow-rest); }
+.btn-primary:hover, .btn-primary.is-hover { background: var(--c-action-hover); box-shadow: var(--shadow-hover); }
+.btn-primary:active, .btn-primary.is-active { background: var(--c-action-active); box-shadow: var(--shadow-press); }
+.btn-primary:focus-visible, .btn-primary.is-focus { outline: 2px solid var(--ink); outline-offset: 3px; }
+.btn-secondary { background: transparent; color: var(--ink); border-color: var(--line-strong); }
+.btn-secondary:hover { background: color-mix(in srgb, var(--ink) 7%, transparent); }
+.btn-secondary:active { background: color-mix(in srgb, var(--ink) 14%, transparent); }
+/* Danger : fond Corail profond, texte Crème (5,1:1), icône octogone. Jamais pour un échec de jeu. */
+.btn-danger { background: var(--c-danger); color: #fffbf3; box-shadow: var(--shadow-rest); }
+.btn-danger:hover, .btn-danger.is-hover { box-shadow: var(--shadow-hover); }
+.btn-danger:active, .btn-danger.is-active { box-shadow: var(--shadow-press); }
+.btn-danger:focus-visible { outline: 2px solid var(--c-danger-line); outline-offset: 3px; }
+.btn-danger-ghost { border-color: var(--c-danger-line); background: transparent; color: var(--c-danger-line); }
+.btn-danger-ghost:hover { background: color-mix(in srgb, var(--c-danger-line) 8%, transparent); }
+.btn-danger .ic, .btn-danger-ghost .ic { width: 18px; height: 18px; stroke-width: 2.2; }
+.btn-text { min-height: 44px; padding: 10px 6px; border-color: transparent; background: none; color: var(--c-action-deep); letter-spacing: 0.02em; text-transform: none; font-weight: 700; font-size: 14px; }
+.btn-text:hover { transform: none; text-decoration: underline; text-underline-offset: 3px; }
+.btn-m { min-height: 40px; padding: 8px 16px; font-size: 12px; }
+.btn-s { min-height: 32px; padding: 6px 12px; font-size: 11px; }
+.btn.is-loading { position: relative; color: transparent !important; pointer-events: none; }
+.btn.is-loading::after { position: absolute; width: 18px; height: 18px; border: 2px solid var(--fixed-ink); border-right-color: transparent; border-radius: 50%; content: ""; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---------- Champs ---------- */
+.field { display: grid; gap: 6px; width: 100%; max-width: 360px; }
+.field label { font-size: 13px; font-weight: 700; }
+.field .help { color: var(--ink-3); font-size: 12px; }
+.input {
+  display: flex; align-items: center; gap: 8px;
+  min-height: 48px; padding: 0 12px;
+  border: 1.5px solid var(--line-strong); border-radius: 12px;
+  background: var(--cream); color: var(--ink);
+  transition: box-shadow var(--dur-instant), border-color var(--dur-instant);
+}
+.input input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; color: inherit; font-size: 15px; }
+.input input::placeholder { color: var(--ink-3); }
+.input:focus-within, .input.is-focus { border-color: var(--ink); box-shadow: 0 0 0 3px var(--c-action-tint); }
+.input.is-error { border-color: var(--ink); box-shadow: inset 4px 0 0 var(--ink-3); }
+.field.is-error .help { color: var(--ink); }
+.input.is-disabled { opacity: 0.4; }
+.input .clear { display: grid; place-items: center; width: 28px; height: 28px; border: 0; border-radius: 50%; background: var(--paper-2); cursor: pointer; }
+
+/* ---------- Sélecteurs ---------- */
+.chip-f { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 6px 14px; border: 1.5px solid var(--line-strong); border-radius: 999px; background: transparent; cursor: pointer; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; transition: transform var(--dur-fast) var(--ease-spring), background-color var(--dur-instant); }
+.chip-f:hover { transform: translateY(-2px); }
+.chip-f i { width: 11px; height: 11px; border: 1px solid #0f1f19; border-radius: 3px; background: var(--c); }
+.chip-f b { opacity: 0.55; }
+.chip-f[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: var(--paper); }
+.segmented { display: inline-flex; gap: 2px; padding: 4px; border: 1.5px solid var(--line-strong); border-radius: 12px; }
+.segmented button { min-height: 32px; padding: 6px 12px; border: 0; border-radius: 8px; background: transparent; cursor: pointer; font-family: var(--mono); font-size: 11px; }
+.segmented button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.tabs { display: flex; gap: 20px; border-bottom: 1.5px solid var(--line); }
+.tabs button { position: relative; min-height: 44px; padding: 0 2px; border: 0; background: none; color: var(--ink-3); cursor: pointer; font-weight: 700; font-size: 14px; }
+.tabs button[aria-selected="true"] { color: var(--ink); }
+.tabs button[aria-selected="true"]::after { position: absolute; right: 0; bottom: -1.5px; left: 0; height: 3px; border-radius: 3px 3px 0 0; background: var(--ink); content: ""; }
+.tab-panel { padding: 14px 0 0; color: var(--ink-2); font-size: 13px; }
+/* Indicateur qui glisse vers l'option choisie (activé par le script, sinon repli statique) */
+.segmented, .tabs { position: relative; isolation: isolate; }
+.segmented button, .tabs button { transition: color var(--dur-fast) var(--ease-out); }
+.segmented.has-slider button[aria-pressed="true"] { background: transparent; }
+.tabs.has-slider button[aria-selected="true"]::after { display: none; }
+.segmented.has-slider::before, .tabs.has-slider::after {
+  position: absolute; left: 0; width: var(--slide-w, 0px); content: "";
+  transform: translateX(var(--slide-x, 0px));
+  transition: transform 380ms var(--ease-spring), width 380ms var(--ease-spring);
+}
+.segmented.has-slider::before { z-index: -1; top: 4px; bottom: 4px; border-radius: 8px; background: var(--ink); }
+.tabs.has-slider::after { bottom: -1.5px; height: 3px; border-radius: 3px 3px 0 0; background: var(--ink); }
+.has-slider.no-slide::before, .has-slider.no-slide::after { transition: none; }
+.switch { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; min-height: 48px; padding: 8px 0; border: 0; border-bottom: 1px solid var(--line); background: none; cursor: pointer; text-align: left; }
+.switch span:first-child { display: grid; }
+.switch small { color: var(--ink-3); font-size: 12px; }
+.switch .knob { position: relative; width: 46px; height: 28px; flex: none; border: 1.5px solid var(--line-strong); border-radius: 999px; background: var(--paper-2); transition: background-color var(--dur-fast); }
+.switch .knob::after { position: absolute; top: 3px; left: 3px; width: 19px; height: 19px; border: 1.5px solid #0f1f19; border-radius: 50%; background: #fffbf3; content: ""; transition: transform var(--dur-fast) var(--ease-spring); }
+.switch[aria-checked="true"] .knob { background: var(--ink); }
+.switch[aria-checked="true"] .knob::after { transform: translateX(18px); }
+.check { display: flex; align-items: center; gap: 10px; min-height: 44px; font-size: 14px; cursor: pointer; }
+.check input { width: 22px; height: 22px; margin: 0; accent-color: var(--ink); }
+
+/* ---------- Indicateurs ---------- */
+.count { display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 7px; border-radius: 999px; background: var(--ink); color: var(--paper); font-family: var(--mono); font-size: 11px; font-weight: 700; }
+.badge-new { display: inline-flex; padding: 4px 10px; border: 1px solid var(--fixed-ink); border-radius: 999px; background: var(--c-action); color: var(--fixed-ink); font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+/* Rareté : le nombre de côtés monte avec la rareté */
+.rar { flex: none; width: 1.15em; height: 1.15em; fill: var(--c-pli); stroke: var(--fixed-ink); stroke-width: 1.4; stroke-linejoin: round; overflow: visible; vertical-align: -0.2em; }
+.rar-scale { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 8px; width: 100%; text-align: center; }
+.rar-scale span { display: grid; justify-items: center; gap: 2px; font-size: 12px; }
+.rar-scale .rar { width: 26px; height: 26px; stroke-width: 1.15; margin-bottom: 4px; }
+.rar-scale small { color: var(--ink-3); font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; }
+.pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border: 1.5px solid var(--line-strong); border-radius: 999px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
+.pill i { width: 10px; height: 10px; border: 1px solid #0f1f19; border-radius: 50%; background: var(--c-lang); }
+.conf { display: inline-flex; align-items: center; gap: 4px; font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; }
+.conf i { width: 3px; height: 11px; border: 1px solid currentColor; border-radius: 2px; background: currentColor; }
+.conf.p2 i:nth-child(3), .conf.p1 i:nth-child(n + 2) { background: transparent; }
+.conf b { margin-left: 4px; }
+.tip-wrap { position: relative; display: inline-flex; }
+.tooltip { position: absolute; z-index: var(--z-raised); bottom: calc(100% + 10px); left: 50%; width: max-content; max-width: 220px; padding: 8px 12px; border-radius: 10px; background: var(--fixed-ink); color: #f3eee3; font-size: 12px; line-height: 1.4; opacity: 0; pointer-events: none; transform: translate(-50%, 4px); transition: opacity var(--dur-instant), transform var(--dur-fast) var(--ease-out); }
+.tooltip::after { position: absolute; top: 100%; left: 50%; width: 10px; height: 10px; background: var(--fixed-ink); content: ""; transform: translate(-50%, -5px) rotate(45deg); }
+.tip-wrap:hover .tooltip, .tip-wrap:focus-within .tooltip { opacity: 1; transform: translate(-50%, 0); }
+.progress { width: 100%; height: 8px; overflow: hidden; border-radius: 999px; background: var(--paper-2); }
+.progress i { display: block; width: var(--p); height: 100%; border-radius: 999px; background: var(--ink); }
+.progress.pli { border: 1px solid var(--ink); }
+.progress.pli i { background: var(--c-pli); }
+.ring { width: 64px; height: 64px; rotate: -90deg; overflow: visible; }
+.ring circle { fill: none; stroke-width: 6; }
+.ring .bg { stroke: var(--paper-2); }
+.ring .fg { stroke: var(--c-pli); stroke-linecap: round; stroke-dasharray: 163.36; }
+.ring .edge { stroke: var(--ink); stroke-width: 1; }
+.steps { display: flex; gap: 6px; }
+.steps i { width: 8px; height: 8px; border: 1.5px solid var(--ink); border-radius: 50%; }
+.steps i.on { width: 22px; border-radius: 999px; background: var(--ink); }
+.skel { position: relative; overflow: hidden; border-radius: 8px; background: var(--paper-2); }
+.skel::after { position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255, 251, 243, 0.7), transparent); content: ""; transform: translateX(-100%); animation: shimmer 1.4s ease-in-out infinite; }
+@keyframes shimmer { to { transform: translateX(100%); } }
+.skel-card { display: grid; gap: 8px; width: 110px; padding: 10px; border: 1.5px solid var(--line); border-radius: var(--radius-s); background: var(--cream); }
+
+/* ---------- Superpositions ---------- */
+.toast-zone { position: fixed; z-index: var(--z-toast); right: 20px; bottom: 20px; display: grid; gap: 8px; }
+.toast { display: flex; align-items: center; gap: 10px; max-width: 340px; padding: 12px 16px; border: 1.5px solid var(--fixed-ink); border-radius: 12px; background: var(--fixed-ink); color: #f3eee3; box-shadow: 0 16px 30px -12px rgba(15, 31, 25, 0.5); font-size: 13px; animation: toastIn var(--dur-base) var(--ease-spring); }
+.toast.out { animation: toastOut var(--dur-fast) var(--ease-in) forwards; }
+.toast .d { width: 10px; height: 10px; flex: none; rotate: 45deg; background: #f3eee3; }
+.toast.win .d { background: var(--c-action); }
+@keyframes toastIn { from { opacity: 0; transform: translateY(12px) scale(0.96); } }
+@keyframes toastOut { to { opacity: 0; transform: translateY(8px); } }
+.scrim { position: fixed; z-index: var(--z-overlay); inset: 0; background: rgba(15, 31, 25, 0.55); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); animation: fade var(--dur-fast) ease-out; }
+.scrim[hidden] { display: none; }
+@keyframes fade { from { opacity: 0; } }
+.dialog { position: fixed; z-index: var(--z-modal); top: 50%; left: 50%; width: min(420px, calc(100vw - 32px)); padding: 24px; border: 1.5px solid var(--fixed-ink); border-radius: var(--radius-l); background: var(--cream); box-shadow: var(--shadow-overlay); transform: translate(-50%, -50%); animation: pop var(--dur-base) var(--ease-spring); }
+.dialog[hidden], .sheet[hidden] { display: none; }
+.dialog h3 { margin-bottom: 8px; font-family: var(--serif); font-size: 24px; }
+.dialog p { color: var(--ink-2); font-size: 14px; }
+.dialog .row { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+@keyframes pop { from { opacity: 0; transform: translate(-50%, -46%) scale(0.94); } }
+.sheet { position: fixed; z-index: var(--z-modal); right: 0; bottom: 0; left: 0; max-height: 80vh; margin: 0 auto; width: min(560px, 100vw); padding: 12px 20px 28px; border: 1.5px solid var(--fixed-ink); border-bottom: 0; border-radius: var(--radius-l) var(--radius-l) 0 0; background: var(--cream); box-shadow: var(--shadow-overlay); animation: sheetIn var(--dur-base) var(--ease-out); }
+.sheet .grab { width: 44px; height: 5px; margin: 0 auto 14px; border-radius: 999px; background: var(--line-strong); opacity: 0.4; }
+.sheet h3 { margin-bottom: 12px; font-family: var(--serif); font-size: 22px; }
+@keyframes sheetIn { from { transform: translateY(100%); } }
+.banner { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 16px; border: 1.5px solid var(--line-strong); border-radius: 12px; background: var(--paper-2); font-size: 13px; }
+.banner .ic { flex: none; }
+.banner .btn { margin-left: auto; }
+.empty { display: grid; justify-items: center; gap: 10px; max-width: 280px; padding: 24px 16px; text-align: center; }
+.empty .ill { display: grid; place-items: center; width: 72px; height: 72px; border: 2px dashed var(--line-strong); border-radius: 16px; color: var(--ink-3); font-family: var(--serif); font-size: 34px; font-style: italic; }
+.empty h4 { font-family: var(--serif); font-size: 20px; }
+.empty p { color: var(--ink-2); font-size: 13px; }
+.coach { position: relative; max-width: 280px; padding: 16px; border: 1.5px solid var(--fixed-ink); border-radius: 14px; background: var(--fixed-ink); color: #f3eee3; font-size: 13px; line-height: 1.5; }
+.coach::before { position: absolute; top: -8px; left: 28px; width: 14px; height: 14px; background: var(--fixed-ink); content: ""; rotate: 45deg; }
+.coach .row { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
+.coach .steps i { border-color: #f3eee3; }
+.coach .steps i.on { background: #f3eee3; }
+.coach .btn-text { color: #f3eee3; min-height: 32px; }
+.spot { position: relative; display: inline-flex; padding: 6px; border-radius: 14px; box-shadow: 0 0 0 3px var(--c-action), 0 0 0 9999px rgba(15, 31, 25, 0.35); }
+
+/* ---------- Composants de jeu ---------- */
+.brick {
+  position: relative;
+  display: inline-flex; flex-direction: column; align-items: flex-start; gap: 3px;
+  min-width: 96px; padding: 11px 14px;
+  border: 1.5px solid var(--fixed-ink); border-radius: 10px;
+  background: var(--c-prefix); color: var(--fixed-ink);
+  box-shadow: var(--shadow-rest); user-select: none;
+  transition: transform var(--dur-fast) var(--ease-spring), box-shadow var(--dur-fast) var(--ease-out), opacity var(--dur-instant);
+}
+.brick[data-kind="suffixe"] { background: var(--c-suffix); }
+.brick[data-kind="mot"] { background: #fffbf3; }
+.brick .l { font-family: var(--serif); font-size: 21px; font-weight: 700; line-height: 1.1; }
+.brick .m { font-family: var(--mono); font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.72; }
+.brick .n { position: absolute; top: -8px; right: -8px; display: grid; place-items: center; min-width: 24px; height: 22px; padding: 0 5px; border: 1.5px solid var(--fixed-ink); border-radius: 999px; background: var(--fixed-ink); color: #f3eee3; font-family: var(--mono); font-size: 10px; font-weight: 700; }
+.brick.s-l { padding: 16px 22px; box-shadow: 6px 6px 0 var(--pop-shadow); }
+.brick.s-l .l { font-size: 40px; line-height: 1; }
+.brick.s-s { min-width: 0; padding: 7px 10px; }
+.brick.s-s .l { font-size: 16px; }
+.brick.is-hover { transform: translate(-2px, -3px) rotate(-1.5deg); box-shadow: var(--shadow-hover); }
+.brick.is-drag { transform: rotate(4deg) scale(1.06); box-shadow: 10px 12px 0 var(--pop-shadow); cursor: grabbing; }
+.brick.is-ghost { border-style: dashed; background: transparent; box-shadow: none; opacity: 0.5; }
+.brick.is-placed { outline: 2px solid var(--c-action); outline-offset: 3px; }
+.brick.is-off { opacity: 0.4; box-shadow: none; }
+.brick.is-spent { border-style: dashed; box-shadow: none; background: repeating-linear-gradient(135deg, var(--paper-2) 0 6px, var(--cream) 6px 12px); color: var(--ink-3); }
+.brick .n.zero { border-style: dashed; background: var(--cream); color: var(--ink); font-size: 8px; letter-spacing: 0.06em; text-transform: uppercase; }
+.minus { display: inline-grid; place-items: center; padding: 1px 7px; border: 1.5px solid var(--fixed-ink); border-radius: 999px; background: var(--cream); color: var(--fixed-ink); font-family: var(--mono); font-size: 11px; font-weight: 700; }
+.reserve-row { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: center; gap: 18px 22px; }
+.reserve-row figure { display: grid; justify-items: center; gap: 10px; margin: 0; }
+.reserve-row figcaption { color: var(--ink-3); font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-align: center; text-transform: uppercase; }
+.bchip { display: inline-flex; align-items: center; padding: 2px 8px 3px; border: 1.5px solid var(--fixed-ink); border-radius: 6px; background: var(--c-prefix); color: var(--fixed-ink); box-shadow: var(--shadow-chip); font-family: var(--serif); font-size: 14px; font-weight: 700; line-height: 1.25; white-space: nowrap; }
+.bchip[data-kind="suffixe"] { background: var(--c-suffix); }
+.bchip.miss { border-style: dashed; background: transparent; color: var(--ink-3); box-shadow: none; }
+.slot { display: grid; place-items: center; width: 140px; height: 100px; border: 2px dashed var(--line-strong); border-radius: 12px; color: var(--ink-3); font-family: var(--serif); font-size: 36px; font-style: italic; }
+.slot.is-over { border-style: solid; background: var(--c-action-tint); transform: scale(1.04); }
+.slot.is-full { border-color: transparent; font-style: normal; }
+.slot.is-error { animation: shake 0.5s 2; }
+@keyframes shake { 20%, 60% { transform: translateX(-8px); } 40%, 80% { transform: translateX(8px); } }
+.word { font-family: var(--serif); font-size: 44px; font-weight: 600; letter-spacing: -0.03em; line-height: 1; }
+.seg { background: linear-gradient(var(--c), var(--c)) no-repeat 0 88% / calc(100% - 3px) 32%; }
+.eq { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.eq .plus { font-family: var(--serif); font-size: 26px; }
+.lit { font-family: var(--serif); font-size: 17px; font-style: italic; }
+.lit span { margin-right: 8px; color: var(--ink-3); font-family: var(--mono); font-size: 10px; font-style: normal; letter-spacing: 0.1em; text-transform: uppercase; }
+.mcard { position: relative; display: inline-flex; flex-direction: column; justify-content: space-between; gap: 6px; width: 132px; aspect-ratio: 3 / 4; padding: 32px 10px 10px; overflow: hidden; border: 1.5px solid var(--line-strong); border-radius: var(--radius-m); background: var(--paper); color: var(--ink); vertical-align: top; }
+.mcard::before { position: absolute; inset: 0 0 auto; height: 24px; border-bottom: 1.5px solid var(--line-strong); background: var(--band); content: ""; }
+.mcard .top { position: absolute; z-index: 1; top: 5px; right: 10px; left: 10px; display: flex; justify-content: space-between; color: var(--tt, #0f1f19); font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; }
+.mcard .w { font-family: var(--serif); font-size: 18px; font-weight: 600; line-height: 1.1; }
+.mcard .f { display: flex; justify-content: space-between; color: var(--ink-2); font-family: var(--mono); font-size: 9px; }
+.mcard.locked { background: repeating-linear-gradient(-45deg, var(--paper) 0 8px, var(--paper-2) 8px 16px); }
+.mcard.locked .q { color: var(--ink-3); font-family: var(--serif); font-size: 44px; font-style: italic; text-align: center; }
+.mcard.new { border: 3px solid var(--c-action); }
+.anat { position: relative; display: inline-block; }
+.split { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; align-items: center; }
+.anat-list { display: grid; gap: 6px; counter-reset: a; padding: 0; list-style: none; font-size: 13px; }
+.anat-list li { display: grid; grid-template-columns: 24px 1fr; gap: 8px; color: var(--ink-2); counter-increment: a; }
+.anat-list li::before { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--ink); color: var(--paper); content: counter(a); font-family: var(--mono); font-size: 10px; }
+.pin { position: absolute; display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--ink); color: var(--paper); font-family: var(--mono); font-size: 10px; box-shadow: 0 0 0 2px var(--paper); }
+.mini-pack { position: relative; display: grid; place-items: center; width: 96px; height: 130px; border: 2px solid #0f1f19; border-radius: 12px; background: radial-gradient(circle, rgba(244, 183, 64, 0.35), transparent 55%), repeating-linear-gradient(135deg, #fcecc6 0 8px, #fffbf3 8px 16px); box-shadow: inset 0 0 0 5px #fffbf3, inset 0 0 0 6px #0f1f19, 0 16px 24px -12px rgba(15, 31, 25, 0.35); }
+.mini-pack::after { width: 38px; height: 38px; border: 1.5px solid #0f1f19; border-radius: 50%; background: var(--c-pli); box-shadow: 0 0 18px rgba(244, 183, 64, 0.7); content: ""; }
+.inkbox { display: inline-flex; align-items: baseline; gap: 8px; }
+.inkbox b { font-family: var(--serif); font-size: 30px; line-height: 1; }
+.drop { width: 14px; height: 14px; border: 1.5px solid #0f1f19; border-radius: 50% 0 50% 50%; background: var(--c-pli); rotate: -45deg; align-self: center; }
+.feedback { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--ink-2); }
+.feedback::before { width: 9px; height: 9px; flex: none; border-radius: 2px; background: var(--ink-3); content: ""; rotate: 45deg; }
+.feedback.win::before { background: var(--c-action); }
+.feedback.hint::before { background: transparent; box-shadow: inset 0 0 0 1.5px var(--ink); }
+.feedback.known::before { background: var(--ink); }
+
+/* ---------- Écrans ---------- */
+.phones { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.phone { display: grid; justify-items: center; gap: 10px; }
+.phone > b { font-family: var(--serif); font-size: 17px; }
+.screen { position: relative; display: flex; flex-direction: column; width: 100%; max-width: 280px; aspect-ratio: 9 / 19; overflow: hidden; border: 2px solid var(--fixed-ink); border-radius: 34px; background: var(--paper); box-shadow: 8px 8px 0 var(--pop-shadow); font-size: 11px; }
+.status { display: flex; justify-content: space-between; padding: 12px 22px 4px; font-family: var(--mono); font-size: 9px; font-weight: 700; }
+.app-head { display: flex; align-items: center; justify-content: space-between; padding: 6px 14px 8px; }
+.app-head b { font-family: var(--serif); font-size: 18px; }
+.app-body { display: flex; flex: 1; flex-direction: column; gap: 10px; padding: 4px 14px; overflow: hidden; }
+.app-body .brick { min-width: 0; padding: 6px 8px; box-shadow: 2px 2px 0 var(--pop-shadow); }
+.app-body .brick .l { font-size: 14px; }
+.app-body .brick .m { font-size: 7px; }
+.tabbar { display: grid; grid-template-columns: repeat(4, 1fr); padding: 8px 6px 16px; border-top: 1.5px solid var(--line); background: var(--cream); }
+.tabbar a { position: relative; display: grid; justify-items: center; gap: 3px; min-height: 44px; padding-top: 4px; border-radius: 12px; color: var(--ink-3); font-size: 9px; font-weight: 700; text-decoration: none; }
+.tabbar a .ic { width: 20px; height: 20px; }
+.tabbar a.on { color: var(--ink); }
+.tabbar a.on::before { position: absolute; top: -9px; width: 26px; height: 3px; border-radius: 0 0 3px 3px; background: var(--ink); content: ""; }
+.tabbar a .count { position: absolute; top: 0; right: 18%; min-width: 16px; height: 16px; padding: 0 4px; background: var(--c-action); color: var(--fixed-ink); font-size: 9px; }
+.mini-slots { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 14px 8px; border: 1.5px solid var(--line-strong); border-radius: 14px; background: var(--cream); }
+.mini-slots .slot { width: 78px; height: 58px; font-size: 22px; }
+.mini-tray { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px; border: 1.5px solid var(--line-strong); border-radius: 14px; background: var(--cream); }
+.mini-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.mini-grid .mcard { width: 100%; padding: 22px 5px 5px; border-radius: 9px; }
+.mini-grid .mcard::before { height: 16px; }
+.mini-grid .mcard .top { top: 3px; left: 5px; right: 5px; font-size: 6px; }
+.mini-grid .mcard .w { font-size: 10px; overflow-wrap: anywhere; hyphens: auto; }
+.mini-grid .mcard .bchip { font-size: 10px; padding: 1px 5px; box-shadow: 1px 1px 0 #0f1f19; }
+.mini-grid .mcard .q { font-size: 24px; }
+.app-btn { margin-top: auto; }
+.app-btn .btn { width: 100%; min-height: 40px; font-size: 11px; }
+
+/* ---------- Code ---------- */
+pre.code { position: relative; max-height: 420px; margin: 0; padding: 20px; overflow: auto; border: 1.5px solid var(--line-strong); border-radius: var(--radius-m); background: var(--fixed-ink); color: #e8dfcc; font-family: var(--mono); font-size: 12px; line-height: 1.6; }
+.code-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+
+.footer { padding: 48px var(--pad); color: var(--ink-3); font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; }
+.footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
+.footer a { color: var(--c-action-deep); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1100px) {
+  .g4, .phones { grid-template-columns: repeat(2, 1fr); }
+  .g3 { grid-template-columns: repeat(2, 1fr); }
+  .elev, .bp { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 760px) {
+  .ds-links { display: none; }
+  .ds-tools { margin-left: auto; }
+  .ds-hero .wrap, .sec-head, .g2, .g3, .split { grid-template-columns: 1fr; }
+  .type-row { grid-template-columns: 1fr; gap: 6px; }
+  .type-row .spec { text-align: left; }
+  .motion-row { grid-template-columns: 110px 1fr 60px; }
+}
+@media (max-width: 520px) {
+  .g4, .phones, .elev, .bp { grid-template-columns: 1fr; }
+  .wordmark small { display: none; }
+  .ds-nav { gap: 10px; padding-inline: 16px; }
+  .word { font-size: 34px; }
+  .toast-zone { right: 12px; left: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  html { scroll-behavior: auto; }
+}
+
+html { scroll-padding-top: 96px; }
+.ds-hero + .section .xrefs, .block .xrefs { margin: 4px 0 18px; }
+  </style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="rar-commune" viewBox="0 0 16 16"><path d="M8 1.8 14.8 14H1.2Z"/></symbol>
+    <symbol id="rar-peu" viewBox="0 0 16 16"><rect x="2.3" y="2.3" width="11.4" height="11.4" rx="0.6"/></symbol>
+    <symbol id="rar-rare" viewBox="0 0 16 16"><path d="M8 1.3 14.8 6.3 12.2 14.4H3.8L1.2 6.3Z"/></symbol>
+    <symbol id="rar-legendaire" viewBox="0 0 16 16"><path d="M4.4 2h7.2L15.2 6.3 8 14.8.8 6.3Z"/><path fill="none" d="M.8 6.3h14.4M5.8 6.3 8 14.8l2.2-8.5M5.8 6.3 8 2l2.2 4.3"/></symbol>
+    <symbol id="i-table" viewBox="0 0 24 24"><rect x="2.5" y="8" width="7.5" height="8" rx="2"/><rect x="14" y="8" width="7.5" height="8" rx="2"/><path d="M12 10.8v2.4M10.8 12h2.4"/></symbol>
+    <symbol id="i-codex" viewBox="0 0 24 24"><rect x="7" y="3.5" width="12" height="16" rx="2"/><path d="M7 7.5h12"/><path d="M4 7v11.5a2 2 0 0 0 2 2h9"/></symbol>
+    <symbol id="i-pli" viewBox="0 0 24 24"><rect x="5" y="2.5" width="14" height="19" rx="2.5"/><circle cx="12" cy="12" r="3.2"/></symbol>
+    <symbol id="i-energy" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" stroke-dasharray="34 50.3"/><path d="M12 4V2.5"/></symbol>
+    <symbol id="i-ink" viewBox="0 0 24 24"><path d="M12 3c3.2 4.2 6 7.6 6 11a6 6 0 0 1-12 0c0-3.4 2.8-6.8 6-11z"/></symbol>
+    <symbol id="i-hint" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.4c-.6.3-1 .8-1 1.5v.7"/><path d="M12 17.2h.01"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+    <symbol id="i-next" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+    <symbol id="i-danger" viewBox="0 0 24 24"><path d="M8.3 3h7.4L21 8.3v7.4L15.7 21H8.3L3 15.7V8.3z"/><path d="M12 7.5v5.5M12 16.4h.01"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.4-4.4"/></symbol>
+    <symbol id="i-filter" viewBox="0 0 24 24"><path d="M4 6.5h16M7 12h10M10 17.5h4"/></symbol>
+    <symbol id="i-sort" viewBox="0 0 24 24"><path d="M8 5v14M5 16l3 3 3-3M16 19V5M13 8l3-3 3 3"/></symbol>
+    <symbol id="i-flip" viewBox="0 0 24 24"><path d="M4.5 11a7.5 7.5 0 0 1 13-4.6L20 9"/><path d="M20 4.5V9h-4.5"/><path d="M19.5 13a7.5 7.5 0 0 1-13 4.6L4 15"/><path d="M4 19.5V15h4.5"/></symbol>
+    <symbol id="i-sound" viewBox="0 0 24 24"><path d="M4.5 10v4h3.5l4.5 4V6L8 10H4.5z"/><path d="M16 9a4.2 4.2 0 0 1 0 6"/><path d="M18.5 6.5a7.8 7.8 0 0 1 0 11"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5h.01"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9.5" rx="2"/><path d="M8.5 11V8a3.5 3.5 0 0 1 7 0v3"/></symbol>
+    <symbol id="i-rarity" viewBox="0 0 24 24"><path d="M7 4h10l4.5 5.5L12 20.5 2.5 9.5z"/><path d="M2.5 9.5h19M9 9.5l3 11 3-11M9 9.5 12 4l3 5.5"/></symbol>
+    <symbol id="i-offline" viewBox="0 0 24 24"><path d="M7 18.5h10a4 4 0 0 0 .6-8 6 6 0 0 0-11.2-1.3A4.6 4.6 0 0 0 7 18.5z"/><path d="M4 4l16 16"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M19.5 14.5A8 8 0 0 1 9.5 4.5a8 8 0 1 0 10 10z"/></symbol>
+    <symbol id="i-calm" viewBox="0 0 24 24"><path d="M3 12h4l2-4 3 8 2-4h7"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+  </defs>
+</svg>
+
+<header class="site-nav" data-theme="off" data-sticky="off"></header>
+<header class="ds-nav">
+  <a class="wordmark" href="#top" aria-label="Haut du design système"><small>Design système 1.0</small></a>
+  <nav class="ds-links" aria-label="Sections du design système">
+    <a href="#principes">Principes</a>
+    <a href="#fondations">Fondations</a>
+    <a href="#interface">Interface</a>
+    <a href="#jeu">Jeu</a>
+    <a href="#motifs">Motifs</a>
+    <a href="#ecrans">Écrans</a>
+    <a href="#contenu">Contenu</a>
+    <a href="#accessibilite">Accessibilité</a>
+    <a href="#tokens">Jetons</a>
+  </nav>
+  <div class="ds-tools">
+    <button class="icon-btn" type="button" id="toggleCalm" aria-pressed="false" aria-label="Prévisualiser les animations réduites"><svg class="ic"><use href="#i-calm"/></svg></button>
+    <button class="icon-btn" type="button" id="toggleNight" aria-pressed="false" aria-label="Prévisualiser le mode nocturne"><svg class="ic"><use href="#i-moon"/></svg></button>
+  </div>
+</header>
+
+<main id="top">
+  <section class="ds-hero">
+    <div class="wrap">
+      <div>
+        <p class="kicker">Design système · version 1.0</p>
+        <h1>Tout ce qu’il faut pour <em>construire</em> ÉtymoLogique.</h1>
+      </div>
+      <div>
+        <p>Principes, jetons, composants d’interface et de jeu, motifs d’expérience, écrans types, microcopie et accessibilité. Chaque élément applique la charte « une couleur, un seul sens » définie par l’<a href="identite.html">identité visuelle</a>.</p>
+        <div class="meta">
+          <span class="pill"><i style="background:var(--c-action)"></i>PWA mobile d’abord</span>
+          <span class="pill"><i style="background:var(--ink)"></i>WCAG 2.2 AA</span>
+          <span class="pill"><i style="background:var(--paper-2)"></i>Mode nocturne</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 00 PRINCIPES ========== -->
+  <section class="section" id="principes">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="sec-num">00 / Principes</span><h2>Six règles <em>d’expérience</em></h2></div>
+        <div class="sec-intro"><p>Quand un cas n’est pas prévu par le design système, ces principes tranchent. Ils passent avant l’esthétique.</p><p class="xrefs"><span>Voir aussi</span><a class="xref" href="boussole.html">La boussole de la direction</a><a class="xref" href="adr.html" data-kind="adr">Les décisions</a></p></div>
+      </div>
+      <div class="grid g3">
+        <article class="card principle"><b>01</b><h3>Se tromper ne coûte rien</h3><p>Les briques sont rationnées, mais une tentative ratée ne consomme ni exemplaire ni énergie. Seule une découverte utilise un exemplaire de chaque brique, et l’interface le montre toujours.</p><p class="how">→ Pas de confirmation pour « Vider ». Compteur « ×n » toujours visible, « −1 » après une découverte.</p></article>
+        <article class="card principle"><b>02</b><h3>Une action principale par écran</h3><p>Un seul bouton Corail visible à la fois. Le joueur sait toujours ce qu’il peut faire ensuite.</p><p class="how">→ Table : Fusionner. Plis : Ouvrir. Carte agrandie : Voir les formes.</p></article>
+        <article class="card principle"><b>03</b><h3>La brique est la vedette</h3><p>L’interface reste neutre (Papier, Crème, Encre) pour que les briques et les mots découverts concentrent la couleur et l’attention.</p><p class="how">→ Aucun décor coloré derrière une brique.</p></article>
+        <article class="card principle"><b>04</b><h3>Montrer, puis expliquer</h3><p>Le mot d’abord, sa définition ensuite, l’étymologie détaillée à la demande. Jamais de mur de texte avant le plaisir.</p><p class="how">→ Révélation en 3 temps, détails au verso de la carte.</p></article>
+        <article class="card principle"><b>05</b><h3>Honnête, jamais pressant</h3><p>Les chances des plis sont affichées, le temps de recharge aussi. Pas de fausse urgence, pas de culpabilisation.</p><p class="how">→ Pas de compte à rebours clignotant, pas de « Dernière chance ».</p></article>
+        <article class="card principle"><b>06</b><h3>Accessible par défaut</h3><p>Contrastes, cibles tactiles, clavier, lecteurs d’écran et animations réduites sont prévus dès le premier composant, pas ajoutés après.</p><p class="how">→ Chaque composant ci-dessous liste son comportement accessible.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 01 FONDATIONS ========== -->
+  <section class="section" id="fondations">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="sec-num">01 / Fondations</span><h2>Les <em>jetons</em></h2></div>
+        <p class="sec-intro">Toutes les valeurs du produit viennent de ces jetons. Aucune couleur, taille ou durée n’est écrite en dur dans un composant. Cliquez une couleur pour copier sa variable CSS.</p>
+      </div>
+
+      <div class="block">
+        <h3 class="block-title" id="ds-1-1"><small>1.1</small>Couleurs</h3>
+        <p class="xrefs"><span>En situation</span><a class="xref" href="identite.html">Identité visuelle : règles et usages</a><a class="xref" href="identite.html#regles">Règles élémentaires</a></p>
+        <p class="lead">Trois familles : les <strong>neutres</strong> (structure), les <strong>couleurs de ressource</strong> (ce qu’est une chose, en Base, Teinte et Profond) et l’<strong>action</strong> (ce que l’on peut faire). Les règles d’usage sont détaillées dans la <a href="identite.html#regles">charte de l’identité visuelle</a>.</p>
+        <div class="sw-grid" id="swatches"></div>
+      </div>
+
+      <div class="block">
+        <h3 class="block-title" id="ds-1-2"><small>1.2</small>Typographie</h3>
+        <p class="xrefs"><span>En situation</span><a class="xref" href="typographie.html">Typographie : rôles et écritures</a></p>
+        <p class="lead">Quatre familles, chacune avec un rôle unique : la <strong>serif</strong> pour les mots et les titres, la <strong>sans</strong> pour l’interface, la <strong>mono</strong> pour les métadonnées, la <strong>cursive</strong> uniquement pour les brouillons du rituel des plis. Tailles en rem, base 16 px, respectant le zoom du système.</p>
+        <div>
+          <div class="type-row"><span class="k">Display</span><span style="font-family:var(--serif);font-size:clamp(40px,5vw,64px);font-weight:600;letter-spacing:-.04em;line-height:1">Découverte</span><span class="spec">serif 600 · 64/1 (mobile 40) · −0,04 em</span></div>
+          <div class="type-row"><span class="k">Titre 1</span><span style="font-family:var(--serif);font-size:40px;font-weight:600;letter-spacing:-.03em;line-height:1.05">Table de fusion</span><span class="spec">serif 600 · 40/1,05 (mobile 32)</span></div>
+          <div class="type-row"><span class="k">Titre 2</span><span style="font-family:var(--serif);font-size:26px;font-weight:600;line-height:1.2">Formes trouvées</span><span class="spec">serif 600 · 26/1,2 (mobile 22)</span></div>
+          <div class="type-row"><span class="k">Mot de carte</span><span style="font-family:var(--serif);font-size:22px;font-weight:600;line-height:1.1">philosophie</span><span class="spec">serif 600 · 18 → 52 selon la carte</span></div>
+          <div class="type-row"><span class="k">Définition</span><span style="font-family:var(--serif);font-size:19px;line-height:1.4">Réflexion critique sur le savoir, l’existence et les valeurs.</span><span class="spec">serif 400 · 17 → 20 / 1,4</span></div>
+          <div class="type-row"><span class="k">Corps</span><span style="font-size:16px;line-height:1.55">Glissez une brique sur la table, ou touchez-la pour la poser.</span><span class="spec">sans 400 · 16/1,55 · min 14</span></div>
+          <div class="type-row"><span class="k">Bouton</span><span style="font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase">Fusionner</span><span class="spec">sans 800 · 13 · capitales · +0,06 em</span></div>
+          <div class="type-row"><span class="k">Méta</span><span style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase">Grec ancien · N° 014</span><span class="spec">mono 400 · 10 → 12 · capitales · +0,1 em</span></div>
+          <div class="type-row"><span class="k">Brouillon</span><span style="font-family:var(--script);font-size:30px">sofia</span><span class="spec">cursive · 30 · rituel des plis uniquement</span></div>
+        </div>
+      </div>
+
+      <div class="block grid g2">
+        <div class="card">
+          <h3 id="ds-1-3">1.3 Espacements</h3>
+          <p>Échelle en 9 pas. Les marges internes des composants utilisent 8 à 24 ; les écarts entre sections 48 à 80.</p>
+          <div class="demo"><div class="bar-sp" id="spaces"></div></div>
+        </div>
+        <div class="card">
+          <h3 id="ds-1-4">1.4 Rayons et bordures</h3>
+          <p>Rayon selon la nature : petite brique 6, brique 10, carte et panneau 14, carte agrandie 22, pastille 999. Bordures 1 (séparateur), 1,5 (composant), 2 (carte agrandie, pli).</p>
+          <div class="demo"><div class="bar-sp" id="radii"></div></div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3 class="block-title" id="ds-1-5"><small>1.5</small>Élévation et plans</h3>
+        <p class="lead">Quatre niveaux d’élévation. Les trois premiers utilisent des <strong>ombres dures</strong> (sans flou) ; seul le niveau superposition utilise une ombre floue. Chaque plan a un <code>z-index</code> réservé.</p>
+        <div class="elev">
+          <div style="box-shadow:none">Plat<span class="spec">panneau, carte de grille · z 0</span></div>
+          <div style="box-shadow:4px 4px 0 #0f1f19">Posé<span class="spec">brique, bouton · ombre 4 · z 0</span></div>
+          <div style="box-shadow:6px 6px 0 #0f1f19;transform:translate(-2px,-2px)">Soulevé<span class="spec">survol, glissement · ombre 6 à 10 · z 10</span></div>
+          <div style="box-shadow:var(--shadow-overlay)">Superposition<span class="spec">carte agrandie, dialogue, feuille · z 90 à 100</span></div>
+        </div>
+        <div class="table-wrap" style="margin-top:12px">
+          <table class="t"><thead><tr><th>Plan</th><th>Jeton</th><th>Valeur</th><th>Utilisé pour</th></tr></thead><tbody>
+            <tr><td>Base</td><td><code>--z-base</code></td><td>0</td><td>contenu de la page</td></tr>
+            <tr><td>Soulevé</td><td><code>--z-raised</code></td><td>10</td><td>brique en cours de glissement, info-bulle</td></tr>
+            <tr><td>Collant</td><td><code>--z-sticky</code></td><td>60</td><td>barre d’en-tête, barre d’onglets</td></tr>
+            <tr><td>Notification</td><td><code>--z-toast</code></td><td>80</td><td>toasts</td></tr>
+            <tr><td>Voile</td><td><code>--z-overlay</code></td><td>90</td><td>fond flouté derrière une superposition</td></tr>
+            <tr><td>Modal</td><td><code>--z-modal</code></td><td>100</td><td>dialogue, feuille, carte agrandie</td></tr>
+          </tbody></table>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3 class="block-title" id="ds-1-6"><small>1.6</small>Mouvement</h3>
+        <p class="xrefs"><span>En situation</span><a class="xref" href="mouvement.html">Démonstrations de mouvement</a><a class="xref" href="plis.html#pkStage">Le rituel d’ouverture</a></p>
+        <p class="lead">Cinq durées et trois courbes. Le mouvement confirme une action, jamais ne la retarde : aucune interaction ne doit attendre la fin d’une animation. Cliquez pour rejouer.</p>
+        <div class="card" id="motionDemo">
+          <div class="motion-row"><b>Instant · 120 ms</b><div class="track" style="--d:120ms;--e:var(--ease-out)"><i></i></div><span class="spec">pression, survol</span></div>
+          <div class="motion-row"><b>Rapide · 240 ms</b><div class="track" style="--d:240ms;--e:var(--ease-out)"><i></i></div><span class="spec">déplacement, filtre</span></div>
+          <div class="motion-row"><b>Base · 360 ms</b><div class="track" style="--d:360ms;--e:var(--ease-spring)"><i></i></div><span class="spec">ouverture, toast</span></div>
+          <div class="motion-row"><b>Lent · 480 ms</b><div class="track" style="--d:480ms;--e:var(--ease-spring)"><i></i></div><span class="spec">révélation, pop</span></div>
+          <div class="motion-row"><b>Rituel · 1,8 s</b><div class="track" style="--d:1800ms;--e:var(--ease-in)"><i></i></div><span class="spec">ouverture de pli</span></div>
+          <button class="btn btn-secondary btn-m" type="button" id="replayMotion" style="margin-top:14px">Rejouer</button>
+        </div>
+        <div class="table-wrap" style="margin-top:12px">
+          <table class="t"><thead><tr><th>Courbe</th><th>Jeton</th><th>Valeur</th><th>Usage</th></tr></thead><tbody>
+            <tr><td>Sortie douce</td><td><code>--ease-out</code></td><td><code>cubic-bezier(.16, 1, .3, 1)</code></td><td>entrées, déplacements, apparitions</td></tr>
+            <tr><td>Ressort</td><td><code>--ease-spring</code></td><td><code>cubic-bezier(.34, 1.56, .64, 1)</code></td><td>briques, pop de découverte, boutons</td></tr>
+            <tr><td>Accélération</td><td><code>--ease-in</code></td><td><code>cubic-bezier(.5, 0, .75, 0)</code></td><td>sorties et fermetures uniquement</td></tr>
+          </tbody></table>
+        </div>
+        <p class="lead" style="margin-top:14px"><strong>Animations réduites</strong> (réglage système ou réglage du jeu) : les déplacements deviennent des fondus de 120 ms, le rituel des plis affiche directement le résultat, les éléments en boucle s’arrêtent. Essayez le bouton <svg class="ic" style="width:16px;height:16px;vertical-align:-3px"><use href="#i-calm"/></svg> en haut de page.</p>
+      </div>
+
+      <div class="block">
+        <h3 class="block-title" id="ds-1-7"><small>1.7</small>Grille et points de rupture</h3>
+        <p class="xrefs"><span>En situation</span><a class="xref" href="adr.html#adr-0001" data-kind="adr">ADR 0001 : PWA mobile d’abord</a></p>
+        <p class="lead">Conception <strong>mobile d’abord</strong>. Largeur de contenu maximale 1 320 px. Les marges respectent les zones sûres des téléphones (<code>env(safe-area-inset-*)</code>).</p>
+        <div class="bp">
+          <div><b>Mobile</b><span class="spec">&lt; 520 px · 4 colonnes · gouttière 12 · marge 20</span><div class="cols" style="grid-template-columns:repeat(4,1fr)"><i></i><i></i><i></i><i></i></div></div>
+          <div><b>Grand mobile</b><span class="spec">520 → 760 px · 6 colonnes · gouttière 16</span><div class="cols" style="grid-template-columns:repeat(6,1fr)"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+          <div><b>Tablette</b><span class="spec">760 → 1 100 px · 8 colonnes · gouttière 20</span><div class="cols" style="grid-template-columns:repeat(8,1fr)"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+          <div><b>Bureau</b><span class="spec">≥ 1 100 px · 12 colonnes · gouttière 24 · marge 80</span><div class="cols" style="grid-template-columns:repeat(12,1fr)"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3 class="block-title" id="ds-1-8"><small>1.8</small>Iconographie</h3>
+        <p class="lead">Icônes au trait de <strong>1,75 px</strong> sur une grille de 24, extrémités et angles arrondis, couleur <code>currentColor</code>. Taille 20 dans l’interface, 16 dans le texte, 24 dans la barre d’onglets. Une icône seule a toujours un libellé accessible ; une icône n’est jamais colorée d’une couleur de ressource.</p>
+        <div class="icons" id="icons"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 02 INTERFACE ========== -->
+  <section class="section" id="interface">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="sec-num">02 / Interface</span><h2>Composants <em>d’interface</em></h2></div>
+        <p class="sec-intro">Les briques élémentaires de l’interface, hors jeu. Chaque composant indique ses variantes, ses états et son comportement accessible.</p>
+      </div>
+
+      <div class="block">
+        <h3 class="block-title" id="ds-2-1"><small>2.1</small>Boutons</h3>
+        <p class="xrefs"><span>En situation</span><a class="xref" href="jeu.html#table">Fusionner et Vider sur la table</a></p>
+        <div class="grid g2">
+          <div class="card">
+            <span class="k">Variantes</span>
+            <div class="demo">
+              <button class="btn btn-primary" type="button">Fusionner</button>
+              <button class="btn btn-secondary" type="button">Vider</button>
+              <button class="btn btn-text" type="button">Passer le tutoriel</button>
+              <button class="icon-btn" type="button" aria-label="Fermer"><svg class="ic"><use href="#i-close"/></svg></button>
+            </div>
+            <div class="demo">
+              <button class="btn btn-danger" type="button"><svg class="ic" aria-hidden="true"><use href="#i-danger"/></svg>Tout effacer</button>
+              <button class="btn btn-danger-ghost btn-m" type="button"><svg class="ic" aria-hidden="true"><use href="#i-danger"/></svg>Réinitialiser la démo</button>
+            </div>
+            <ul class="list">
+              <li><span><b>Principal</b> : Corail, une seule fois par écran.</span></li>
+              <li><span><b>Secondaire</b> : contour Encre, pour les actions alternatives.</span></li>
+              <li><span><b>Texte</b> : Corail profond, pour les actions mineures (passer, en savoir plus).</span></li>
+              <li><span><b>Icône</b> : cercle de 40 px, zone tactile étendue à 48 px, libellé accessible obligatoire.</span></li>
+              <li><span><b>Danger</b> : Corail profond plein (<code>--c-danger</code>), texte Crème, icône octogone, pour l’action irréversible qui confirme (effacer, réinitialiser). Toujours précédé d’une confirmation, jamais deux par écran.</span></li>
+              <li><span><b>Danger discret</b> : contour et texte Corail profond (Corail en mode nocturne), pour ouvrir une confirmation. Jamais pour un échec de jeu, qui reste en Gris encre.</span></li>
+            </ul>
+          </div>
+          <div class="card">
+            <span class="k">Tailles et états</span>
+            <div class="demo">
+              <button class="btn btn-primary" type="button">Grand · 48</button>
+              <button class="btn btn-primary btn-m" type="button">Moyen · 40</button>
+              <button class="btn btn-secondary btn-s" type="button">Petit · 32</button>
+            </div>
+            <div class="demo">
+              <button class="btn btn-primary is-hover" type="button" tabindex="-1">Survol</button>
+              <button class="btn btn-primary is-active" type="button" tabindex="-1">Pression</button>
+              <button class="btn btn-primary is-loading" type="button" tabindex="-1" aria-label="Chargement">Ouvrir</button>
+              <button class="btn btn-primary" type="button" disabled>Désactivé</button>
+            </div>
+            <p class="spec">Petit (32) réservé aux contextes souris et aux zones denses, toujours avec une zone tactile de 44. Chargement : texte masqué, indicateur rotatif, largeur conservée, <code>aria-busy="true"</code>.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3 class="block-title" id="ds-2-2"><small>2.2</small>Recherche et champs</h3>
+        <div class="grid g2">
+          <div class="card">
+            <span class="k">Démo : rechercher une brique</span>
+            <div class="field">
+              <label for="dsSearch">Rechercher dans le codex</label>
+              <div class="input"><svg class="ic"><use href="#i-search"/></svg><input id="dsSearch" type="search" placeholder="bio, logie, grec…" autocomplete="off"><button class="clear" type="button" id="dsClear" aria-label="Effacer" hidden><svg class="ic" style="width:14px;height:14px"><use href="#i-close"/></svg></button></div>
+              <span class="help" id="dsSearchHelp" aria-live="polite">9 briques</span>
+            </div>
+            <div class="demo" id="dsResults"></div>
+          </div>
+          <div class="card">
+            <span class="k">États</span>
+            <div class="demo col">
+              <div class="field"><label>Repos</label><div class="input"><svg class="ic"><use href="#i-search"/></svg><input placeholder="Rechercher" tabindex="-1"></div></div>
+              <div class="field"><label>Focus</label><div class="input is-focus"><svg class="ic"><use href="#i-search"/></svg><input value="philo" tabindex="-1"></div></div>
+              <div class="field is-error"><label>Erreur</label><div class="input is-error"><svg class="ic"><use href="#i-search"/></svg><input value="zzz" tabindex="-1"></div><span class="help">Aucun résultat. Vérifiez l’orthographe ou essayez un sens (« vie »).</span></div>
+              <div class="field"><label>Désactivé</label><div class="input is-disabled"><svg class="ic"><use href="#i-search"/></svg><input placeholder="Hors ligne" disabled></div></div>
+            </div>
+            <p class="spec">Libellé toujours visible (jamais seulement un texte d’exemple). Erreur signalée par un texte et une barre Gris encre, jamais par du rouge. Hauteur 48, texte 15 minimum pour éviter le zoom automatique sur mobile.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3 class="block-title" id="ds-2-3"><small>2.3</small>Sélecteurs</h3>
+        <div class="grid g3">
+          <div class="card">
+            <span class="k">Filtres (pastilles)</span>
+            <div class="demo" id="dsFilters">
+              <button class="chip-f" type="button" aria-pressed="true">Tout <b>18</b></button>
+              <button class="chip-f" type="button" aria-pressed="false"><i style="--c:var(--c-prefix)"></i>Préfixes <b>4</b></button>
+              <button class="chip-f" type="button" aria-pressed="false"><i style="--c:var(--c-suffix)"></i>Suffixes <b>4</b></button>
+              <button class="chip-f" type="button" aria-pressed="false"><i style="--c:var(--c-lang)"></i>Langues <b>3</b></button>
+            </div>
+            <p class="spec">Choix unique, <code>aria-pressed</code>. Pastille de couleur = couleur du type, toujours avec un libellé et un compteur.</p>
+          </div>
+          <div class="card">
+            <span class="k">Contrôle segmenté</span>
+            <div class="demo center"><div class="segmented" id="dsSeg" role="group" aria-label="Trier"><button type="button" aria-pressed="true">N°</button><button type="button" aria-pressed="false">A → Z</button><button type="button" aria-pressed="false">Type</button></div></div>
+            <p class="spec">2 à 4 options courtes, pour un tri ou un mode d’affichage. Sélection en Encre : le fond glisse vers l’option choisie (380 ms, ressort).</p>
+          </div>
+          <div class="card">
+            <span class="k">Onglets</span>
+            <div class="tabs" role="tablist" id="dsTabs">
+              <button type="button" role="tab" aria-selected="true" aria-controls="tp1" id="t1">Recto</button>
+              <button type="button" role="tab" aria-selected="false" aria-controls="tp2" id="t2" tabindex="-1">Formes</button>
+              <button type="button" role="tab" aria-selected="false" aria-controls="tp3" id="t3" tabindex="-1">Sources</button>
+            </div>
+            <div class="tab-panel" role="tabpanel" id="tp1" aria-labelledby="t1">Mot, définition et composition.</div>
+            <div class="tab-panel" role="tabpanel" id="tp2" aria-labelledby="t2" hidden>Formes trouvées dans chaque langue.</div>
+            <div class="tab-panel" role="tabpanel" id="tp3" aria-labelledby="t3" hidden>Références éditoriales et niveau de confiance.</div>
+            <p class="spec" style="margin-top:10px">Le trait glisse sous l’onglet choisi (380 ms, ressort). Flèches ← → pour changer d’onglet (motif ARIA « tabs »).</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3 class="block-title" id="ds-2-4"><small>2.4</small>Réglages : interrupteurs et cases</h3>
+        <div class="grid g2">
+          <div class="card" id="dsSettings">
+            <span class="k">Réglages du jeu</span>
+            <button class="switch" type="button" role="switch" aria-checked="true"><span><b>Sons</b><small>Petits sons de fusion et d’ouverture</small></span><span class="knob"></span></button>
+            <button class="switch" type="button" role="switch" aria-checked="true"><span><b>Vibrations</b><small>Retour haptique sur mobile</small></span><span class="knob"></span></button>
+            <button class="switch" type="button" role="switch" aria-checked="false" data-calm><span><b>Animations réduites</b><small>Suit le réglage du système par défaut</small></span><span class="knob"></span></button>
+            <button class="switch" type="button" role="switch" aria-checked="false" data-night><span><b>Mode nocturne</b><small>Suit le réglage du système par défaut</small></span><span class="knob"></span></button>
+          </div>
+          <div class="card">
+            <span class="k">Cases à cocher</span>
+            <div class="demo col">
+              <label class="check"><input type="checkbox" checked> Afficher les translittérations</label>
+              <label class="check"><input type="checkbox"> Afficher les sources dans les fiches</label>
+              <label class="check"><input type="checkbox" disabled> Synchroniser (bientôt)</label>
+            </div>
+            <p class="spec">Interrupteur : effet immédiat (réglage). Case : choix multiples dans un formulaire, appliqués ensemble. Libellé cliquable, zone tactile de 44.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3 class="block-title" id="ds-2-5"><small>2.5</small>Badges, indicateurs et info-bulles</h3>
+        <div class="grid g4">
+          <div class="card"><span class="k">Compteur</span><div class="demo center"><span class="count">4</span><span class="count">18</span></div><p class="spec">Encre, texte Papier. Nombre exact jusqu’à 99, puis « 99+ ».</p></div>
+          <div class="card"><span class="k">Nouveauté</span><div class="demo center"><span class="badge-new">Nouveau</span></div><p class="spec">Corail, texte Encre. Disparaît après la première consultation.</p></div>
+          <div class="card"><span class="k">Rareté</span><div class="demo center"><div class="rar-scale"><span><svg class="rar" aria-hidden="true"><use href="#rar-commune"/></svg>Commune<small>triangle</small></span><span><svg class="rar" aria-hidden="true"><use href="#rar-peu"/></svg>Peu commune<small>carré</small></span><span><svg class="rar" aria-hidden="true"><use href="#rar-rare"/></svg>Rare<small>pentagone</small></span><span><svg class="rar" aria-hidden="true"><use href="#rar-legendaire"/></svg>Légendaire<small>diamant</small></span></div></div><p class="spec">4 niveaux, 1 forme chacun : plus de côtés = plus rare. Ambre cerné d’Encre 1,5 px, + libellé ou <code>aria-label</code>. Diamant taillé, jamais un losange (réservé aux états). Jamais sur une brique. Tailles 12 · 16 · 22.</p></div>
+          <div class="card"><span class="k">Confiance</span><div class="demo center" style="flex-direction:column;gap:6px"><span class="conf"><i></i><i></i><i></i><b>Établie</b></span><span class="conf p2"><i></i><i></i><i></i><b>Probable</b></span><span class="conf p1"><i></i><i></i><i></i><b>Discutée</b></span></div><p class="spec">Traits Encre, jamais de couleur ni de forme géométrique (réservées à la rareté).</p></div>
+          <div class="card"><span class="k">Langue</span><div class="demo center"><span class="pill"><i></i>Grec ancien</span></div><p class="spec">Point Palimpseste + nom complet. Jamais d’abréviation.</p></div>
+          <div class="card"><span class="k">Info-bulle</span><div class="demo center"><span class="tip-wrap"><button class="icon-btn" type="button" aria-describedby="tipA" aria-label="Qu’est-ce que la confiance ?"><svg class="ic"><use href="#i-info"/></svg></button><span class="tooltip" role="tooltip" id="tipA">Degré de consensus des spécialistes sur cette étymologie.</span></span></div><p class="spec">Au survol et au focus. Jamais d’information indispensable, jamais d’action à l’intérieur.</p></div>
+          <div class="card"><span class="k">Exemplaires</span><div class="demo center"><span class="brick s-s"><span class="l">bio-</span><span class="n">×3</span></span></div><p class="spec">Pastille Encre en haut à droite, toujours visible : exemplaires disponibles (×1, ×2…). À zéro : « Épuisée », en pointillé.</p></div>
+          <div class="card"><span class="k">Encre</span><div class="demo center"><span class="inkbox"><span class="drop"></span><b>12</b><span class="spec">gouttes</span></span></div><p class="spec">Goutte Ambre cernée d’Encre, nombre en serif.</p></div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3 class="block-title" id="ds-2-6"><small>2.6</small>Progression et chargement</h3>
+        <div class="grid g3">
+          <div class="card"><span class="k">Barres</span><div class="demo col"><div class="progress" style="--p:64%"><i></i></div><div class="progress pli" style="--p:40%"><i></i></div></div><p class="spec">Collection : Encre sur piste Sable. Garantie des plis : Ambre, piste cernée d’Encre. Toujours accompagnée d’un texte (« 7 sur 12 »).</p></div>
+          <div class="card"><span class="k">Anneau et étapes</span><div class="demo center"><svg class="ring" viewBox="0 0 60 60" aria-hidden="true"><circle class="bg" cx="30" cy="30" r="26"/><circle class="fg" cx="30" cy="30" r="26" style="stroke-dashoffset:60"/><circle class="edge" cx="30" cy="30" r="29.5"/><circle class="edge" cx="30" cy="30" r="22.5"/></svg><span class="steps"><i class="on"></i><i></i><i></i><i></i></span></div><p class="spec">Anneau : énergie et famille. Étapes : tutoriel (4 au maximum).</p></div>
+          <div class="card"><span class="k">Squelettes</span><div class="demo center"><div class="skel-card"><div class="skel" style="height:14px"></div><div class="skel" style="height:24px;width:80%"></div><div class="skel" style="height:10px;width:50%"></div></div><div class="skel" style="width:96px;height:52px;border-radius:10px"></div></div><p class="spec">Affichés seulement si le chargement dépasse 400 ms, à la forme exacte du contenu attendu. Jamais d’écran de chargement plein.</p></div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3 class="block-title" id="ds-2-7"><small>2.7</small>Superpositions et notifications</h3>
+        <p class="lead">Quatre niveaux d’interruption, du plus léger au plus fort. Choisir toujours le plus léger qui convient.</p>
+        <div class="grid g4">
+          <div class="card"><span class="k">Message en ligne</span><div class="demo"><p class="feedback win">Nouvelle découverte : biologie !</p></div><p class="spec">Retour d’une action, à l’endroit de l’action. <code>role="status"</code>. Ne bloque rien.</p></div>
+          <div class="card"><span class="k">Toast</span><div class="demo center"><button class="btn btn-secondary btn-m" type="button" data-toast="Couleur copiée">Afficher un toast</button></div><p class="spec">Confirmation d’une action hors de vue. 1 ligne, 3 s, en bas à droite (bas centré sur mobile). Jamais d’action critique dedans.</p></div>
+          <div class="card"><span class="k">Feuille</span><div class="demo center"><button class="btn btn-secondary btn-m" type="button" id="openSheet">Ouvrir une feuille</button></div><p class="spec">Mobile : options ou détails liés au contexte (réglages rapides, tri). Glisser vers le bas ou toucher le voile pour fermer.</p></div>
+          <div class="card"><span class="k">Dialogue</span><div class="demo center"><button class="btn btn-danger-ghost btn-m" type="button" id="openDialog"><svg class="ic" aria-hidden="true"><use href="#i-danger"/></svg>Réinitialiser la progression</button></div><p class="spec">Seulement pour une action irréversible (réinitialiser la progression). Focus piégé, Échap pour annuler, action destructive jamais par défaut. Bouton de confirmation en Danger (Corail profond), Annuler en secondaire.</p></div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3 class="block-title" id="ds-2-8"><small>2.8</small>États vides, hors ligne et erreurs</h3>
+        <div class="grid g3">
+          <div class="card"><div class="empty"><span class="ill">?</span><h4>Aucun résultat</h4><p>Aucune brique ne correspond à « zzz ». Essayez un sens, comme « vie » ou « terre ».</p><button class="btn btn-secondary btn-m" type="button">Effacer la recherche</button></div></div>
+          <div class="card"><div class="empty"><span class="ill"><svg class="ic" style="width:32px;height:32px"><use href="#i-energy"/></svg></span><h4>Pli en recharge</h4><p>Le prochain pli sera prêt dans 04:21:50. Vos briques restent toutes jouables.</p><a class="btn btn-primary btn-m" href="#jeu">Retour à la table</a></div></div>
+          <div class="card"><div class="demo col" style="min-height:0">
+            <div class="banner"><svg class="ic"><use href="#i-offline"/></svg><span>Hors ligne. Vous pouvez continuer à fusionner ; les plis attendront le retour du réseau.</span></div>
+            <div class="banner"><svg class="ic"><use href="#i-info"/></svg><span>Impossible d’ouvrir le pli. Rien n’a été consommé.</span><button class="btn btn-secondary btn-s" type="button">Réessayer</button></div>
+          </div><p class="spec">Bannière Sable, icône et texte Encre. Toujours dire ce qui fonctionne encore et ce qui n’a pas été perdu.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 03 JEU ========== -->
+  <section class="section" id="jeu">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="sec-num">03 / Jeu</span><h2>Composants <em>de jeu</em></h2></div>
+        <p class="sec-intro">Les objets propres à ÉtymoLogique : briques, table, fiche de découverte, cartes du codex, plis. Leur couleur vient toujours du type de ressource.</p>
+      </div>
+
+      <div class="block">
+        <h3 class="block-title" id="ds-3-1"><small>3.1</small>Brique</h3>
+        <p class="xrefs"><span>En situation</span><a class="xref" href="jeu.html#table">Briques de la réserve</a><a class="xref" href="identite.html#formes">Formes</a></p>
+        <div class="grid g2">
+          <div class="card">
+            <span class="k">Anatomie</span>
+            <div class="demo center" style="min-height:150px">
+              <span class="anat"><span class="brick"><span class="l">-logie</span><span class="m">suffixe · « étude »</span><span class="n">×2</span></span>
+                <span class="pin" style="top:6px;left:-26px">1</span><span class="pin" style="bottom:4px;left:-26px">2</span><span class="pin" style="top:-30px;right:-12px">3</span><span class="pin" style="bottom:-28px;left:40%">4</span></span>
+            </div>
+            <ol class="anat-list"><li>Libellé : serif 700, trait d’union qui indique la position (préfixe- / -suffixe).</li><li>Type et sens : mono, capitales, sens entre guillemets français.</li><li>Exemplaires disponibles : pastille Encre toujours visible, même à ×1.</li><li>Ombre dure 4 px en Encre : elle dit « je suis manipulable ».</li></ol>
+          </div>
+          <div class="card">
+            <span class="k">Tailles</span>
+            <div class="demo">
+              <span class="brick s-l"><span class="l">philo-</span><span class="m">préfixe · « ami »</span></span>
+              <span class="brick"><span class="l">bio-</span><span class="m">préfixe · « vie »</span></span>
+              <span class="brick s-s" data-kind="suffixe"><span class="l">-logie</span></span>
+              <span class="bchip">géo-</span>
+            </div>
+            <p class="spec">L (révélation de pli, 40) · M (table et réserve, 21) · S (mini-carte, équation compacte, 16) · Petite brique (dans un texte, 13 à 15). Largeur minimale M : 96 × 52.</p>
+            <span class="k" style="margin-top:14px">États</span>
+            <div class="demo">
+              <span class="brick s-s"><span class="l">bio-</span></span>
+              <span class="brick s-s is-hover"><span class="l">bio-</span></span>
+              <span class="brick s-s is-drag"><span class="l">bio-</span></span>
+              <span class="brick s-s is-ghost"><span class="l">bio-</span></span>
+              <span class="brick s-s is-placed"><span class="l">bio-</span></span>
+              <span class="brick s-s is-off"><span class="l">bio-</span></span>
+              <span class="brick s-s is-spent"><span class="l">bio-</span></span>
+            </div>
+            <p class="spec">Repos · survol · glissement (+4°, ombre 10) · emplacement d’origine pendant le glissement (pointillé) · posée sur la table (anneau Corail) · désactivée : tous les exemplaires sont posés (40 %) · épuisée (pointillé, hachures Sable, Gris encre).</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3 class="block-title" id="ds-3-2"><small>3.2</small>Réserve et rationnement</h3>
+        <p class="xrefs"><span>En situation</span><a class="xref" href="jeu.html#table">Réserve jouable</a><a class="xref" href="plis.html">Remplir la réserve</a><a class="xref" href="adr.html#adr-0012" data-kind="adr">ADR 0012</a></p>
+        <p class="lead">Chaque brique existe en un nombre limité d’exemplaires, 5 au plus. Les plis sont la seule source d’exemplaires. Se tromper ne coûte rien ; une découverte consomme un exemplaire de chaque brique utilisée.</p>
+        <div class="grid g2">
+          <div class="card">
+            <span class="k">États de réserve</span>
+            <div class="demo center">
+              <div class="reserve-row">
+                <figure><span class="brick"><span class="l">géo-</span><span class="m">« terre »</span><span class="n">×2</span></span><figcaption>Disponible</figcaption></figure>
+                <figure><span class="brick" data-kind="suffixe"><span class="l">-logie</span><span class="m">« étude »</span><span class="n">×1</span></span><figcaption>Dernier exemplaire</figcaption></figure>
+                <figure><span class="brick is-off"><span class="l">bio-</span><span class="m">« vie »</span><span class="n">×0</span></span><figcaption>Tous posés</figcaption></figure>
+                <figure><span class="brick is-spent" data-kind="suffixe"><span class="l">-graphie</span><span class="m">« écriture »</span><span class="n zero">Épuisée</span></span><figcaption>Épuisée</figcaption></figure>
+              </div>
+            </div>
+            <p class="spec">Le compteur montre les exemplaires <b>disponibles</b> : poser une brique en réserve un, la retirer le rend. Toucher une brique indisponible affiche un message sans secousse : « Tous vos exemplaires de <span class="bchip" data-kind="suffixe">-logie</span> sont déjà sur la table. » ou « Plus aucun exemplaire de <span class="bchip" data-kind="suffixe">-graphie</span>. Ouvrez un pli pour en retrouver. » Une brique épuisée reste dans le codex.</p>
+          </div>
+          <div class="card">
+            <span class="k">Coût d’une découverte</span>
+            <div class="demo col center" style="align-items:center;gap:12px">
+              <span style="display:flex;gap:14px;align-items:flex-start"><span class="brick s-s" style="position:relative"><span class="l">bio-</span><span class="n">×1</span></span><span class="minus">−1</span><span class="brick s-s" data-kind="suffixe" style="position:relative"><span class="l">-logie</span><span class="n">×1</span></span><span class="minus">−1</span></span>
+              <span style="display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:12px"><span class="spec" style="text-transform:uppercase;letter-spacing:.1em;font-family:var(--mono);font-size:10px">Exemplaires utilisés</span><span class="bchip">bio-</span><span class="spec">−1 · reste ×1</span><span class="bchip" data-kind="suffixe">-logie</span><span class="spec">−1 · reste ×1</span></span>
+            </div>
+            <table class="t compact" style="margin-top:12px"><tbody>
+              <tr><td>Nouvelle découverte</td><td>−1 exemplaire de chaque brique ; « −1 » s’envole (1,3 s)</td></tr>
+              <tr><td>Déjà connu, presque, échec</td><td>rien n’est consommé</td></tr>
+              <tr><td>Pli, brique connue</td><td>+1 exemplaire, 5 au plus ; au-delà, encre</td></tr>
+              <tr><td>Réserve bloquée</td><td>brique utile garantie au plus tard au 5ᵉ pli</td></tr>
+            </tbody></table>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3 class="block-title" id="ds-3-3"><small>3.3</small>Table de fusion</h3>
+        <p class="xrefs"><span>En situation</span><a class="xref" href="jeu.html#table">La table de fusion</a></p>
+        <div class="grid g2">
+          <div class="card">
+            <span class="k">Emplacements</span>
+            <div class="demo center">
+              <span class="slot">1</span>
+              <span class="slot is-over">2</span>
+              <span class="slot is-full"><span class="brick s-s" data-kind="suffixe"><span class="l">-logie</span></span></span>
+            </div>
+            <p class="spec">Vide (pointillé, numéro d’ordre en italique) · cible de dépôt (teinte Corail, +4 %) · rempli · refus (secousse de 500 ms). L’ordre compte : les emplacements sont numérotés.</p>
+          </div>
+          <div class="card">
+            <span class="k">Messages de tentative</span>
+            <div class="demo col" style="min-height:0">
+              <p class="feedback win">Nouvelle découverte : biologie !</p>
+              <p class="feedback hint">Bonnes briques… mais l’ordre compte.</p>
+              <p class="feedback">Aucune recette connue. Rien n’est perdu : vos exemplaires restent dans la réserve.</p>
+              <p class="feedback known">biologie est déjà dans votre codex. Aucun exemplaire utilisé.</p>
+            </div>
+            <p class="spec">Losange d’état + phrase courte. Annoncé par <code>aria-live="polite"</code>.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3 class="block-title" id="ds-3-4"><small>3.4</small>Fiche de découverte</h3>
+        <p class="xrefs"><span>En situation</span><a class="xref" href="jeu.html#table">Obtenir une fiche</a><a class="xref" href="codex.html#carte-geologie">La même carte dans le codex</a></p>
+        <div class="card split">
+          <div class="demo col center" style="align-items:center;text-align:center;gap:10px">
+            <span class="badge-new" style="background:transparent;border:0;color:var(--c-action-deep);padding:0">Découverte 3 / 9</span>
+            <span class="word"><span class="seg" style="--c:var(--c-prefix)">géo</span><span class="seg" style="--c:var(--c-suffix)">graphie</span></span>
+            <span style="font-family:var(--serif);font-size:18px;max-width:34ch">Science qui décrit la surface de la Terre, ses paysages et ses populations.</span>
+            <span class="eq"><span class="brick s-s"><span class="l">géo-</span><span class="m">« terre »</span></span><span class="plus">+</span><span class="brick s-s" data-kind="suffixe"><span class="l">-graphie</span><span class="m">« description »</span></span></span>
+            <span class="lit"><span>Sens littéral</span>« description de la terre »</span>
+          </div>
+          <ol class="anat-list">
+            <li>Annonce : « Découverte n / total » (ou « Déjà dans le codex »), Corail profond.</li>
+            <li>Mot surligné par morceaux, aux couleurs des briques, séparés d’un filet de 3 px.</li>
+            <li>Définition actuelle, serif 18 à 20.</li>
+            <li>Équation en briques S, puis le sens littéral.</li>
+            <li>Origine et transformation, plus discrètes (Gris encre).</li>
+            <li>Exemplaires utilisés : petites briques, « −1 » et ce qu’il reste (« reste ×1 » ou « épuisée »). Absent si le mot était déjà connu.</li>
+            <li>Un seul bouton : Continuer (secondaire, l’action principale reste « Fusionner »).</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3 class="block-title" id="ds-3-5"><small>3.5</small>Cartes du codex</h3>
+        <p class="xrefs"><span>En situation</span><a class="xref" href="codex.html">Vue globale et carte agrandie</a></p>
+        <div class="grid g2">
+          <div class="card">
+            <span class="k">Mini-cartes (grille)</span>
+            <div class="demo">
+              <span class="mcard" style="--band:#0f1f19;--tt:#f3eee3"><span class="top"><span>N° 008</span><span>Mot</span></span><span class="w">biologie</span><span class="f"><span>● Français</span><span>●●</span></span></span>
+              <span class="mcard" style="--band:var(--c-suffix)"><span class="top"><span>N° 006</span><span>Suffixe</span></span><span><span class="bchip" data-kind="suffixe">-logie</span></span><span class="f"><span>● Français</span><span>●●●</span></span></span>
+              <span class="mcard" style="--band:var(--c-lang)"><span class="top"><span>N° 004</span><span>Langue</span></span><span class="w"><span style="font-size:34px;display:block">Ω</span>Grec ancien</span><span class="f"><span>6 / 10 formes</span></span></span>
+              <span class="mcard new" style="--band:#0f1f19;--tt:#f3eee3"><span class="top"><span>N° 010</span><span>Mot</span></span><span class="w">philosophie</span><span class="f"><span>● Français</span><span>●●○</span></span></span>
+              <span class="mcard locked" style="--band:#0f1f19;--tt:#f3eee3"><span class="top"><span>N° 017</span><span>Mot</span></span><span class="q">?</span><span class="f"><span>Piste : « loi des astres »</span></span></span>
+            </div>
+            <p class="spec">Format 3:4, bandeau de 24 px de la couleur du type (Encre pour les mots). Pastilles de formes trouvées. Nouvelle : contour Corail. Inconnue : hachures, « ? » et piste.</p>
+          </div>
+          <div class="card">
+            <span class="k">Carte agrandie</span>
+            <ul class="list">
+              <li><span><b>Ouverture</b> : la carte s’envole depuis sa position dans la grille (FLIP, 600 ms, ressort).</span></li>
+              <li><span><b>Recto</b> : mot, langue (lien), définition, équation en briques (liens), confiance, bouton « Voir les formes ».</span></li>
+              <li><span><b>Verso</b> : formes trouvées par langue, progression, composants ou mots formés (liens).</span></li>
+              <li><span><b>Retourner</b> : toucher la carte ou le bouton ; rotation 3D de 850 ms.</span></li>
+              <li><span><b>Naviguer</b> : flèches, balayage horizontal sur mobile, liens internes ; fil d’Ariane au-dessus de la carte.</span></li>
+              <li><span><b>Fermer</b> : croix, Échap, toucher le voile ; la carte revient à sa place et le focus aussi.</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3 class="block-title" id="ds-3-6"><small>3.6</small>Plis, énergie et encre</h3>
+        <p class="xrefs"><span>En situation</span><a class="xref" href="plis.html">L’atelier des plis</a><a class="xref" href="plis.html#jaquettes">Les dix jaquettes</a><a class="xref" href="adr.html#adr-0011" data-kind="adr">ADR 0011</a></p>
+        <div class="grid g4">
+          <div class="card"><span class="k">Pli</span><div class="demo center"><span class="mini-pack"></span></div><p class="spec">Jaquette illustrée (dix modèles, neutres et Ambre seulement), cadre Encre 2, sceau Ambre. La jaquette dépend du numéro du pli, jamais de son contenu. Flotte au repos ; en recharge, silhouette en pointillé, jamais grisée.</p></div>
+          <div class="card"><span class="k">Énergie</span><div class="demo center"><svg class="ring" viewBox="0 0 60 60" aria-hidden="true"><circle class="bg" cx="30" cy="30" r="26"/><circle class="fg" cx="30" cy="30" r="26" style="stroke-dashoffset:110"/><circle class="edge" cx="30" cy="30" r="29.5"/><circle class="edge" cx="30" cy="30" r="22.5"/></svg><span><b style="font-family:var(--mono)">0 / 1</b><br><span class="spec">Prochain pli dans 08:12:40</span></span></div><p class="spec">Anneau Ambre cerné d’Encre. Temps restant toujours en clair.</p></div>
+          <div class="card"><span class="k">Chances</span><div class="demo col" style="min-height:0;gap:6px;font-size:13px"><span style="display:flex;justify-content:space-between"><span><svg class="rar" aria-hidden="true"><use href="#rar-commune"/></svg> Commune</span><b style="font-family:var(--mono)">66 %</b></span><span style="display:flex;justify-content:space-between"><span><svg class="rar" aria-hidden="true"><use href="#rar-peu"/></svg> Peu commune</span><b style="font-family:var(--mono)">28 %</b></span><span style="display:flex;justify-content:space-between"><span><svg class="rar" aria-hidden="true"><use href="#rar-rare"/></svg> Rare</span><b style="font-family:var(--mono)">5,9 %</b></span><span style="display:flex;justify-content:space-between"><span><svg class="rar" aria-hidden="true"><use href="#rar-legendaire"/></svg> Légendaire</span><b style="font-family:var(--mono)">0,9 %</b></span><span style="display:flex;justify-content:space-between"><span class="bchip miss">?</span><b style="font-family:var(--mono)">2,9 %</b></span></div><p class="spec">Pourcentages exacts, format français « 5,9 % ». Briques inconnues en silhouette.</p></div>
+          <div class="card"><span class="k">Rituel</span><div class="demo col" style="min-height:0"><span style="font-family:var(--script);font-size:24px;text-decoration:line-through;text-decoration-color:var(--c-action);opacity:.4">σοφία</span><span style="font-family:var(--script);font-size:24px;text-decoration:line-through;text-decoration-color:var(--c-action)">sofia</span><span class="bchip" data-kind="suffixe" style="align-self:flex-start;font-size:20px">-sophie</span></div><p class="spec">Charge 0,3 s · écriture 1,3 s <b>dans la carte</b>, qui grossit (× 1,14) et vibre · explosion 0,3 s · révélation. Passable en touchant ou avec Échap.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 04 MOTIFS ========== -->
+  <section class="section" id="motifs">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="sec-num">04 / Motifs</span><h2>Motifs <em>d’expérience</em></h2></div>
+        <p class="sec-intro">Comment les composants s’assemblent : navigation, parcours, retours, gestes, son, clavier, première utilisation.</p>
+      </div>
+
+      <div class="block grid g2">
+        <div class="card">
+          <h3 id="ds-4-1">4.1 Navigation principale</h3>
+          <p>Quatre destinations, toujours visibles. Barre d’onglets en bas sur mobile (pouce), rail vertical à gauche au-delà de 1 100 px. La destination active est en Encre avec un repère ; un compteur Corail signale une nouveauté (pli prêt, carte nouvelle).</p>
+          <div class="demo center" style="padding:0;overflow:hidden">
+            <nav class="tabbar" style="width:100%;max-width:360px;border:1.5px solid var(--line-strong);border-radius:14px" aria-label="Navigation principale (démo)">
+              <a class="on" href="#jeu" aria-current="page"><svg class="ic"><use href="#i-table"/></svg>Table</a>
+              <a href="#jeu"><svg class="ic"><use href="#i-codex"/></svg>Codex<span class="count">2</span></a>
+              <a href="#jeu"><svg class="ic"><use href="#i-pli"/></svg>Plis<span class="count">1</span></a>
+              <a href="#jeu"><svg class="ic"><use href="#i-settings"/></svg>Réglages</a>
+            </nav>
+          </div>
+          <p class="spec">Ordre fixe : Table · Codex · Plis · Réglages. Changer d’onglet conserve l’état de chaque écran (briques posées, filtres, défilement).</p>
+        </div>
+        <div class="card">
+          <h3 id="ds-4-2">4.2 Parcours de fusion</h3>
+          <ol class="anat-list">
+            <li>Choisir une brique disponible dans la réserve (toucher ou glisser).</li>
+            <li>La poser dans l’emplacement 1 ou 2 : un exemplaire est réservé. Toucher un emplacement rempli la retire et rend l’exemplaire.</li>
+            <li>Ordonner : l’ordre fait partie de l’hypothèse.</li>
+            <li>Fusionner : bouton principal, pulse quand les deux emplacements sont remplis.</li>
+            <li>Résultat : découverte (fiche, −1 exemplaire par brique), presque (indice), échec (secousse), déjà connu (rappel). Seule la découverte consomme.</li>
+            <li>Continuer : la table est vide. Si une brique est épuisée, le lien « Ouvrir un pli » est mis en avant.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3 class="block-title" id="ds-4-3"><small>4.3</small>Retours d’une tentative</h3>
+        <p class="xrefs"><span>En situation</span><a class="xref" href="jeu.html#table">Essayer chaque retour</a><a class="xref" href="mouvement.html">Mouvements associés</a></p>
+        <div class="table-wrap">
+          <table class="t"><thead><tr><th>Résultat</th><th>Visuel</th><th>Mouvement</th><th>Son</th><th>Vibration</th><th>Texte</th></tr></thead><tbody>
+            <tr><td>Découverte</td><td>fiche, losange Corail, confettis aux couleurs des briques</td><td>pop à ressort 480 ms, onde</td><td>accord ascendant, 0,6 s</td><td>2 impulsions courtes</td><td>« Nouvelle découverte : biologie ! » · « −1 » sur chaque brique utilisée</td></tr>
+            <tr><td>Presque</td><td>losange contour Encre</td><td>légère secousse 300 ms</td><td>note suspendue</td><td>1 impulsion courte</td><td>« Bonnes briques… mais l’ordre compte. »</td></tr>
+            <tr><td>Échec</td><td>losange Gris encre</td><td>secousse 500 ms</td><td>clic sourd</td><td>aucune</td><td>« Aucune recette connue. Rien n’est perdu. »</td></tr>
+            <tr><td>Déjà connu</td><td>losange Encre, fiche rouverte</td><td>fondu 240 ms</td><td>aucun</td><td>aucune</td><td>« biologie est déjà dans votre codex. »</td></tr>
+            <tr><td>Nouvelle brique (pli)</td><td>rituel, rayons Ambre</td><td>1,8 s</td><td>plume, puis éclat</td><td>1 impulsion longue</td><td>« Nouvelle brique ! »</td></tr>
+            <tr><td>Brique connue (pli)</td><td>« +1 exemplaire · ×3 », « De retour ! » si épuisée</td><td>1,8 s</td><td>plume, puis éclat doux</td><td>1 impulsion courte</td><td>« +1 exemplaire : ×3 dans votre réserve »</td></tr>
+            <tr><td>Réserve pleine (pli)</td><td>« Réserve pleine · ×5 », gouttes</td><td>1,8 s</td><td>plume, puis goutte</td><td>1 impulsion courte</td><td>« Réserve pleine : +4 gouttes d’encre »</td></tr>
+            <tr><td>Brique indisponible</td><td>losange contour Encre, petite brique dans le message</td><td>aucun</td><td>aucun</td><td>aucune</td><td>« Plus aucun exemplaire de <span class="bchip" data-kind="suffixe">-logie</span>. Ouvrez un pli pour en retrouver. »</td></tr>
+          </tbody></table>
+        </div>
+        <p class="spec" style="margin-top:8px">Sons et vibrations désactivables séparément. Jamais de son pour un échec qui puisse sembler moqueur.</p>
+      </div>
+
+      <div class="block grid g2">
+        <div class="card">
+          <h3 id="ds-4-4">4.4 Gestes</h3>
+          <div class="table-wrap" style="border:0"><table class="t" style="min-width:0"><tbody>
+            <tr><td>Toucher</td><td>poser une brique, ouvrir une carte, retourner une carte</td></tr>
+            <tr><td>Glisser</td><td>déplacer une brique vers un emplacement (alternative au toucher)</td></tr>
+            <tr><td>Appui long</td><td>aperçu du sens d’une brique (info-bulle), sans la poser</td></tr>
+            <tr><td>Balayer ← →</td><td>carte précédente ou suivante dans la carte agrandie</td></tr>
+            <tr><td>Balayer ↓</td><td>fermer une feuille</td></tr>
+          </tbody></table></div>
+          <p class="spec">Chaque geste a une alternative par bouton : aucun geste n’est indispensable.</p>
+        </div>
+        <div class="card">
+          <h3 id="ds-4-5">4.5 Clavier</h3>
+          <div class="table-wrap" style="border:0"><table class="t" style="min-width:0"><tbody>
+            <tr><td><kbd>Tab</kbd></td><td>parcourir dans l’ordre de lecture</td></tr>
+            <tr><td><kbd>Entrée</kbd> <kbd>Espace</kbd></td><td>poser une brique, activer un bouton ou un lien</td></tr>
+            <tr><td><kbd>F</kbd></td><td>fusionner (quand les emplacements sont remplis)</td></tr>
+            <tr><td><kbd>←</kbd> <kbd>→</kbd></td><td>carte précédente ou suivante, onglets</td></tr>
+            <tr><td><kbd>Échap</kbd></td><td>fermer une superposition, passer le rituel</td></tr>
+            <tr><td><kbd>/</kbd></td><td>rechercher dans le codex</td></tr>
+          </tbody></table></div>
+        </div>
+      </div>
+
+      <div class="block grid g2">
+        <div class="card">
+          <h3 id="ds-4-6">4.6 Première utilisation</h3>
+          <p>Trois étapes guidées au maximum, sur l’écran réel (jamais de diaporama). Une bulle Encre pointe l’élément concerné, le reste est légèrement voilé. « Passer » est toujours visible.</p>
+          <div class="demo" style="flex-direction:column;align-items:flex-start;gap:14px;position:relative;overflow:hidden;isolation:isolate">
+            <span class="spot"><span class="brick s-s"><span class="l">bio-</span></span></span>
+            <div class="coach">Touchez <b>bio-</b> pour la poser sur la table. L’ordre des briques compte.<div class="row"><span class="steps"><i class="on"></i><i></i><i></i></span><button class="btn btn-text" type="button">Passer</button></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <h3 id="ds-4-7">4.7 Choisir la bonne superposition</h3>
+          <div class="table-wrap" style="border:0"><table class="t" style="min-width:0"><thead><tr><th>Besoin</th><th>Composant</th></tr></thead><tbody>
+            <tr><td>Confirmer une action</td><td>message en ligne ou toast</td></tr>
+            <tr><td>Explorer un objet</td><td>carte agrandie</td></tr>
+            <tr><td>Options contextuelles</td><td>feuille (mobile) ou menu (bureau)</td></tr>
+            <tr><td>Action irréversible</td><td>dialogue</td></tr>
+            <tr><td>Problème durable</td><td>bannière en haut de l’écran</td></tr>
+            <tr><td>Aide ponctuelle</td><td>info-bulle ou bulle guidée</td></tr>
+          </tbody></table></div>
+          <p class="spec">Une seule superposition à la fois. Jamais de dialogue au lancement de l’application.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 05 ÉCRANS ========== -->
+  <section class="section" id="ecrans">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="sec-num">05 / Écrans</span><h2>Écrans <em>types</em></h2></div>
+        <p class="sec-intro">Les écrans principaux de la PWA sur mobile, assemblés uniquement avec les composants de ce design système.</p>
+      </div>
+      <div class="phones">
+        <div class="phone"><div class="screen" role="img" aria-label="Maquette de l’écran Table de fusion">
+          <div class="status"><span>9:41</span><span>●●●</span></div>
+          <div class="app-head"><b>Table</b><span class="icon-btn" style="width:30px;height:30px" aria-hidden="true"><svg class="ic" style="width:15px;height:15px"><use href="#i-hint"/></svg></span></div>
+          <div class="app-body">
+            <div class="mini-slots"><span class="slot is-full"><span class="brick s-s"><span class="l">bio-</span></span></span><span style="font-family:var(--serif);font-size:20px">+</span><span class="slot">2</span></div>
+            <p class="feedback" style="font-size:10px">Posez une deuxième brique.</p>
+            <div class="mini-tray">
+              <span class="brick"><span class="l">géo-</span><span class="m">« terre »</span><span class="n">×2</span></span>
+              <span class="brick" data-kind="suffixe"><span class="l">-logie</span><span class="m">« étude »</span><span class="n">×1</span></span>
+              <span class="brick" data-kind="suffixe"><span class="l">-graphie</span><span class="m">« écriture »</span><span class="n">×2</span></span>
+              <span class="brick is-spent"><span class="l">philo-</span><span class="m">« ami »</span><span class="n zero">Épuisée</span></span>
+            </div>
+            <div class="app-btn"><button class="btn btn-primary is-disabled" type="button" tabindex="-1">Fusionner</button></div>
+          </div>
+          <nav class="tabbar"><a class="on"><svg class="ic"><use href="#i-table"/></svg>Table</a><a><svg class="ic"><use href="#i-codex"/></svg>Codex</a><a><svg class="ic"><use href="#i-pli"/></svg>Plis<span class="count">1</span></a><a><svg class="ic"><use href="#i-settings"/></svg>Réglages</a></nav>
+        </div><b>Table de fusion</b></div>
+
+        <div class="phone"><div class="screen" role="img" aria-label="Maquette de l’écran Codex">
+          <div class="status"><span>9:41</span><span>●●●</span></div>
+          <div class="app-head"><b>Codex</b><span class="spec">16 / 18</span></div>
+          <div class="app-body">
+            <div class="input" style="min-height:34px;border-radius:10px"><svg class="ic" style="width:14px"><use href="#i-search"/></svg><span class="spec">Rechercher</span></div>
+            <div style="display:flex;gap:4px;flex-wrap:wrap"><span class="chip-f" aria-pressed="true" style="min-height:24px;padding:3px 8px;font-size:8px">Tout</span><span class="chip-f" style="min-height:24px;padding:3px 8px;font-size:8px"><i style="--c:var(--c-prefix);width:8px;height:8px"></i>Préfixes</span><span class="chip-f" style="min-height:24px;padding:3px 8px;font-size:8px"><i style="--c:var(--c-lang);width:8px;height:8px"></i>Langues</span></div>
+            <div class="mini-grid">
+              <span class="mcard" style="--band:#0f1f19;--tt:#f3eee3"><span class="top"><span>001</span></span><span class="w">étymologique</span></span>
+              <span class="mcard" style="--band:var(--c-lang)"><span class="top"><span>002</span></span><span class="w">Français</span></span>
+              <span class="mcard" style="--band:var(--c-suffix)"><span class="top"><span>006</span></span><span><span class="bchip" data-kind="suffixe">-logie</span></span></span>
+              <span class="mcard" style="--band:var(--c-prefix)"><span class="top"><span>007</span></span><span><span class="bchip">bio-</span></span></span>
+              <span class="mcard new" style="--band:#0f1f19;--tt:#f3eee3"><span class="top"><span>010</span></span><span class="w">philosophie</span></span>
+              <span class="mcard locked" style="--band:#0f1f19;--tt:#f3eee3"><span class="top"><span>017</span></span><span class="q">?</span></span>
+            </div>
+          </div>
+          <nav class="tabbar"><a><svg class="ic"><use href="#i-table"/></svg>Table</a><a class="on"><svg class="ic"><use href="#i-codex"/></svg>Codex</a><a><svg class="ic"><use href="#i-pli"/></svg>Plis<span class="count">1</span></a><a><svg class="ic"><use href="#i-settings"/></svg>Réglages</a></nav>
+        </div><b>Codex</b></div>
+
+        <div class="phone"><div class="screen" role="img" aria-label="Maquette de l’écran Atelier des plis">
+          <div class="status"><span>9:41</span><span>●●●</span></div>
+          <div class="app-head"><b>Plis</b><span class="inkbox" style="gap:4px"><span class="drop" style="width:10px;height:10px"></span><b style="font-size:16px">12</b></span></div>
+          <div class="app-body" style="align-items:center;text-align:center;background:radial-gradient(circle at 50% 30%, rgba(244,183,64,.25), transparent 60%)">
+            <span class="mini-pack" style="margin-top:16px"></span>
+            <span style="font-family:var(--script);font-size:16px;color:var(--ink-3)">une racine attend d’être écrite…</span>
+            <span style="display:flex;gap:10px;font-size:9px"><span><svg class="rar" aria-hidden="true"><use href="#rar-commune"/></svg> 66 %</span><span><svg class="rar" aria-hidden="true"><use href="#rar-peu"/></svg> 28 %</span><span><svg class="rar" aria-hidden="true"><use href="#rar-rare"/></svg> 5,9 %</span><span><svg class="rar" aria-hidden="true"><use href="#rar-legendaire"/></svg> 0,9 %</span></span>
+            <div class="progress pli" style="--p:40%;height:6px"><i></i></div>
+            <span class="spec" style="font-size:8px">Brique nouvelle garantie dans 4 plis</span>
+            <div class="app-btn" style="width:100%"><button class="btn btn-primary" type="button" tabindex="-1">Ouvrir le pli</button></div>
+          </div>
+          <nav class="tabbar"><a><svg class="ic"><use href="#i-table"/></svg>Table</a><a><svg class="ic"><use href="#i-codex"/></svg>Codex</a><a class="on"><svg class="ic"><use href="#i-pli"/></svg>Plis</a><a><svg class="ic"><use href="#i-settings"/></svg>Réglages</a></nav>
+        </div><b>Atelier des plis</b></div>
+
+        <div class="phone"><div class="screen" role="img" aria-label="Maquette de la carte agrandie" style="background:#0c1814">
+          <div class="status" style="color:#f3eee3"><span>9:41</span><span>●●●</span></div>
+          <div style="display:flex;align-items:center;justify-content:center;gap:4px;padding:4px 10px;color:#f3eee3;font-family:var(--serif);font-size:10px"><span style="opacity:.6">géographie ›</span><span class="bchip" style="font-size:9px;padding:0 4px">géo-</span><span>› géologie</span></div>
+          <div style="flex:1;display:grid;place-items:center;padding:8px 16px">
+            <div style="width:100%;border:2px solid #0f1f19;border-radius:18px;overflow:hidden;background:#fffbf3;color:#0f1f19">
+              <div style="display:flex;justify-content:space-between;padding:8px 12px;background:#0f1f19;color:#f3eee3;font-family:var(--mono);font-size:8px"><span>N° 015</span><span>MOT</span></div>
+              <div style="display:grid;gap:6px;padding:12px">
+                <span class="word" style="font-size:26px"><span class="seg" style="--c:var(--c-prefix)">géo</span><span class="seg" style="--c:var(--c-suffix)">logie</span></span>
+                <span style="font-family:var(--mono);font-size:8px;color:#c23d1f">● FRANÇAIS →</span>
+                <span style="font-family:var(--serif);font-size:11px">Science qui étudie la Terre : ses roches, sa structure et son histoire.</span>
+                <span class="eq" style="gap:4px"><span class="bchip" style="font-size:11px">géo-</span><span>+</span><span class="bchip" data-kind="suffixe" style="font-size:11px">-logie</span></span>
+                <span class="lit" style="font-size:10px"><span style="font-size:7px">Sens littéral</span>« étude de la terre »</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-top:1px solid rgba(15,31,25,.14)"><span class="conf" style="font-size:7px"><i></i><i></i><i></i></span><span class="btn btn-primary btn-s" style="min-height:24px;padding:4px 8px;font-size:8px">Voir les formes</span></div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:center;gap:12px;padding:0 0 18px"><span class="icon-btn" style="color:#f3eee3;border-color:rgba(243,238,227,.4);width:34px;height:34px"><svg class="ic"><use href="#i-back"/></svg></span><span class="icon-btn" style="color:#f3eee3;border-color:rgba(243,238,227,.4);width:34px;height:34px"><svg class="ic"><use href="#i-next"/></svg></span></div>
+        </div><b>Carte agrandie</b></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 06 CONTENU ========== -->
+  <section class="section" id="contenu">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="sec-num">06 / Contenu</span><h2>Voix et <em>microcopie</em></h2></div>
+        <p class="sec-intro">Le jeu parle comme un guide curieux : précis, chaleureux, jamais professoral. Il vouvoie, et s’adresse au joueur à l’impératif (« Posez », « Touchez »).</p>
+      </div>
+      <div class="grid g3">
+        <div class="card"><h3>Ton</h3><ul class="list"><li><span>Phrases courtes : une idée par phrase.</span></li><li><span>Encourageant après un échec, jamais moqueur.</span></li><li><span>Curieux : on invite à explorer, on ne récite pas.</span></li><li><span>Pas de jargon linguistique sans explication (« dérivé », pas « suffixation hypostatique »).</span></li></ul></div>
+        <div class="card"><h3>Typographie française</h3><ul class="list"><li><span>Guillemets « » avec espaces insécables.</span></li><li><span>Espace insécable avant « : », « ; », « ? », « ! ».</span></li><li><span>Pourcentages : « 5,9 % » (virgule, espace).</span></li><li><span>Nombres : « 1 320 », « ×2 », « N° 014 ».</span></li><li><span>Apostrophe typographique ’.</span></li></ul></div>
+        <div class="card"><h3>Règles de nommage</h3><ul class="list"><li><span>Langues toujours en toutes lettres : « grec ancien », jamais « GRC ».</span></li><li><span>Préfixes et suffixes toujours sous forme de brique, jamais en texte brut.</span></li><li><span>Formes étrangères avec leur attribut <code>lang</code> et leur translittération.</span></li><li><span>Majuscule seulement en début de phrase et aux noms propres.</span></li></ul></div>
+      </div>
+      <div class="block">
+        <h3 class="block-title" id="ds-6-1"><small>6.1</small>Glossaire de l’interface</h3>
+        <p class="xrefs"><span>En situation</span><a class="xref" href="boussole.html">La boussole</a></p>
+        <div class="table-wrap"><table class="t"><thead><tr><th>Terme</th><th>Définition pour le joueur</th><th>À ne pas dire</th></tr></thead><tbody>
+          <tr><td>Brique</td><td>Morceau de mot manipulable : préfixe ou suffixe.</td><td>racine, morphème, élément</td></tr>
+          <tr><td>Table de fusion</td><td>L’endroit où l’on assemble deux briques.</td><td>établi, plateau</td></tr>
+          <tr><td>Découverte</td><td>Un mot trouvé en fusionnant des briques.</td><td>succès, victoire</td></tr>
+          <tr><td>Codex</td><td>La collection de toutes les cartes trouvées.</td><td>Pokédex, inventaire</td></tr>
+          <tr><td>Carte</td><td>La fiche d’un mot, d’une brique ou d’une langue dans le codex.</td><td>entrée, item</td></tr>
+          <tr><td>Exemplaire</td><td>Une unité d’une brique. Une découverte en utilise un de chaque brique.</td><td>charge, munition, jeton</td></tr>
+          <tr><td>Réserve</td><td>Les exemplaires que vous possédez, 5 au plus par brique.</td><td>inventaire, stock</td></tr>
+          <tr><td>Épuisée</td><td>Brique sans exemplaire : elle reste dans le codex et revient par les plis.</td><td>perdue, détruite, vide</td></tr>
+          <tr><td>Pli</td><td>Pli scellé et gratuit qui contient une brique ; seule source d’exemplaires. On l’ouvre en brisant le sceau.</td><td>pack, coffre, loot box, booster</td></tr>
+          <tr><td>Doublon</td><td>Brique déjà connue reçue dans un pli : un exemplaire de plus.</td><td>raté, perte</td></tr>
+          <tr><td>Gouttes d’encre</td><td>Ce que rapporte un exemplaire reçu au-delà de 5 ; s’échangent contre des indices.</td><td>monnaie, gemmes</td></tr>
+          <tr><td>Énergie</td><td>Ce qui permet d’ouvrir un pli ; se recharge avec le temps.</td><td>vies, stamina</td></tr>
+          <tr><td>Sens littéral</td><td>Ce que disent les briques mises bout à bout.</td><td>traduction</td></tr>
+        </tbody></table></div>
+      </div>
+      <div class="block">
+        <h3 class="block-title" id="ds-6-2"><small>6.2</small>Modèles de messages</h3>
+        <div class="grid g2">
+          <div class="card"><span class="k">À faire</span><ul class="list"><li><span>« Aucune recette connue. Rien n’est perdu : essayez autre chose. »</span></li><li><span>« Hors ligne. Vous pouvez continuer à fusionner. »</span></li><li><span>« Le prochain pli sera prêt dans 04:21:50. »</span></li><li><span>« +1 exemplaire : ×3 dans votre réserve. »</span></li><li><span>« Plus aucun exemplaire de <span class="bchip" data-kind="suffixe">-logie</span>. Ouvrez un pli pour en retrouver. »</span></li><li><span>« Impossible d’ouvrir le pli. Rien n’a été consommé. »</span></li></ul></div>
+          <div class="card"><span class="k">À éviter</span><ul class="list no"><li><span>« Erreur ! Mauvaise combinaison. »</span></li><li><span>« Échec de la connexion au serveur (code 503). »</span></li><li><span>« Dépêchez-vous, plus que 2 heures ! »</span></li><li><span>« Dommage, encore un doublon… »</span></li><li><span>« Brique perdue ! »</span></li><li><span>« Une erreur est survenue. »</span></li></ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 07 ACCESSIBILITÉ ========== -->
+  <section class="section" id="accessibilite">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="sec-num">07 / Accessibilité</span><h2>Pour <em>tous</em> les joueurs</h2></div>
+        <p class="sec-intro">Objectif WCAG 2.2 niveau AA sur tout le produit. Cette liste sert de contrôle avant chaque publication d’écran.</p>
+      </div>
+      <div class="grid g3">
+        <div class="card"><h3>Voir</h3><ul class="list"><li><span>Texte 4,5:1, grands titres et icônes 3:1 minimum.</span></li><li><span>La couleur n’est jamais le seul signal (type écrit, trait d’union, losange + texte).</span></li><li><span>Tailles en rem : l’interface supporte un zoom de 200 % sans perte.</span></li><li><span>Mode nocturne et mode clair testés séparément.</span></li></ul></div>
+        <div class="card"><h3>Toucher et clavier</h3><ul class="list"><li><span>Cibles tactiles de 44 × 44 minimum, espacées de 8.</span></li><li><span>Chaque glissement a une alternative au toucher ou au clavier.</span></li><li><span>Focus toujours visible : anneau Corail 2 px (Encre sur un bouton Corail).</span></li><li><span>Ordre de tabulation = ordre de lecture ; focus piégé dans les superpositions et restitué à la fermeture.</span></li></ul></div>
+        <div class="card"><h3>Entendre et comprendre</h3><ul class="list"><li><span>Résultats de fusion et de pli annoncés par <code>aria-live="polite"</code>.</span></li><li><span>Textes brouillés ou animés doublés d’une version lisible (<code>sr-only</code>).</span></li><li><span>Formes grecques et latines balisées avec leur attribut <code>lang</code>.</span></li><li><span>Sons jamais porteurs d’une information absente du texte.</span></li></ul></div>
+        <div class="card"><h3>Mouvement</h3><ul class="list"><li><span>Respect de <code>prefers-reduced-motion</code> et réglage du jeu.</span></li><li><span>Aucun clignotement au-delà de 3 fois par seconde.</span></li><li><span>Rituel des plis passable ; aucune action bloquée par une animation.</span></li></ul></div>
+        <div class="card"><h3>Temps</h3><ul class="list"><li><span>Aucun délai imposé pour une décision.</span></li><li><span>Toasts de 3 s minimum, jamais porteurs d’une action unique.</span></li><li><span>La recharge d’énergie n’empêche jamais de jouer.</span></li></ul></div>
+        <div class="card"><h3>Structure</h3><ul class="list"><li><span>Un seul <code>h1</code> par écran, hiérarchie des titres respectée.</span></li><li><span>Repères : <code>header</code>, <code>nav</code>, <code>main</code>.</span></li><li><span>Boutons pour les actions, liens pour les destinations.</span></li><li><span>Composants personnalisés conformes aux motifs ARIA (onglets, interrupteurs, dialogue).</span></li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 08 JETONS ========== -->
+  <section class="section" id="tokens">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><span class="sec-num">08 / Jetons</span><h2>Export des <em>jetons</em></h2></div>
+        <p class="sec-intro">La source de vérité pour le développement. Les mêmes valeurs alimentent le CSS, le code et les maquettes. Le mode nocturne ne redéfinit que les neutres.</p>
+      </div>
+      <div class="grid g2">
+        <div>
+          <div class="code-head"><span class="k" style="margin:0">Variables CSS</span><button class="btn btn-secondary btn-s" type="button" data-copy="cssTokens">Copier</button></div>
+          <pre class="code" id="cssTokens"></pre>
+        </div>
+        <div>
+          <div class="code-head"><span class="k" style="margin:0">Design tokens (JSON)</span><button class="btn btn-secondary btn-s" type="button" data-copy="jsonTokens">Copier</button></div>
+          <pre class="code" id="jsonTokens"></pre>
+        </div>
+      </div>
+      <div class="block">
+        <h3 class="block-title" id="ds-8-1"><small>8.1</small>Mode nocturne</h3>
+        <div class="table-wrap"><table class="t"><thead><tr><th>Jeton</th><th>Clair</th><th>Nocturne</th><th>Remarque</th></tr></thead><tbody>
+          <tr><td><code>--paper</code></td><td><span class="dot" style="--c:#f3eee3"></span>#F3EEE3</td><td><span class="dot" style="--c:#0f1f19"></span>#0F1F19</td><td>fond de page</td></tr>
+          <tr><td><code>--cream</code></td><td><span class="dot" style="--c:#fffbf3"></span>#FFFBF3</td><td><span class="dot" style="--c:#182c24"></span>#182C24</td><td>surfaces</td></tr>
+          <tr><td><code>--ink</code></td><td><span class="dot" style="--c:#0f1f19"></span>#0F1F19</td><td><span class="dot" style="--c:#f3eee3"></span>#F3EEE3</td><td>texte et bordures</td></tr>
+          <tr><td><code>--ink-3</code></td><td><span class="dot" style="--c:#5c6b62"></span>#5C6B62</td><td><span class="dot" style="--c:#93a39a"></span>#93A39A</td><td>métadonnées (4,5:1 dans les deux modes)</td></tr>
+          <tr><td><code>--fixed-ink</code></td><td colspan="2"><span class="dot" style="--c:#0f1f19"></span>#0F1F19 dans les deux modes</td><td>texte posé sur une couleur vive</td></tr>
+          <tr><td>Couleurs de ressource et d’action</td><td colspan="2">identiques dans les deux modes</td><td>seuls les neutres s’inversent</td></tr>
+        </tbody></table></div>
+      </div>
+    </div>
+  </section>
+</main>
+<nav class="site-pager" aria-label="Page précédente et page suivante"></nav>
+
+<footer class="footer">
+  <div class="wrap"><span>ÉtymoLogique · Design système 1.0</span><span><a href="index.html">Sommaire</a> · <a href="identite.html">Identité visuelle</a> · <a href="game-design.md">Game design</a> · <a href="adr.html">ADR</a></span></div>
+</footer>
+
+<div class="toast-zone" id="toasts" role="status" aria-live="polite"></div>
+<div class="scrim" id="scrim" hidden></div>
+<div class="dialog" id="dialog" role="dialog" aria-modal="true" aria-labelledby="dlgTitle" hidden>
+  <h3 id="dlgTitle">Réinitialiser la progression ?</h3>
+  <p>Toutes vos découvertes, briques et gouttes d’encre seront effacées. Cette action est irréversible.</p>
+  <div class="row"><button class="btn btn-secondary" type="button" data-close>Annuler</button><button class="btn btn-danger" type="button" data-close data-toast="Démo : rien n’a été effacé"><svg class="ic" aria-hidden="true"><use href="#i-danger"/></svg>Tout effacer</button></div>
+</div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" hidden>
+  <div class="grab"></div>
+  <h3 id="sheetTitle">Trier les cartes</h3>
+  <div class="segmented" role="group" aria-label="Trier"><button type="button" aria-pressed="true">N°</button><button type="button" aria-pressed="false">A → Z</button><button type="button" aria-pressed="false">Type</button></div>
+  <div style="margin-top:16px"><button class="btn btn-primary" type="button" data-close style="width:100%">Appliquer</button></div>
+</div>
+
+<script src="assets/site-nav.js"></script>
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const mk = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+
+  /* ---------- Jetons (source unique pour l'affichage et l'export) ---------- */
+  const TOKENS = {
+    color: {
+      neutral: {
+        ink: ["Encre", "#0f1f19"], "ink-2": ["Encre secondaire", "#44564d"], "ink-3": ["Gris encre", "#5c6b62"],
+        night: ["Nuit", "#0c1814"], paper: ["Papier", "#f3eee3"], "paper-2": ["Sable", "#e8dfcc"], cream: ["Crème", "#fffbf3"],
+      },
+      resource: {
+        prefix: ["Préfixe · Étincelle", "#cdf25a"], "prefix-tint": ["Préfixe · teinte", "#eef9c4"], "prefix-deep": ["Préfixe · profond", "#5c7600"],
+        suffix: ["Suffixe · Glose", "#4fd1c5"], "suffix-tint": ["Suffixe · teinte", "#d4f3ef"], "suffix-deep": ["Suffixe · profond", "#0d746a"],
+        lang: ["Langue · Palimpseste", "#8f7bf0"], "lang-tint": ["Langue · teinte", "#e5e0fc"], "lang-deep": ["Langue · profond", "#5541c2"],
+        family: ["Famille · Rosée", "#f59ac1"], "family-tint": ["Famille · teinte", "#fde3ee"], "family-deep": ["Famille · profond", "#a8336a"],
+        pli: ["Pli · Ambre", "#f4b740"], "pli-tint": ["Pli · teinte", "#fcecc6"], "pli-deep": ["Pli · profond", "#8f6200"],
+      },
+      action: {
+        action: ["Action · repos", "#ff6b4a"], "action-hover": ["Action · survol", "#ff8667"], "action-active": ["Action · pression", "#e24e2d"],
+        "action-tint": ["Action · teinte", "#ffe2d9"], "action-deep": ["Action · profond", "#c23d1f"],
+        danger: ["Danger · Corail profond", "#c23d1f"],
+      },
+    },
+    space: { 1: 4, 2: 8, 3: 12, 4: 16, 5: 20, 6: 24, 7: 32, 8: 48, 9: 80 },
+    radius: { xs: 6, s: 10, m: 14, l: 22, pill: 999 },
+    border: { hair: 1, default: 1.5, strong: 2 },
+    shadow: { press: "1px 1px 0", chip: "2px 2px 0", rest: "4px 4px 0", hover: "6px 6px 0", overlay: "0 40px 80px -20px rgba(15,31,25,.45)" },
+    duration: { instant: 120, fast: 240, base: 360, slow: 480, reveal: 700, ritual: 1800 },
+    easing: { out: "cubic-bezier(.16, 1, .3, 1)", spring: "cubic-bezier(.34, 1.56, .64, 1)", in: "cubic-bezier(.5, 0, .75, 0)" },
+    z: { base: 0, raised: 10, sticky: 60, toast: 80, overlay: 90, modal: 100 },
+    breakpoint: { sm: 520, md: 760, lg: 1100, max: 1320 },
+  };
+
+  /* ---------- Nuanciers ---------- */
+  const swatches = $("#swatches");
+  Object.entries(TOKENS.color).forEach(([group, entries]) => {
+    Object.entries(entries).forEach(([key, [label, hex]]) => {
+      const cssVar = group === "neutral" ? `--${key}` : `--c-${key}`;
+      const sw = mk("button", "sw");
+      sw.type = "button";
+      sw.style.setProperty("--c", hex);
+      const body = mk("span");
+      body.append(mk("b", null, label), mk("code", null, `${cssVar} · ${hex.toUpperCase()}`));
+      sw.append(mk("i"), body);
+      sw.addEventListener("click", () => copy(`var(${cssVar})`, `var(${cssVar}) copié`));
+      swatches.append(sw);
+    });
+  });
+
+  /* ---------- Espacements et rayons ---------- */
+  const spaces = $("#spaces");
+  Object.entries(TOKENS.space).forEach(([k, v]) => {
+    const s = mk("span"); const i = mk("i"); i.style.setProperty("--v", `${v}px`);
+    s.append(i, `${v}`); s.title = `--space-${k}`; spaces.append(s);
+  });
+  const radii = $("#radii");
+  Object.entries(TOKENS.radius).forEach(([k, v]) => {
+    const s = mk("span"); const i = mk("i");
+    i.style.cssText = `width:44px;height:44px;border:1.5px solid var(--ink);border-radius:${v}px;background:var(--paper-2)`;
+    s.append(i, `${k} · ${v}`); radii.append(s);
+  });
+
+  /* ---------- Icônes ---------- */
+  const ICONS = [["table", "Table"], ["codex", "Codex"], ["pli", "Pli"], ["energy", "Énergie"], ["ink", "Encre"], ["hint", "Indice"], ["back", "Retour"], ["next", "Suivant"], ["close", "Fermer"], ["danger", "Danger"], ["search", "Rechercher"], ["filter", "Filtrer"], ["sort", "Trier"], ["flip", "Retourner"], ["sound", "Son"], ["settings", "Réglages"], ["info", "Information"], ["lock", "Verrouillé"], ["rarity", "Rareté"], ["offline", "Hors ligne"], ["link", "Lien"], ["moon", "Nocturne"], ["calm", "Animations réduites"]];
+  const icons = $("#icons");
+  ICONS.forEach(([id, label]) => {
+    const box = mk("div");
+    box.innerHTML = `<svg class="ic" aria-hidden="true"><use href="#i-${id}"/></svg>`;
+    box.append(label);
+    icons.append(box);
+  });
+
+  /* ---------- Démo de recherche ---------- */
+  const BRICKS = [["bio-", "préfixe", "vie"], ["géo-", "préfixe", "terre"], ["philo-", "préfixe", "ami"], ["astro-", "préfixe", "astre"], ["étymo-", "préfixe", "vrai"], ["-logie", "suffixe", "étude"], ["-graphie", "suffixe", "écriture"], ["-sophie", "suffixe", "sagesse"], ["-nomie", "suffixe", "loi"]];
+  const results = $("#dsResults");
+  const search = $("#dsSearch");
+  const clear = $("#dsClear");
+  const norm = (t) => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  function renderResults() {
+    const q = norm(search.value.trim());
+    const hits = BRICKS.filter(([l, , g]) => !q || norm(l).includes(q) || norm(g).includes(q));
+    results.replaceChildren(...hits.map(([l, k]) => { const c = mk("span", "bchip", l); c.dataset.kind = k; return c; }));
+    if (!hits.length) results.append(mk("span", "spec", "Aucune brique. Essayez un sens : « vie », « terre »…"));
+    $("#dsSearchHelp").textContent = hits.length ? `${hits.length} brique${hits.length > 1 ? "s" : ""}` : "Aucun résultat";
+    clear.hidden = !search.value;
+  }
+  search.addEventListener("input", renderResults);
+  clear.addEventListener("click", () => { search.value = ""; renderResults(); search.focus(); });
+  renderResults();
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "/" && !/input|textarea/i.test(document.activeElement.tagName)) { e.preventDefault(); search.focus(); }
+  });
+
+  /* ---------- Sélecteurs ---------- */
+  $$("#dsFilters .chip-f").forEach((chip, _, all) => chip.addEventListener("click", () => all.forEach((c) => c.setAttribute("aria-pressed", String(c === chip)))));
+  $$(".segmented").forEach((seg) => $$("button", seg).forEach((b, _, all) => b.addEventListener("click", () => all.forEach((x) => x.setAttribute("aria-pressed", String(x === b))))));
+  // Indicateur glissant : suit l'option active quel que soit le code qui la change.
+  function slider(box, attr) {
+    const update = (instant) => {
+      const on = box.querySelector(`[${attr}="true"]`);
+      if (!on || !box.offsetWidth) return;
+      if (instant) box.classList.add("no-slide");
+      box.style.setProperty("--slide-x", `${on.offsetLeft}px`);
+      box.style.setProperty("--slide-w", `${on.offsetWidth}px`);
+      if (instant) requestAnimationFrame(() => requestAnimationFrame(() => box.classList.remove("no-slide")));
+    };
+    box.classList.add("has-slider");
+    update(true);
+    new MutationObserver(() => update(false)).observe(box, { subtree: true, attributes: true, attributeFilter: [attr] });
+    new ResizeObserver(() => update(true)).observe(box);
+  }
+  $$(".segmented").forEach((box) => slider(box, "aria-pressed"));
+  $$(".tabs").forEach((box) => slider(box, "aria-selected"));
+  const tabs = $$("#dsTabs [role=tab]");
+  function selectTab(tab) {
+    tabs.forEach((t) => {
+      const on = t === tab;
+      t.setAttribute("aria-selected", String(on));
+      t.tabIndex = on ? 0 : -1;
+      $(`#${t.getAttribute("aria-controls")}`).hidden = !on;
+    });
+    tab.focus();
+  }
+  tabs.forEach((t, i) => {
+    t.addEventListener("click", () => selectTab(t));
+    t.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") selectTab(tabs[(i + 1) % tabs.length]);
+      if (e.key === "ArrowLeft") selectTab(tabs[(i - 1 + tabs.length) % tabs.length]);
+    });
+  });
+
+  /* ---------- Réglages et bascules d'aperçu ---------- */
+  const calmBtn = $("#toggleCalm");
+  const nightBtn = $("#toggleNight");
+  function setCalm(on) {
+    document.body.classList.toggle("calm", on);
+    calmBtn.setAttribute("aria-pressed", String(on));
+    $$("[data-calm]").forEach((s) => s.setAttribute("aria-checked", String(on)));
+  }
+  function setNight(on) {
+    document.body.classList.toggle("nocturne", on);
+    nightBtn.setAttribute("aria-pressed", String(on));
+    $$("[data-night]").forEach((s) => s.setAttribute("aria-checked", String(on)));
+  }
+  calmBtn.addEventListener("click", () => setCalm(!document.body.classList.contains("calm")));
+  nightBtn.addEventListener("click", () => setNight(!document.body.classList.contains("nocturne")));
+  $$(".switch").forEach((sw) => sw.addEventListener("click", () => {
+    const on = sw.getAttribute("aria-checked") !== "true";
+    if (sw.hasAttribute("data-calm")) setCalm(on);
+    else if (sw.hasAttribute("data-night")) setNight(on);
+    else sw.setAttribute("aria-checked", String(on));
+  }));
+
+  /* ---------- Toasts ---------- */
+  const toasts = $("#toasts");
+  function toast(text, win = false) {
+    const t = mk("div", win ? "toast win" : "toast");
+    t.append(mk("span", "d"), text);
+    toasts.append(t);
+    setTimeout(() => { t.classList.add("out"); setTimeout(() => t.remove(), 260); }, 3000);
+  }
+  async function copy(text, message) {
+    try { await navigator.clipboard.writeText(text); toast(message || "Copié"); } catch { toast(text); }
+  }
+  document.addEventListener("click", (e) => {
+    const trigger = e.target.closest("[data-toast]");
+    if (trigger) toast(trigger.dataset.toast);
+  });
+
+  /* ---------- Dialogue et feuille ---------- */
+  const scrim = $("#scrim");
+  let openLayer = null;
+  let returnFocus = null;
+  function open(layer, from) {
+    openLayer = layer;
+    returnFocus = from;
+    scrim.hidden = false;
+    layer.hidden = false;
+    $("button", layer).focus();
+  }
+  function close() {
+    if (!openLayer) return;
+    openLayer.hidden = true;
+    scrim.hidden = true;
+    openLayer = null;
+    returnFocus?.focus();
+  }
+  $("#openDialog").addEventListener("click", (e) => open($("#dialog"), e.currentTarget));
+  $("#openSheet").addEventListener("click", (e) => open($("#sheet"), e.currentTarget));
+  scrim.addEventListener("click", close);
+  $$("[data-close]").forEach((b) => b.addEventListener("click", close));
+  document.addEventListener("keydown", (e) => {
+    if (!openLayer) return;
+    if (e.key === "Escape") { e.preventDefault(); close(); }
+    if (e.key === "Tab") {
+      const f = $$("button", openLayer);
+      if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+      else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+    }
+  });
+
+  /* ---------- Mouvement ---------- */
+  function replay() {
+    $$("#motionDemo .track").forEach((t) => { t.classList.remove("run"); void t.offsetWidth; t.classList.add("run"); });
+  }
+  $("#replayMotion").addEventListener("click", replay);
+  new IntersectionObserver((entries, obs) => {
+    if (entries[0].isIntersecting) { replay(); obs.disconnect(); }
+  }, { threshold: 0.4 }).observe($("#motionDemo"));
+
+  /* ---------- Export des jetons ---------- */
+  const css = [":root {"];
+  Object.entries(TOKENS.color.neutral).forEach(([k, [, v]]) => css.push(`  --${k}: ${v};`));
+  Object.entries(TOKENS.color.resource).forEach(([k, [, v]]) => css.push(`  --c-${k}: ${v};`));
+  Object.entries(TOKENS.color.action).forEach(([k, [, v]]) => css.push(`  --c-${k}: ${v};`));
+  Object.entries(TOKENS.space).forEach(([k, v]) => css.push(`  --space-${k}: ${v}px;`));
+  Object.entries(TOKENS.radius).forEach(([k, v]) => css.push(`  --radius-${k}: ${v}px;`));
+  Object.entries(TOKENS.border).forEach(([k, v]) => css.push(`  --border-${k}: ${v}px;`));
+  Object.entries(TOKENS.shadow).forEach(([k, v]) => css.push(`  --shadow-${k}: ${v}${k === "overlay" ? "" : " var(--ink)"};`));
+  Object.entries(TOKENS.duration).forEach(([k, v]) => css.push(`  --dur-${k}: ${v}ms;`));
+  Object.entries(TOKENS.easing).forEach(([k, v]) => css.push(`  --ease-${k}: ${v};`));
+  Object.entries(TOKENS.z).forEach(([k, v]) => css.push(`  --z-${k}: ${v};`));
+  css.push("}", "", "[data-theme=\"nocturne\"] {", "  --ink: #f3eee3;", "  --ink-3: #93a39a;", "  --paper: #0f1f19;", "  --paper-2: #172a23;", "  --cream: #182c24;", "}");
+  $("#cssTokens").textContent = css.join("\n");
+  const json = {
+    color: Object.fromEntries(Object.entries(TOKENS.color).map(([g, e]) => [g, Object.fromEntries(Object.entries(e).map(([k, [label, v]]) => [k, { value: v, description: label }]))])),
+    space: TOKENS.space, radius: TOKENS.radius, border: TOKENS.border, shadow: TOKENS.shadow,
+    duration: TOKENS.duration, easing: TOKENS.easing, zIndex: TOKENS.z, breakpoint: TOKENS.breakpoint,
+  };
+  $("#jsonTokens").textContent = JSON.stringify(json, null, 2);
+  $$("[data-copy]").forEach((b) => b.addEventListener("click", () => copy($(`#${b.dataset.copy}`).textContent, "Jetons copiés")));
+
+  /* ---------- Navigation active ---------- */
+  const links = $$(".ds-links a");
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((en) => {
+      if (en.isIntersecting) links.forEach((a) => a.classList.toggle("active", a.getAttribute("href") === `#${en.target.id}`));
+    });
+  }, { rootMargin: "-40% 0px -55% 0px" });
+  $$("main section[id]").forEach((s) => obs.observe(s));
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) setCalm(true);
+})();
+
+</script>
+</body>
+</html>
