@@ -6,6 +6,8 @@ on:
       - "**"
   delete:
   workflow_dispatch:
+  schedule:
+    - cron: "17 * * * *"
 
 permissions:
   contents: read
@@ -52,6 +54,11 @@ jobs:
 
             worktree="$(mktemp -d)"
             git archive --format=tar "$ref" docs | tar -x -C "$worktree"
+            if [[ "$(find "$worktree/docs" -type l -printf x -quit)" == "x" ]]; then
+              echo "::error::${ref} contient un lien symbolique dans docs."
+              rm -rf "$worktree"
+              exit 1
+            fi
             mkdir -p -- "$destination"
             cp -a "$worktree/docs/." "$destination/"
             rm -rf "$worktree"
