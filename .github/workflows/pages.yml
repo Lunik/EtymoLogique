@@ -1,0 +1,94 @@
+name: Publish documentation
+
+on:
+  push:
+    branches:
+      - master
+  delete:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 * * * *"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    if: github.event_name != 'delete' || github.event.ref_type == 'branch'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Fetch every branch
+        run: git fetch --prune origin '+refs/heads/*:refs/remotes/origin/*'
+
+      - name: Assemble the documentation
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          rm -rf _site
+          mkdir -p _site/branches
+
+          publish_branch() {
+            local ref="$1"
+            local destination="$2"
+            local worktree
+
+            if ! git cat-file -e "${ref}:docs/index.html" 2>/dev/null; then
+              echo "::notice title=Documentation absente::${ref} ne contient pas docs/index.html"
+              return
+            fi
+
+            worktree="$(mktemp -d)"
+            git archive --format=tar "$ref" docs | tar -x -C "$worktree"
+            if [[ "$(find "$worktree/docs" -type l -printf x -quit)" == "x" ]]; then
+              echo "::error::${ref} contient un lien symbolique dans docs."
+              rm -rf "$worktree"
+              exit 1
+            fi
+            mkdir -p -- "$destination"
+            cp -a "$worktree/docs/." "$destination/"
+            rm -rf "$worktree"
+          }
+
+          if ! git show-ref --verify --quiet refs/remotes/origin/master; then
+            echo "::error::La branche master est introuvable."
+            exit 1
+          fi
+
+          publish_branch refs/remotes/origin/master _site
+
+          while IFS= read -r ref; do
+            branch="${ref#refs/remotes/origin/}"
+            if [[ "$branch" == "master" || "$branch" == "HEAD" ]]; then
+              continue
+            fi
+            publish_branch "$ref" "_site/branches/$branch"
+          done < <(git for-each-ref --format='%(refname)' refs/remotes/origin)
+
+          touch _site/.nojekyll
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+
+      - name: Upload the Pages artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
