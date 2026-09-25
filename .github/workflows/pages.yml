@@ -1,4 +1,4 @@
-name: Publish private documentation
+name: Publish documentation
 
 on:
   push:
@@ -80,19 +80,6 @@ jobs:
           done < <(git for-each-ref --format='%(refname)' refs/remotes/origin)
 
           touch _site/.nojekyll
-
-      - name: Require private Pages access
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          if ! visibility="$(gh api "repos/${GITHUB_REPOSITORY}/pages" --jq '.public' 2>/dev/null)"; then
-            echo "::error::Activez GitHub Pages avec GitHub Actions et une visibilité privée."
-            exit 1
-          fi
-          if [[ "$visibility" != "false" ]]; then
-            echo "::error::Configurez Settings > Pages > GitHub Pages visibility sur Private."
-            exit 1
-          fi
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
