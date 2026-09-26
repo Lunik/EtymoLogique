@@ -379,6 +379,8 @@ Après le MVP, proposition de l'[ADR 0018](adr/0018-sabliers-et-boutique.md) :
 
 La charte complète, avec ses démonstrations interactives, est sur la page [identité visuelle](identite.html). Son principe : **une couleur, un seul sens**.
 
+Le logo est le **sceau ÉL** : une tuile Corail inclinée de −6°, cernée d'Encre, avec une ombre dure et les initiales en serif gras ([charte du logo](identite.html#logo), [ADR 0021](adr/0021-logo-sceau-el.md), [pistes comparées](logo.html)).
+
 Le [design système](design-system.html) la prolonge en système complet : principes d'expérience, jetons (couleurs, typographie, espacements, rayons, élévation, mouvement, grille, icônes), composants d'interface et de jeu, motifs d'expérience (navigation, retours, gestes, son, clavier, première utilisation, superpositions), écrans types, microcopie, accessibilité et export des jetons en CSS et en JSON.
 
 | Rôle | Couleur | Utilisation exclusive |

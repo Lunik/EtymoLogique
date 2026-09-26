@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Dix pistes de logo pour ÉtymoLogique : page de travail.">
+  <meta name="theme-color" content="#f3eee3">
+  <meta name="robots" content="noindex">
+  <title>Pistes de logo · ÉtymoLogique</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/site-nav.css">
+  <link rel="stylesheet" href="assets/etymo.css">
+  <style>
+    /* Jetons du logo : l'accent Corail passe au ton Profond sur fond clair pour garder 3:1. */
+    .lg {
+      --lg-ink: var(--ink);
+      --lg-mute: var(--ink-3);
+      --lg-acc: var(--c-action-deep);
+      --lg-fill: var(--c-action);
+      --lg-fixed: var(--fixed-ink);
+      --lg-edge: var(--fixed-ink);
+      --lg-shadow: var(--pop-shadow);
+      --lg-tile: var(--cream);
+      --lg-lang: var(--c-lang-deep);
+      --lg-pre: var(--c-prefix);
+      --lg-suf: var(--c-suffix);
+    }
+    body.nocturne .lg, .on-night.lg, .on-night .lg { --lg-acc: var(--c-action); --lg-lang: var(--c-lang); --lg-shadow: var(--dark-shadow); --lg-edge: var(--ink); }
+    .on-night {
+      --paper: #0f1f19; --paper-2: #172a23; --cream: #182c24;
+      --ink: #f3eee3; --ink-2: #b8c6bd; --ink-3: #809088; --line: rgba(243, 238, 227, 0.14);
+      background: var(--paper); color: var(--ink);
+    }
+    .on-day {
+      --paper: #f3eee3; --paper-2: #e8dfcc; --cream: #fffbf3;
+      --ink: #0f1f19; --ink-2: #44564d; --ink-3: #5c6b62; --line: rgba(15, 31, 25, 0.14);
+      background: var(--paper); color: var(--ink);
+    }
+    body .on-day.lg, body .on-day .lg { --lg-acc: var(--c-action-deep); --lg-lang: var(--c-lang-deep); --lg-shadow: var(--fixed-ink); --lg-edge: var(--fixed-ink); }
+    body .mono.lg, body .mono .lg { --lg-acc: var(--ink); --lg-fill: var(--cream); --lg-fixed: var(--ink); --lg-edge: var(--ink); --lg-lang: var(--ink); --lg-pre: var(--cream); --lg-suf: var(--cream); --lg-mute: var(--ink-3); }
+
+    .lg-intro { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 0 0 clamp(40px, 5vw, 64px); padding: 0; list-style: none; }
+    .lg-intro li { padding: 16px 18px; border: 1.5px solid var(--line); border-radius: var(--radius); background: var(--cream); font-size: 14px; color: var(--ink-2); }
+    .lg-intro b { display: block; margin-bottom: 4px; color: var(--ink); font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+
+    .lg-list { display: grid; gap: clamp(28px, 4vw, 48px); }
+    .lg-card.is-chosen { border-width: 2.5px; border-color: var(--c-action-deep); }
+    .lg-card { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); overflow: hidden; border: 1.5px solid var(--line-strong); border-radius: 22px; background: var(--cream); scroll-margin-top: 90px; }
+    .lg-show { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; border-right: 1.5px solid var(--line-strong); }
+    .lg-panel { display: grid; place-items: center; gap: 18px; min-height: 190px; padding: 26px 20px; }
+    .lg-panel + .lg-panel { border-left: 1.5px solid var(--line); }
+    .lg-hero { grid-column: 1 / -1; grid-template-columns: auto 1fr; justify-items: start; gap: clamp(18px, 3vw, 36px); padding: 34px clamp(20px, 4vw, 44px); border-bottom: 1.5px solid var(--line); }
+    .lg-hero .lg-mark { width: clamp(96px, 12vw, 132px); height: auto; }
+    .lg-mark { display: block; overflow: visible; }
+    .lg-lock { display: inline-flex; align-items: center; gap: 12px; color: var(--ink); font-family: var(--serif); font-size: clamp(22px, 2.6vw, 30px); font-weight: 700; line-height: 1; letter-spacing: -0.01em; white-space: nowrap; }
+    .lg-lock .lg-mark { width: 1.6em; height: 1.6em; }
+    .lg-lock.sm { font-size: 20px; }
+    .lg-cap { justify-self: center; font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+    .lg-sizes { display: flex; align-items: flex-end; gap: 16px; }
+    .lg-sizes .lg-mark:nth-child(1) { width: 64px; height: 64px; }
+    .lg-sizes .lg-mark:nth-child(2) { width: 32px; height: 32px; }
+    .lg-sizes .lg-mark:nth-child(3) { width: 16px; height: 16px; }
+
+    .lg-body { display: flex; flex-direction: column; gap: 14px; padding: clamp(22px, 3vw, 34px); }
+    .lg-num { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-action-deep); }
+    body.nocturne .lg-num { color: var(--c-action); }
+    .lg-body h3 { margin: 0; font-family: var(--serif); font-size: clamp(24px, 2.6vw, 32px); line-height: 1.1; }
+    .lg-body h3 em { color: var(--c-action-deep); }
+    body.nocturne .lg-body h3 em { color: var(--c-action); }
+    .lg-body p { margin: 0; color: var(--ink-2); }
+    .lg-pc { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: auto; }
+    .lg-pc b { display: block; margin-bottom: 4px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink); }
+    .lg-pc ul { margin: 0; padding-left: 16px; font-size: 14px; color: var(--ink-2); }
+
+    .lg-wm-acc { color: var(--c-action-deep); }
+    body.nocturne .lg-wm-acc, .on-night .lg-wm-acc { color: var(--c-action); }
+    body .on-day .lg-wm-acc { color: var(--c-action-deep); }
+    body .mono .lg-wm-acc { color: inherit; }
+    .lg-wm-it { font-style: italic; font-weight: 600; }
+    .lg-hyph { display: inline-block; width: 0.42em; height: 0.2em; margin: 0 0.06em; border: 0.06em solid var(--fixed-ink); border-radius: 0.06em; background: var(--c-action); vertical-align: 0.2em; }
+    .on-night .lg-hyph, body.nocturne .lg-hyph { border-color: var(--ink); }
+    body .on-day .lg-hyph { border-color: var(--fixed-ink); }
+    body .mono .lg-hyph { border-color: var(--ink); background: var(--cream); }
+    .lg-guil { color: var(--c-action-deep); font-weight: 400; }
+    body.nocturne .lg-guil, .on-night .lg-guil { color: var(--c-action); }
+    body .on-day .lg-guil { color: var(--c-action-deep); }
+    body .mono .lg-guil { color: inherit; }
+    .lg-sans { font-family: var(--sans); font-weight: 600; letter-spacing: 0.01em; }
+    .lg-mute { color: var(--ink-3); font-weight: 400; }
+
+    .lg-board { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 14px; margin-top: 24px; }
+    .lg-app { display: grid; justify-items: center; gap: 10px; padding: 16px 8px; border: 1.5px solid var(--line); border-radius: var(--radius); background: var(--cream); color: var(--ink); font-family: var(--mono); font-size: 11px; text-decoration: none; }
+    .lg-app:hover { border-color: var(--line-strong); }
+    .lg-app:focus-visible { outline: 2px solid var(--c-action); outline-offset: 2px; }
+    .lg-icon { display: grid; place-items: center; width: 72px; height: 72px; border: 1.5px solid var(--line-strong); border-radius: 18px; background: var(--paper); }
+    .lg-icon .lg-mark { width: 52px; height: 52px; }
+    .lg-navs { display: grid; gap: 10px; margin-top: 24px; }
+    .lg-nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 10px 18px; border: 1.5px solid var(--line); border-radius: 999px; }
+    .lg-nav > span:last-child { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+    .lg-nav .lg-lock { font-size: 19px; }
+    .lg-nav .lg-lock .lg-mark { width: 30px; height: 30px; }
+    .lg-sub { margin: clamp(56px, 7vw, 96px) 0 0; font-family: var(--serif); font-size: clamp(26px, 3vw, 36px); }
+
+    @media (max-width: 900px) {
+      .lg-card { grid-template-columns: 1fr; }
+      .lg-show { border-right: 0; border-bottom: 1.5px solid var(--line-strong); }
+    }
+    @media (max-width: 520px) {
+      .lg-show { grid-template-columns: 1fr; }
+      .lg-panel + .lg-panel { border-left: 0; border-top: 1.5px solid var(--line); }
+      .lg-hero { grid-template-columns: 1fr; justify-items: center; }
+      .lg-pc { grid-template-columns: 1fr; }
+      .lg-nav > span:last-child { display: none; }
+    }
+  </style>
+</head>
+<body>
+<!-- Symboles des dix pistes : grille 64 × 64, couleurs portées par les variables --lg-*. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <!-- 1. Sceau ÉL affiné -->
+  <symbol id="lg1" viewBox="0 0 64 64">
+    <g transform="rotate(-6 32 32)">
+      <rect x="12" y="12" width="44" height="44" rx="12" style="fill:var(--lg-shadow)"/>
+      <rect x="7" y="7" width="44" height="44" rx="12" style="fill:var(--lg-fill);stroke:var(--lg-edge);stroke-width:2.5"/>
+      <text x="29" y="40" text-anchor="middle" style="fill:var(--lg-fixed);font-family:var(--serif);font-size:25px;font-weight:700;letter-spacing:-0.5px">ÉL</text>
+    </g>
+  </symbol>
+  <!-- 2. Deux briques -->
+  <symbol id="lg2" viewBox="0 0 64 64">
+    <rect x="6" y="9" width="36" height="22" rx="6" style="fill:var(--lg-shadow)" transform="translate(3 3)"/>
+    <rect x="6" y="9" width="36" height="22" rx="6" style="fill:var(--lg-pre);stroke:var(--lg-edge);stroke-width:2.5"/>
+    <text x="24" y="26.5" text-anchor="middle" style="fill:var(--lg-fixed);font-family:var(--serif);font-size:17px;font-weight:700">é-</text>
+    <rect x="19" y="35" width="36" height="22" rx="6" style="fill:var(--lg-shadow)" transform="translate(3 3)"/>
+    <rect x="19" y="35" width="36" height="22" rx="6" style="fill:var(--lg-suf);stroke:var(--lg-edge);stroke-width:2.5"/>
+    <text x="37" y="52.5" text-anchor="middle" style="fill:var(--lg-fixed);font-family:var(--serif);font-size:17px;font-weight:700">-L</text>
+  </symbol>
+  <!-- 3. Le trait d'union -->
+  <symbol id="lg3" viewBox="0 0 64 64">
+    <text x="16" y="46" text-anchor="middle" style="fill:var(--lg-ink);font-family:var(--serif);font-size:34px;font-weight:700">É</text>
+    <rect x="25.5" y="32" width="13" height="7" rx="2.5" style="fill:var(--lg-fill);stroke:var(--lg-edge);stroke-width:2"/>
+    <text x="49" y="46" text-anchor="middle" style="fill:var(--lg-ink);font-family:var(--serif);font-size:34px;font-weight:700">L</text>
+  </symbol>
+  <!-- 4. L'accent aigu -->
+  <symbol id="lg4" viewBox="0 0 64 64">
+    <text x="32" y="56" text-anchor="middle" style="fill:var(--lg-ink);font-family:var(--serif);font-size:54px;font-weight:700">e</text>
+    <path d="M30 17 L41 4.5 L48 7.5 L35 19.5 Z" style="fill:var(--lg-fill);stroke:var(--lg-edge);stroke-width:2;stroke-linejoin:round"/>
+  </symbol>
+  <!-- 5. Le miroir des écritures -->
+  <symbol id="lg5" viewBox="0 0 64 64">
+    <path d="M28 14 H10 V50 H28 M10 32 H24" style="fill:none;stroke:var(--lg-ink);stroke-width:5.5;stroke-linecap:round;stroke-linejoin:round"/>
+    <path d="M13 9 L20 4" style="fill:none;stroke:var(--lg-ink);stroke-width:4;stroke-linecap:round"/>
+    <path d="M36 14 C49 14 55 22 55 32 C55 42 49 50 36 50 M42 32 H54" style="fill:none;stroke:var(--lg-lang);stroke-width:5.5;stroke-linecap:round;stroke-linejoin:round"/>
+  </symbol>
+  <!-- 6. La racine -->
+  <symbol id="lg6" viewBox="0 0 64 64">
+    <path d="M40 10 H20 V40 M20 25 H36 M20 40 H40" style="fill:none;stroke:var(--lg-ink);stroke-width:5.5;stroke-linecap:round;stroke-linejoin:round"/>
+    <path d="M24 3 L31 -1" transform="translate(0 4)" style="fill:none;stroke:var(--lg-acc);stroke-width:4;stroke-linecap:round"/>
+    <path d="M20 40 V58 M20 46 C20 52 13 53 10 59 M20 46 C20 52 27 53 30 59" style="fill:none;stroke:var(--lg-acc);stroke-width:3;stroke-linecap:round;stroke-linejoin:round"/>
+  </symbol>
+  <!-- 7. Casse d'imprimerie -->
+  <symbol id="lg7" viewBox="0 0 64 64">
+    <g style="stroke:var(--lg-edge);stroke-width:2">
+      <rect x="5" y="5" width="25" height="25" rx="5" style="fill:var(--lg-fill)"/>
+      <rect x="34" y="5" width="25" height="25" rx="5" style="fill:var(--lg-tile)"/>
+      <rect x="5" y="34" width="25" height="25" rx="5" style="fill:var(--lg-tile)"/>
+      <rect x="34" y="34" width="25" height="25" rx="5" style="fill:var(--lg-tile)"/>
+    </g>
+    <g text-anchor="middle" style="font-family:var(--serif);font-size:18px;font-weight:700">
+      <text x="17.5" y="24.5" style="fill:var(--lg-fixed)">É</text>
+      <text x="46.5" y="24.5" style="fill:var(--lg-ink)">t</text>
+      <text x="17.5" y="52.5" style="fill:var(--lg-ink)">y</text>
+      <text x="46.5" y="52.5" style="fill:var(--lg-ink)">m</text>
+    </g>
+  </symbol>
+  <!-- 8. Guillemets -->
+  <symbol id="lg8" viewBox="0 0 64 64">
+    <path d="M13 22 L5 32 L13 42 M21 22 L13 32 L21 42" style="fill:none;stroke:var(--lg-acc);stroke-width:4;stroke-linecap:round;stroke-linejoin:round"/>
+    <path d="M43 22 L51 32 L43 42 M51 22 L59 32 L51 42" style="fill:none;stroke:var(--lg-acc);stroke-width:4;stroke-linecap:round;stroke-linejoin:round"/>
+    <text x="32" y="46" text-anchor="middle" style="fill:var(--lg-ink);font-family:var(--serif);font-size:36px;font-weight:700">é</text>
+  </symbol>
+  <!-- 9. Généalogie d'une lettre -->
+  <symbol id="lg9" viewBox="0 0 64 64">
+    <path d="M24 12 V52 M24 14 L6 20 M24 26 L6 32 M24 38 L6 44" style="fill:none;stroke:var(--lg-mute);stroke-width:3;stroke-linecap:round;stroke-linejoin:round"/>
+    <path d="M56 17 H38 V47 H56 M38 32 H52" style="fill:none;stroke:var(--lg-ink);stroke-width:5.5;stroke-linecap:round;stroke-linejoin:round"/>
+    <path d="M42 11 L49 6" style="fill:none;stroke:var(--lg-acc);stroke-width:4;stroke-linecap:round"/>
+    <circle cx="31" cy="32" r="2.6" style="fill:var(--lg-acc)"/>
+  </symbol>
+  <!-- 10. Ligature ÉL -->
+  <symbol id="lg10" viewBox="0 0 64 64">
+    <path d="M30 17 H10 V49 H56 M10 33 H26 M38 17 V49" style="fill:none;stroke:var(--lg-ink);stroke-width:5.5;stroke-linecap:round;stroke-linejoin:round"/>
+    <path d="M15 10 L23 5" style="fill:none;stroke:var(--lg-acc);stroke-width:4.5;stroke-linecap:round"/>
+  </symbol>
+</svg>
+<div class="progress" aria-hidden="true"></div>
+<a class="skip-link" href="#contenu">Aller au contenu</a>
+<header class="site-nav"></header>
+
+<main id="contenu">
+  <section class="section" id="logo">
+    <div class="wrap">
+      <div class="sec-head">
+        <div data-reveal><span class="sec-num">Identité · Page de travail</span><h2>Dix pistes <em>de logo</em></h2></div>
+        <div class="sec-intro" data-reveal style="--d:120ms"><p>Des marques épurées qui portent les lettres et les langues. Chaque piste est montrée en grand, en logo horizontal, en mode nocturne, en monochrome et aux tailles d’icône 64, 32 et 16 px.</p><p class="xrefs"><span>Voir aussi</span><a class="xref" href="adr.html#adr-0021" data-kind="adr">ADR 0021 : le sceau ÉL affiné</a><a class="xref" href="identite.html#action">Corail, couleur de marque</a><a class="xref" href="identite.html#formes">Formes</a><a class="xref" href="adr.html#adr-0017" data-kind="adr">ADR 0017 : nom et logo réservés</a></p></div>
+      </div>
+
+      <ul class="lg-intro" data-reveal>
+        <li><b>Couleur</b>Corail, Encre et neutres. Sur fond clair, l’accent Corail prend le ton Profond pour garder un contraste de 3:1.</li>
+        <li><b>Ressources</b>Étincelle, Glose ou Palimpseste seulement quand le logo montre une brique ou une langue.</li>
+        <li><b>Formes</b>Ombres dures, bordures Encre sur les aplats vifs, ni dégradé ni blanc pur.</li>
+        <li><b>Statut</b>Piste 01 retenue (<a href="adr.html#adr-0021">ADR 0021</a>) : le sceau affiné remplace le sceau en monospace dans la navigation, devient l’icône des pages, et passe en monochrome dans le pied de page Corail et sur la face des plis. Les neuf autres pistes restent ici pour mémoire.</li>
+      </ul>
+
+      <div class="lg-list" id="pistes"></div>
+
+      <h3 class="lg-sub" id="planche">Planche <em>comparative</em></h3>
+      <p class="sec-intro" style="margin:8px 0 0;max-width:62ch;color:var(--ink-2)">Les dix symboles en icône d’application, puis en situation dans la barre de navigation, en mode atelier et en mode nocturne.</p>
+      <div class="lg-board" id="board"></div>
+      <div class="lg-navs" id="navs"></div>
+    </div>
+  </section>
+</main>
+
+<div class="toast" role="status" aria-live="polite"></div>
+<script src="assets/site-nav.js"></script>
+<script>
+  (() => {
+    const PISTES = [
+      { title: "Le sceau <em>affiné</em>", wm: "ÉtymoLogique", chosen: true,
+        intent: "L’évolution du sceau actuel : la tuile Corail inclinée garde son ombre dure, mais les initiales passent en serif pour parler de mots plutôt que de code.",
+        pros: ["Continuité avec le dossier", "Tampon d’éditeur, très lisible en petit"], cons: ["Proche de l’existant, peu de surprise", "Les lettres seules ne disent rien des langues"] },
+      { title: "Deux <em>briques</em>", wm: "Étymo<span class=\"lg-wm-acc\">·</span>Logique",
+        intent: "Le nom est déjà une fusion : « étymo- » et « -logique » deviennent un préfixe Étincelle et un suffixe Glose, décalés comme sur la table de fusion.",
+        pros: ["Raconte la mécanique du jeu", "Réutilise la brique, forme signature"], cons: ["Emprunte deux couleurs de ressource à la marque", "Dense à 16 px"] },
+      { title: "Le trait <em>d’union</em>", wm: "Étymo<span class=\"lg-hyph\" aria-hidden=\"true\"></span>Logique",
+        intent: "Le trait d’union, signe des préfixes et des suffixes, devient une petite brique Corail : c’est lui qui relie les deux moitiés du nom.",
+        pros: ["Très sobre, typographique", "Le trait d’union se décline seul (chargement, favicon)"], cons: ["Le trait d’union peut sembler un simple tiret", "Demande un serif bien dessiné"] },
+      { title: "L’accent <em>aigu</em>", wm: "<span class=\"lg-wm-acc\">É</span>tymologique",
+        intent: "Un seul signe distinctif : l’accent du É, en Corail. Il dit le français, la lettre, et l’étincelle de la découverte.",
+        pros: ["Le plus minimal des dix", "Très reconnaissable, même en monochrome"], cons: ["Risque de banalité (beaucoup de marques jouent sur l’accent)", "La langue française seulement, pas les autres"] },
+      { title: "Le miroir <em>des écritures</em>", wm: "Étymo<span class=\"lg-wm-acc\">Logique</span>",
+        intent: "Un É latin et un Э cyrillique se tournent le dos, le second en Palimpseste, la couleur des langues : un même son, deux alphabets.",
+        pros: ["Parle explicitement des langues", "Symétrie forte, marque graphique mémorable"], cons: ["Le cyrillique n’est pas une langue source majeure du jeu", "Le violet des langues devient aussi une couleur de marque"] },
+      { title: "La <em>racine</em>", wm: "Étymo<span class=\"lg-wm-it lg-wm-acc\">Logique</span>",
+        intent: "Le fût du E plonge sous la ligne et se ramifie : l’étymon est la racine d’où poussent les mots.",
+        pros: ["Métaphore immédiate de l’étymologie", "Se prête à une animation de croissance"], cons: ["L’image de l’arbre est très répandue", "Les racines fines se perdent à 16 px"] },
+      { title: "Casse <em>d’imprimerie</em>", wm: "<span class=\"lg-sans\">ÉTYMO</span><span class=\"lg-sans lg-wm-acc\">LOGIQUE</span>",
+        intent: "Quatre caractères en plomb rangés dans la casse : É, t, y, m. On compose des mots lettre par lettre, comme dans le jeu.",
+        pros: ["Ludique et tactile", "Grille modulaire, déclinable (É L, codex, plis)"], cons: ["Évoque le Scrabble", "Les petites lettres deviennent illisibles en favicon"] },
+      { title: "Les <em>guillemets</em>", wm: "<span class=\"lg-guil\">«&nbsp;</span>ÉtymoLogique<span class=\"lg-guil\">&nbsp;»</span>",
+        intent: "Un mot cité entre guillemets français : on regarde le mot lui-même, sa forme et son histoire. Les chevrons Corail encadrent un é en Encre.",
+        pros: ["Typographie française assumée", "Le cadre « » s’applique à tout mot découvert"], cons: ["Guillemets souvent associés à la citation, à la presse", "Proche d’un pictogramme de code ‹ ›"] },
+      { title: "Généalogie <em>d’une lettre</em>", wm: "Étymo<span class=\"lg-wm-acc\">Logique</span>",
+        intent: "Le hé phénicien, penché et tourné vers la gauche, donne le E latin. L’ancêtre en Gris encre, le descendant en Encre, un point Corail entre les deux.",
+        pros: ["Histoire réelle d’une lettre, très étymologique", "Deux traits simples, lisible en petit"], cons: ["Le glyphe archaïque peut passer pour un peigne", "Demande une ligne d’explication"] },
+      { title: "La ligature <em>ÉL</em>", wm: "ÉtymoLogique",
+        intent: "Un monogramme monoline : le E et le L partagent leur trait de base, comme les briques partagent un mot. L’accent Corail signe l’ensemble.",
+        pros: ["Géométrique, net à toutes les tailles", "Initiales du nom, comme le sceau actuel"], cons: ["Plus froid, moins littéraire que le serif", "La ligature se lit parfois « EIL »"] },
+    ];
+    const svg = (n, label) => `<svg class="lg-mark" viewBox="0 0 64 64"${label ? ` role="img" aria-label="${label}"` : ' aria-hidden="true"'}><use href="#lg${n}"/></svg>`;
+    const lock = (n, p, cls = "") => `<span class="lg-lock ${cls}">${svg(n)}<span>${p.wm}</span></span>`;
+    const plain = (s) => s.replace(/<[^>]+>/g, "");
+
+    document.getElementById("pistes").innerHTML = PISTES.map((p, i) => {
+      const n = i + 1;
+      return `<article class="lg-card lg${p.chosen ? " is-chosen" : ""}" id="piste-${n}" data-reveal>
+        <div class="lg-show">
+          <div class="lg-panel lg-hero">${svg(n, `Symbole de la piste ${n} : ${plain(p.title)}`)}${lock(n, p)}</div>
+          <div class="lg-panel on-night lg">${lock(n, p, "sm")}<span class="lg-cap">Nocturne</span></div>
+          <div class="lg-panel mono lg"><div class="lg-sizes">${svg(n)}${svg(n)}${svg(n)}</div><span class="lg-cap">Monochrome · 64, 32, 16 px</span></div>
+        </div>
+        <div class="lg-body">
+          <span class="lg-num">Piste ${String(n).padStart(2, "0")}${p.chosen ? " · retenue" : ""}</span>
+          <h3>${p.title}</h3>
+          <p>${p.intent}</p>
+          <div class="lg-pc">
+            <div><b>Forces</b><ul>${p.pros.map((x) => `<li>${x}</li>`).join("")}</ul></div>
+            <div><b>Risques</b><ul>${p.cons.map((x) => `<li>${x}</li>`).join("")}</ul></div>
+          </div>
+          <div class="lg-sizes" aria-label="Tailles d’icône en couleur">${svg(n)}${svg(n)}${svg(n)}</div>
+        </div>
+      </article>`;
+    }).join("");
+
+    document.getElementById("board").innerHTML = PISTES.map((p, i) =>
+      `<a class="lg-app lg" href="#piste-${i + 1}"><span class="lg-icon">${svg(i + 1)}</span>Piste ${String(i + 1).padStart(2, "0")}</a>`).join("");
+
+    document.getElementById("navs").innerHTML = PISTES.map((p, i) => `
+      <div class="lg-nav on-day lg">${lock(i + 1, p)}<span>Piste ${String(i + 1).padStart(2, "0")} · atelier</span></div>
+      <div class="lg-nav on-night lg">${lock(i + 1, p)}<span>Piste ${String(i + 1).padStart(2, "0")} · nocturne</span></div>`).join("");
+  })();
+</script>
+<script src="assets/etymo.js"></script>
+
+</body>
+</html>

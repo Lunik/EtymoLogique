@@ -34,6 +34,7 @@ Une modification importante se fait dans un nouvel ADR. Les corrections factuell
 | [0018](0018-sabliers-et-boutique.md) | Sabliers pour avancer la recharge des plis, boutique après le MVP | Proposé, sabliers gratuits repris par 0020 |
 | [0019](0019-encre-a-chaque-doublon.md) | Chaque doublon rapporte de l'encre | Accepté, base d'encre et prix de l'indice remplacés par 0020 |
 | [0020](0020-deux-plis-en-attente-et-sabliers.md) | Deux plis en attente, sabliers gagnés par l'encre | Accepté |
+| [0021](0021-logo-sceau-el.md) | Logo : le sceau ÉL affiné | Accepté |
 
 ## Page HTML
 

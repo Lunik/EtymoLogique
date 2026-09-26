@@ -101,10 +101,11 @@ button { font: inherit; }
   background: var(--c-action); color: var(--fixed-ink);
   border: 1.5px solid var(--fixed-ink);
   box-shadow: 3px 3px 0 var(--fixed-ink);
-  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  font-family: var(--serif); font-size: 14px; font-weight: 700; letter-spacing: -0.02em;
   rotate: -6deg; transition: rotate 0.5s var(--ease-spring);
 }
 .wordmark:hover .seal { rotate: 8deg; }
+body.nocturne .seal { box-shadow: 3px 3px 0 var(--dark-shadow); }
 .theme-btn {
   display: grid; place-items: center;
   width: 40px; height: 40px; flex: none;
@@ -474,6 +475,39 @@ h2 em { color: var(--c-action-deep); font-style: italic; }
 .action-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 20px; }
 .action-demo { display: grid; align-content: center; gap: 22px; padding: 28px; border-radius: var(--radius); background: var(--cream); border: 1.5px solid var(--line-strong); }
 .action-demo .row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+
+/* Logo : sceau ÉL (ADR 0021) */
+.logo-mark { --seal-fill: var(--c-action); --seal-edge: var(--fixed-ink); --seal-shadow: var(--fixed-ink); --seal-ink: var(--fixed-ink); display: block; flex: none; width: 64px; height: 64px; overflow: visible; }
+.logo-mark.is-night, body.nocturne .logo-mark { --seal-shadow: var(--dark-shadow); }
+.logo-mark.is-mono, body.nocturne .logo-mark.is-mono { --seal-fill: #fffbf3; --seal-shadow: var(--fixed-ink); }
+body .logo-mark.is-day { --seal-shadow: var(--fixed-ink); }
+.logo-mark.is-wrong-fill { --seal-fill: var(--c-pli); }
+.logo-mark.is-flat { --seal-shadow: transparent; rotate: 6deg; }
+.logo-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 20px; margin-bottom: 12px; }
+.logo-stage { display: grid; place-items: center; align-content: center; gap: 28px; padding: 36px 28px; border: 1.5px solid var(--line-strong); border-radius: var(--radius); background: var(--paper); }
+.logo-lock { display: inline-flex; align-items: center; gap: 0.35em; font-family: var(--serif); font-size: clamp(30px, 4vw, 46px); font-weight: 700; letter-spacing: -0.01em; line-height: 1; white-space: nowrap; }
+.logo-lock .logo-mark { width: 1.9em; height: 1.9em; }
+.logo-lock.sm { font-size: 17px; }
+.logo-lock:hover .logo-mark { rotate: 14deg; transition: rotate 0.5s var(--ease-spring); }
+.logo-lock .logo-mark { transition: rotate 0.5s var(--ease-spring); }
+.logo-sizes { display: flex; align-items: flex-end; gap: 16px; }
+.logo-sizes .logo-mark:nth-child(2) { width: 32px; height: 32px; }
+.logo-sizes .logo-mark:nth-child(3) { width: 16px; height: 16px; }
+.logo-sizes code { margin-left: 6px; color: var(--ink-3); font-family: var(--mono); font-size: 10px; }
+.logo-anat li b { display: inline-block; min-width: 9.5em; color: var(--ink); }
+.logo-variants { margin-bottom: 12px; }
+.shape-demo.logo-bg-paper, .logo-bg-paper { background: #f3eee3; color: var(--fixed-ink); }
+.shape-demo.logo-bg-night, .logo-bg-night { background: var(--night); color: #f3eee3; }
+.shape-demo.logo-bg-coral, .logo-bg-coral { background: var(--c-action); color: var(--fixed-ink); }
+.shape-demo.logo-bg-pli, .logo-bg-pli { background: var(--c-pli-tint); color: var(--fixed-ink); }
+.logo-bg-lang { background: var(--c-lang); }
+.logo-donts { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+.logo-donts .rule-demo { grid-template-rows: 110px auto; }
+.logo-donts .logo-mark { width: 56px; height: 56px; }
+.logo-donts .rd-surface { padding: 10px 14px; }
+@media (max-width: 1100px) { .logo-donts { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 760px) { .logo-grid { grid-template-columns: 1fr; } .logo-donts { grid-template-columns: 1fr 1fr; } .logo-anat li b { min-width: 0; margin-right: 6px; } }
+@media (prefers-reduced-motion: reduce) { .logo-lock:hover .logo-mark { rotate: 0deg; } }
 
 .fb-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 .fb { display: grid; align-content: start; gap: 10px; padding: 18px; border: 1.5px solid var(--line-strong); border-radius: var(--radius); background: var(--cream); }
@@ -1532,7 +1566,14 @@ button.brick { position: relative; }
 }
 .foot-seal svg { width: 100%; height: 100%; }
 .foot-seal text { fill: var(--fixed-ink); font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; }
-.foot-seal b { position: absolute; font-family: var(--serif); font-size: 36px; animation: spin 24s linear infinite reverse; }
+/* Sur la bande Corail, le logo passe en monochrome (ADR 0021). */
+.foot-seal b {
+  position: absolute; display: grid; place-items: center; width: 34%; aspect-ratio: 1;
+  border: 2px solid var(--fixed-ink); border-radius: 27%;
+  background: #fffbf3; box-shadow: 5px 5px 0 var(--fixed-ink); color: var(--fixed-ink);
+  font-family: var(--serif); font-size: clamp(18px, 2.2vw, 26px); font-weight: 700; letter-spacing: -0.02em; line-height: 1;
+  rotate: -6deg; animation: spin 24s linear infinite reverse;
+}
 
 .toast {
   position: fixed; z-index: 80; right: 20px; bottom: 20px;
@@ -1587,7 +1628,7 @@ button.brick { position: relative; }
   .f3 { top: 2%; left: 0; }
   .f4 { display: none; }
   .f5 { display: none; }
-  .foot-seal b { font-size: 22px; }
+  .foot-seal b { font-size: 13px; border-width: 1.5px; box-shadow: 3px 3px 0 var(--fixed-ink); }
 }
 @media (max-width: 520px) {
   .hero { padding-top: 100px; }
@@ -1852,6 +1893,13 @@ body.nocturne { --c-danger-line: #ff6b4a; }
   background: #fffbf3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .pk-bottom { font-size: 8px; }
+/* Logo monochrome : la face du pli reste en neutres et Ambre (ADR 0021). */
+.pk-brand {
+  display: inline-grid; place-items: center; width: 13px; height: 13px; margin: -2px 5px 0 0;
+  border: 1px solid #0f1f19; border-radius: 3.5px; background: #fffbf3; color: #0f1f19;
+  font-family: var(--serif); font-size: 6px; font-weight: 700; letter-spacing: -0.02em; line-height: 1;
+  vertical-align: middle; rotate: -6deg;
+}
 /* En recharge : une silhouette en pointillé (ce qui manque), jamais une carte grisée qui laisserait croire à un contenu */
 .pk-stage[data-state="recharging"] .pk-pack { opacity: 1; filter: none; animation: none; transform: rotate(-2deg); }
 .pk-stage[data-state="recharging"] .pk-face {

@@ -36,6 +36,7 @@ XREFS = {
     "0018": [("plis.html#sablier", "Le sablier dans l’atelier des plis")],
     "0019": [("plis.html#encre", "L’encre gagnée à chaque doublon")],
     "0020": [("plis.html#energie", "Deux plis en attente"), ("plis.html#sablier", "Une goutte, une heure")],
+    "0021": [("logo.html#piste-1", "Le sceau retenu et ses déclinaisons"), ("plis.html#plis", "Le logo monochrome sur la face du pli"), ("identite.html#logo", "Le logo dans la charte")],
     "0013": [("modele.html", "Le modèle de données"), ("modele.html#decisions", "Quatre cas, quatre règles"), ("codex.html#filiation", "Formes et filiation dans le codex")],
 }
 

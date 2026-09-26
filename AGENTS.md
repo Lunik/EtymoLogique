@@ -18,8 +18,10 @@ Tout le contenu est **en français**. Rédigez en français (documentation, micr
 | `docs/identite.html`, `design-system.html`, `typographie.html`, `mouvement.html` | Identité visuelle et design système. |
 | `docs/jeu.html`, `plis.html`, `codex.html` | Démonstrations jouables (table de fusion, plis, codex). |
 | `docs/boussole.html`, `moodboard.html` | Piliers, à cultiver / à éviter, ambiance. |
+| `docs/logo.html` | Page de travail hors navigation : les dix pistes de logo, dont le sceau ÉL retenu (ADR 0021). |
 | `docs/assets/etymo.css` | **Jetons de référence** (couleurs, polices, rayons, easing) et styles partagés. |
 | `docs/assets/etymo.js` | Démo partagée (réserve, découvertes, plis) stockée dans `localStorage` (`etymologique.demo.v1`, thème `etymologique.theme`). |
+| `docs/assets/logo.svg` | Icône des pages : le sceau ÉL (ADR 0021). |
 | `docs/assets/site-nav.js` / `.css` | Navigation commune : liste unique des pages (`GROUPS`). |
 | `.github/workflows/pages.yml` | Publie `docs/` de `master` sur GitHub Pages, et chaque autre branche sous `/branches/<nom>/`. |
 | `.agents/skills/` | Skills des agents (`.github/skills` est un lien symbolique vers ce dossier). |
