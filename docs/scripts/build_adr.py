@@ -40,6 +40,7 @@ XREFS = {
     "0024": [("interfaces.html#i-04", "Hors connexion et resynchronisation"), ("interfaces.html#i-25", "Action refusée par le serveur"), ("modele.html", "Le modèle éditorial, compilé en artefact")],
     "0023": [("codex.html#codex", "Les textures dans le codex"), ("identite.html#textures", "La règle des textures"), ("cartes-visuels.html#declinaison", "Les dix pistes et la piste retenue")],
     "0022": [("plis.html#fascicules", "Les fascicules côté joueur"), ("modele.html#sources", "Le choix d’un fascicule")],
+    "0025": [("plis.html#jaquettes", "Les jaquettes, servies en statique"), ("codex.html#codex", "Les silhouettes des cartes découvertes")],
     "0013": [("modele.html", "Le modèle de données"), ("modele.html#decisions", "Quatre cas, quatre règles"), ("codex.html#filiation", "Formes et filiation dans le codex")],
 }
 

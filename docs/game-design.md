@@ -471,10 +471,12 @@ Le niveau de confiance ne doit pas être transformé en rareté ludique.
 
 ## Architecture technique
 
-Voir l'[ADR 0024](adr/0024-architecture-logicielle-et-hebergement.md). En résumé :
+Voir les ADR [0024](adr/0024-architecture-logicielle-et-hebergement.md) et [0025](adr/0025-medias-statiques-et-publication-programmee.md). En résumé :
 
 - la PWA React est servie comme des fichiers statiques, chez Scaleway, en France ;
 - le catalogue est un artefact statique publié à chaque fascicule. Le client n'en reçoit ni recette ni brique : le serveur lui envoie seulement ce que le joueur a débloqué (réserve, fiches découvertes, silhouettes, chances), sans jamais trahir une légendaire ;
+- les jaquettes et les silhouettes sont des fichiers statiques au nom opaque, servis par le CDN. Seul le serveur sait quelle silhouette va avec quelle carte, et n’en donne le lien qu’une fois la carte découverte ;
+- un fascicule se prépare à l’avance et paraît seul à sa date, choisie par l’horloge du serveur. Le client ne voit jamais un fascicule à venir ;
 - une seule API serverless, écrite en Rust, résout chaque fusion et chaque pli. Hors connexion, la table se prépare, mais le résultat attend le réseau ;
 - la progression vit dans des tables relationnelles PostgreSQL, qui garantissent les plafonds et soldes, et chaque commande est une transaction.
 

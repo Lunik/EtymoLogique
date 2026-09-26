@@ -1,6 +1,6 @@
 # ADR 0024 — Architecture serverless chez Scaleway, backend Rust, état relationnel
 
-- **Statut** : Accepté
+- **Statut** : Accepté, partiellement remplacé par l’[ADR 0025](0025-medias-statiques-et-publication-programmee.md) : la publication d’un fascicule est programmée par un manifeste serveur daté, et le manifeste public ne désigne que la version active. Le reste de la décision reste en vigueur.
 - **Portée** : application du MVP (PWA, API, bases, hébergement), hors dossier de conception
 - **Complète** : [ADR 0001](0001-pwa-responsive.md) (hors connexion), [ADR 0005](0005-pipeline-de-contenu.md) (artefact publié), [ADR 0007](0007-etat-et-economie-autoritaires.md) (autorité serveur), [ADR 0010](0010-observabilite-et-vie-privee.md) (journaux et télémétrie)
 
