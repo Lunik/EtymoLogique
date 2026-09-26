@@ -1,6 +1,6 @@
 # ADR 0008 — Énergie et plis gratuits, paiements hors MVP
 
-- **Statut** : Accepté, partiellement remplacé par l’[ADR 0011](0011-plis-raretes-et-doublons.md). Le contenu des plis, les doublons et les raretés relèvent désormais de l’ADR 0011. L’énergie, la recharge et l’absence de paiement restent régies par le présent ADR. Depuis l’[ADR 0012](0012-briques-rationnees.md), les plis sont aussi la seule source d’exemplaires de briques ; l’énergie ne limite toujours pas les fusions, et une tentative ratée ne consomme rien.
+- **Statut** : Accepté, partiellement remplacé par l’[ADR 0011](0011-plis-raretes-et-doublons.md). Le contenu des plis, les doublons et les raretés relèvent désormais de l’ADR 0011. L’énergie, la recharge et l’absence de paiement restent régies par le présent ADR. Depuis l’[ADR 0012](0012-briques-rationnees.md), les plis sont aussi la seule source d’exemplaires de briques ; l’énergie ne limite toujours pas les fusions, et une tentative ratée ne consomme rien. Partiellement remplacé aussi par l’[ADR 0020](0020-deux-plis-en-attente-et-sabliers.md) : l’énergie compte deux charges, et des sabliers gagnés contre de l’encre avancent la recharge ; l’absence de paiement reste en vigueur.
 
 ## Contexte
 

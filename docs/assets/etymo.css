@@ -1100,6 +1100,8 @@ button.disc:hover { transform: translateY(-3px); }
 .pk-inkbox small { color: var(--ink-3); font-family: var(--mono); font-size: 11px; }
 .pk-drop { width: 14px; height: 14px; border: 1.5px solid #0f1f19; border-radius: 50% 0 50% 50%; background: var(--c-pli); rotate: -45deg; align-self: center; }
 .pk-hintbtn { width: 100%; margin-top: 14px; min-height: 40px; }
+.pk-glass { width: 16px; height: 20px; align-self: center; fill: var(--c-pli); stroke: var(--fixed-ink); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
+.pk-sandbtn { min-height: 44px; }
 .pk-pool { display: grid; gap: 6px; }
 .pk-brickodd { display: grid; grid-template-columns: auto auto 1fr auto; align-items: center; gap: 10px; }
 .pk-brickodd small { color: var(--ink-3); font-family: var(--mono); font-size: 10px; }

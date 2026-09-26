@@ -1,6 +1,6 @@
 # ADR 0012 — Briques rationnées, exemplaires obtenus par les plis
 
-- **Statut** : Accepté, partiellement remplacé par l'[ADR 0016](0016-plis-et-jaquettes-par-fascicule.md) : le filet d'utilité se compte par fascicule et choisit sa brique parmi celles du fascicule. Le reste du présent ADR reste en vigueur.
+- **Statut** : Accepté, partiellement remplacé par l'[ADR 0016](0016-plis-et-jaquettes-par-fascicule.md) : le filet d'utilité se compte par fascicule et choisit sa brique parmi celles du fascicule. Partiellement remplacé aussi par l'[ADR 0019](0019-encre-a-chaque-doublon.md) : un doublon sous le plafond rapporte, en plus de son exemplaire, la moitié du barème d'encre. Le reste du présent ADR reste en vigueur.
 - **Remplace partiellement** : [ADR 0011](0011-plis-raretes-et-doublons.md), pour la valeur des doublons
 - **Complète** : [ADR 0004](0004-progression-atteignable.md) (atteignabilité avec quantités), [ADR 0007](0007-etat-et-economie-autoritaires.md) (consommation sous autorité serveur), [ADR 0008](0008-energie-et-plis.md) (rôle des plis)
 

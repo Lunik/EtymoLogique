@@ -201,12 +201,12 @@
     nomie: { label: "-nomie", gloss: "loi", kind: "suffixe", rarity: "rare" },
     etymo: { label: "étymo-", gloss: "vrai", kind: "préfixe", rarity: "legendaire" },
   };
-  // Raretés : poids de tirage, gouttes d'encre rendues par un exemplaire reçu au-delà du plafond.
+  // Raretés : poids de tirage ; gouttes d'encre d'un doublon, sous le plafond (dupInk) et réserve pleine (ink) (ADR 0019).
   const RARITY = {
-    commune: { label: "Commune", shape: "triangle", weight: 62, ink: 2 },
-    peu: { label: "Peu commune", shape: "carré", weight: 26, ink: 4 },
-    rare: { label: "Rare", shape: "pentagone", weight: 10, ink: 8 },
-    legendaire: { label: "Légendaire", shape: "diamant", weight: 2, ink: 20 },
+    commune: { label: "Commune", shape: "triangle", weight: 62, dupInk: 1, ink: 2 },
+    peu: { label: "Peu commune", shape: "carré", weight: 26, dupInk: 2, ink: 4 },
+    rare: { label: "Rare", shape: "pentagone", weight: 10, dupInk: 4, ink: 8 },
+    legendaire: { label: "Légendaire", shape: "diamant", weight: 2, dupInk: 10, ink: 20 },
   };
   // Les suffixes sortent un peu plus souvent que les préfixes.
   const TYPE_WEIGHT = { "préfixe": 1, suffixe: 1.25 };
@@ -228,7 +228,7 @@
   const STARTER = { bio: 2, geo: 2, logie: 2, graphie: 2 };
   const CAP = 5;
   const STORE_KEY = "etymologique.demo.v1";
-  const freshStore = () => ({ owned: Object.keys(STARTER), copies: { ...STARTER }, found: [], ink: 0, packCount: 0, byFasc: {}, nextPackAt: 0, history: [], hint: null });
+  const freshStore = () => ({ owned: Object.keys(STARTER), copies: { ...STARTER }, found: [], ink: 0, packCount: 0, byFasc: {}, nextPackAt: 0, energy: 2, history: [], hint: null, sand: 3, sandLog: [] });
   function loadStore() {
     try {
       const saved = JSON.parse(localStorage.getItem(STORE_KEY));
@@ -922,10 +922,19 @@
     const POOL = () => fasc().pool;
     const fstate = (n) => (store.byFasc[n] ||= { sinceNew: 0, blocked: 0 });
     let sinceNew = 0;
-    let energy = Date.now() >= store.nextPackAt ? 1 : 0;
+    // Deux plis au plus en attente (ADR 0020) : une charge toutes les 12 h, le temps s'arrête à 2 / 2.
+    const ENERGY_MAX = 2;
+    let energy = store.energy ?? 0;
+    function accrue() {
+      while (energy < ENERGY_MAX && Date.now() >= store.nextPackAt) {
+        energy += 1;
+        if (energy < ENERGY_MAX) store.nextPackAt += RECHARGE_MS;
+      }
+    }
+    accrue();
     const persist = () => {
       if (fascN) Object.assign(fstate(fascN), { sinceNew, blocked: blockedPacks });
-      Object.assign(store, { packCount, ink });
+      Object.assign(store, { packCount, ink, energy });
       saveStore();
     };
     const PITY = 6;
@@ -933,14 +942,24 @@
     const NET = 5;
     let blockedPacks = 0;
     const canDiscover = (extra) => RECIPE_KEYS.some((k) => !found.has(k) && k.split("+").every((id) => (copies[id] || 0) + (id === extra ? 1 : 0) >= 1));
-    const HINT_COST = 10;
+    const HINT_COST = 30;
+    // Chaque pli rapporte une base d'encre, plus le bonus d'un doublon (ADR 0019, 0020).
+    const BASE_INK = 2;
+    const drops_ = (n) => `${n} goutte${n > 1 ? "s" : ""}`;
+    // Sabliers (ADR 0018, après le MVP) : 1 h de recharge chacun, 12 par 24 h glissantes, 36 détenus au plus.
+    const HOUR_MS = RECHARGE_MS / 12;
+    const DAY_MS = RECHARGE_MS * 2;
+    const SAND_DAILY = 12;
+    const SAND_CAP = 36;
+    const SAND_INK = 1;
+    const sandToday = () => store.sandLog.filter((t) => Date.now() - t < DAY_MS).length;
 
     const pause = (ms) => (skipPack || reduce ? Promise.resolve() : new Promise((resolve) => setTimeout(resolve, ms)));
 
     function setPackStatus(text) { pkStatus.textContent = text; }
 
     function updateEnergy() {
-      $("#energyValue").textContent = `${energy} / 1`;
+      $("#energyValue").textContent = `${energy} / ${ENERGY_MAX}`;
       const canOpen = energy >= 1 && !packBusy;
       openBtn.disabled = !canOpen;
       pkPack.disabled = !canOpen || pkStage.dataset.state !== "ready";
@@ -948,7 +967,28 @@
     }
     function paintChooserEnergy() {
       const box = $("#pkChooserEnergy");
-      if (box) box.textContent = energy >= 1 ? "Énergie 1 / 1 : un pli est prêt." : `Énergie 0 / 1 · ${timer.textContent}.`;
+      if (box) box.textContent = energy >= ENERGY_MAX ? `Énergie ${ENERGY_MAX} / ${ENERGY_MAX} : deux plis prêts.` : energy >= 1 ? `Énergie 1 / ${ENERGY_MAX} : un pli prêt · ${timer.textContent}.` : `Énergie 0 / ${ENERGY_MAX} · ${timer.textContent}.`;
+      paintSand();
+    }
+    function paintSand() {
+      const useBtn = $("#useSand");
+      if (!useBtn) return;
+      const used = sandToday();
+      const remaining = store.nextPackAt - Date.now();
+      const lost = Math.ceil(((HOUR_MS - remaining) / HOUR_MS) * 60);
+      $("#sandValue").textContent = String(store.sand);
+      useBtn.disabled = store.sand < 1 || energy >= ENERGY_MAX || packBusy || used >= SAND_DAILY;
+      useBtn.textContent = store.sand < 1 ? "Aucun sablier"
+        : energy >= ENERGY_MAX ? "Énergie pleine : rien à avancer"
+        : used >= SAND_DAILY ? "Plafond du jour atteint"
+        : energy === ENERGY_MAX - 1 && remaining < HOUR_MS ? `Terminer · ${lost} min perdue${lost > 1 ? "s" : ""}`
+        : "Utiliser un sablier · −1 h";
+      $("#sandDaily").textContent = used >= SAND_DAILY
+        ? "Plafond du jour atteint : 12 h avancées sur 12 h. Le prochain pli arrive à son heure."
+        : `Aujourd’hui : ${used} h avancée${used > 1 ? "s" : ""} sur ${SAND_DAILY} h.`;
+      const inkBtn = $("#inkSand");
+      inkBtn.disabled = ink < SAND_INK || store.sand >= SAND_CAP;
+      inkBtn.textContent = store.sand >= SAND_CAP ? "Réserve de sabliers pleine" : `Sablier · ${drops_(SAND_INK)}`;
     }
 
     // Poids d'une brique : poids de sa rareté × poids de son type, partagé entre les briques de même rareté et de même type.
@@ -1198,17 +1238,31 @@
       updateEnergy();
     }
 
+    let recharging = false;
     function recharge() {
+      if (recharging) return;
+      recharging = true;
       const frame = () => {
+        const before = energy;
+        accrue();
+        if (energy !== before) {
+          persist();
+          if (fascN && pkStage.dataset.state === "recharging") showPack("ready");
+          else if (pkStage.dataset.state === "revealed" && !packBusy) openBtn.textContent = "Ouvrir un nouveau pli";
+          updateEnergy();
+        }
+        if (energy >= ENERGY_MAX) {
+          recharging = false;
+          ring.style.strokeDashoffset = "0";
+          timer.textContent = "Deux plis prêts";
+          paintChooserEnergy();
+          return;
+        }
         const p = Math.min(1, 1 - (store.nextPackAt - Date.now()) / RECHARGE_MS);
         ring.style.strokeDashoffset = String(CIRC * (1 - p));
         timer.textContent = `Prochain pli dans ${formatHours((1 - p) * 12 * 3600)}`;
         paintChooserEnergy();
-        if (p < 1) { requestAnimationFrame(frame); return; }
-        energy = 1;
-        timer.textContent = "Pli prêt";
-        if (fascN && pkStage.dataset.state === "recharging") showPack("ready");
-        else { openBtn.textContent = "Ouvrir un nouveau pli"; updateEnergy(); }
+        requestAnimationFrame(frame);
       };
       requestAnimationFrame(frame);
     }
@@ -1259,13 +1313,13 @@
       }
     }
 
-    function buildReveal(id, isNew, gained, back) {
+    function buildReveal(id, isNew, gained, back, full) {
       const data = BRICKS[id];
       const r = RARITY[data.rarity];
       const kicker = document.createElement("p");
       kicker.className = "pk-kicker";
       kicker.textContent = isNew ? (data.rarity === "legendaire" ? "Légendaire !" : data.rarity === "rare" ? "Rare !" : "Nouvelle brique !")
-        : gained ? `Réserve pleine · ×${CAP}` : back ? "De retour !" : `+1 exemplaire · ×${copies[id]}`;
+        : full ? `Réserve pleine · ×${CAP}` : back ? "De retour !" : `+1 exemplaire · ×${copies[id]}`;
       const brick = brickEl("div", data.label, data.kind, data.gloss);
       brick.classList.add("pk-brick");
       if (!isNew) brick.classList.add("is-dup");
@@ -1278,11 +1332,12 @@
         const origin = document.createElement("p");
         origin.className = "pk-origin";
         origin.textContent = nbsp(PACK_ORIGIN[id]);
-        nodes.push(origin);
+        const drops = Object.assign(document.createElement("p"), { className: "pk-ink", textContent: `+${drops_(gained)} d’encre` });
+        nodes.push(origin, drops);
       } else {
         const drops = document.createElement("p");
         drops.className = "pk-ink";
-        drops.textContent = gained ? `+${gained} gouttes d’encre` : `Réserve : ×${copies[id]} / ${CAP}`;
+        drops.textContent = full ? `+${drops_(gained)} d’encre` : `Réserve : ×${copies[id]} / ${CAP} · +${drops_(gained)}`;
         nodes.push(drops);
       }
       const actions = document.createElement("div");
@@ -1318,14 +1373,16 @@
         item.className = h.isNew ? "pk-hist-item" : "pk-hist-item dup";
         const n = `n° ${String(h.n).padStart(2, "0")}${h.f ? ` · fasc. ${String(h.f).padStart(2, "0")}` : ""}`;
         const meta = document.createElement("small");
-        meta.textContent = h.isNew ? `Nouvelle · ${n}` : h.gained ? `Pleine, +${h.gained} gouttes · ${n}` : `+1 · ×${h.copies} · ${n}`;
+        const full = h.full ?? h.gained > 0;
+        const plus = h.gained ? ` · +${drops_(h.gained)}` : "";
+        meta.textContent = h.isNew ? `Nouvelle${plus} · ${n}` : full ? `Pleine${plus} · ${n}` : `+1 · ×${h.copies}${plus} · ${n}`;
         item.append(chipEl(BRICKS[h.id].label, BRICKS[h.id].kind), rarityEl(BRICKS[h.id].rarity, true), meta);
         return item;
       }));
     }
 
-    function addHistory(id, isNew, gained) {
-      store.history.unshift({ id, isNew, gained, n: packCount, copies: copies[id], f: fascN });
+    function addHistory(id, isNew, gained, full) {
+      store.history.unshift({ id, isNew, gained, full, n: packCount, copies: copies[id], f: fascN });
       store.history.length = Math.min(store.history.length, 6);
       renderHistory();
     }
@@ -1334,8 +1391,8 @@
       if (packBusy || energy < 1 || !fascN) return;
       packBusy = true;
       skipPack = false;
-      energy = 0;
-      store.nextPackAt = Date.now() + RECHARGE_MS;
+      if (energy >= ENERGY_MAX) store.nextPackAt = Date.now() + RECHARGE_MS;
+      energy -= 1;
       if (pkStage.dataset.state !== "ready") showPack("ready");
       const wasBlocked = !canDiscover();
       const id = drawBrick();
@@ -1369,33 +1426,34 @@
       glyphBurst();
       await pause(260);
       packCount += 1;
-      let gained = 0;
+      let gained = BASE_INK;
+      let full = false;
       if (isNew) {
         owned.push(id);
         copies[id] = 1;
         sinceNew = 0;
       } else {
-        if (copies[id] >= CAP) {
-          gained = RARITY[rarityKey].ink;
-          ink += gained;
-        } else copies[id] += 1;
+        full = copies[id] >= CAP;
+        gained += full ? RARITY[rarityKey].ink : RARITY[rarityKey].dupInk;
+        if (!full) copies[id] += 1;
         sinceNew += 1;
       }
+      ink += gained;
       if (canDiscover()) blockedPacks = 0;
-      buildReveal(id, isNew, gained, back);
+      buildReveal(id, isNew, gained, back, full);
       pkReveal.hidden = false;
       pkStage.classList.add("pk-revealed");
       pkStage.dataset.state = "revealed";
       if (isNew) {
-        setPackStatus("Ajoutée à votre réserve et à votre codex");
+        setPackStatus(`Ajoutée à votre réserve et à votre codex · +${drops_(gained)} d’encre`);
       } else {
-        setPackStatus(gained ? `Réserve pleine : +${gained} gouttes d’encre` : `+1 exemplaire : ×${copies[id]} dans votre réserve`);
+        setPackStatus(full ? `Réserve pleine : +${drops_(gained)} d’encre` : `+1 exemplaire : ×${copies[id]} dans votre réserve · +${drops_(gained)} d’encre`);
       }
-      addHistory(id, isNew, gained);
+      addHistory(id, isNew, gained, full);
       persist();
       renderPool();
       packBusy = false;
-      openBtn.textContent = "Recharge en cours…";
+      openBtn.textContent = energy >= 1 ? "Ouvrir un nouveau pli" : "Recharge en cours…";
       updateEnergy();
       recharge();
     }
@@ -1412,6 +1470,27 @@
       renderPool();
     });
 
+    $("#useSand").addEventListener("click", () => {
+      if (store.sand < 1 || energy >= ENERGY_MAX || packBusy || sandToday() >= SAND_DAILY) return;
+      store.sand -= 1;
+      store.sandLog = [...store.sandLog.filter((t) => Date.now() - t < DAY_MS), Date.now()];
+      store.nextPackAt -= HOUR_MS;
+      recharge();
+      persist();
+      paintSand();
+      showToast("Recharge avancée d’une heure · −1 sablier");
+    });
+
+    $("#inkSand").addEventListener("click", () => {
+      if (ink < SAND_INK || store.sand >= SAND_CAP) return;
+      ink -= SAND_INK;
+      store.sand += 1;
+      persist();
+      renderPool();
+      paintSand();
+      showToast(`+1 sablier · −${SAND_INK} gouttes`);
+    });
+
     pkPack.addEventListener("click", openPack);
     openBtn.addEventListener("click", openPack);
     pkStage.addEventListener("click", () => {
@@ -1424,7 +1503,7 @@
     renderGallery();
     renderChooser();
     updateEnergy();
-    if (energy < 1) recharge();
+    recharge();
   }
 
   /* ---------- Codex ---------- */

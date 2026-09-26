@@ -47,6 +47,7 @@ Les pages se renvoient les unes aux autres là où une règle est appliquée ou 
 | **Graine** | Brique de la réserve de départ, accordée avec quelques exemplaires pour amorcer le graphe. Ensuite, les jalons offrent des plis au contenu déterministe. |
 | **Pli** | Pli scellé, gratuit, seule source d'exemplaires après la réserve de départ. On dit « ouvrir un pli », « l'atelier des plis ». Le mot anglais « pack » n'est jamais employé. |
 | **Fascicule** | Nouvel ensemble de 20 à 40 mots, avec leurs briques et leurs langues, publié environ tous les 30 jours. Il a sa jaquette et son pli, que le joueur peut ouvrir à tout moment. On ne dit ni « pack », ni « extension », ni « saison ». |
+| **Sablier** | Objet qui fait avancer d'une heure la recharge d'énergie, jamais un tirage. Il coûte 1 goutte d'encre ou se gagne par un jalon (ADR 0020) ; son achat n'arrivera qu'après le MVP (ADR 0018, proposé). On ne dit ni « boost », ni « accélérateur ». |
 
 Le terme « Pokédex » décrit bien l'intention de collection, mais le produit utilisera **codex** tant qu'aucun nom propre original n'aura été choisi.
 
@@ -127,7 +128,7 @@ Voir l'[ADR 0012](adr/0012-briques-rationnees.md). Le joueur dispose d'un nombre
 | Nouvelle découverte | Un exemplaire de chaque brique utilisée est consommé. |
 | Recette déjà découverte, presque ou échec | Rien n'est consommé. |
 | Pli : brique nouvelle | 1 exemplaire. |
-| Pli : brique connue | +1 exemplaire, jusqu'à 5 ; au-delà, des gouttes d'encre. |
+| Pli : brique connue | +1 exemplaire, jusqu'à 5 ; 2 gouttes d'encre, plus un bonus selon la rareté, doublé quand la réserve est pleine (ADR 0019, 0020). |
 
 Représentation :
 
@@ -238,7 +239,7 @@ Le contenu forme un graphe plutôt qu'une suite linéaire :
 
 - Chaque brique requise possède au moins un chemin d'obtention démontrable.
 - Le tutoriel et le chemin critique ne dépendent pas d'un tirage aléatoire.
-- Un pli peut donner un doublon ; chaque doublon ajoute un exemplaire (5 au plus, puis de l'encre), et une brique nouvelle est garantie au plus tard au 6ᵉ pli.
+- Un pli peut donner un doublon ; chaque doublon ajoute un exemplaire (5 au plus) et de l'encre, et une brique nouvelle est garantie au plus tard au 6ᵉ pli.
 - **Filet d'utilité** : si la réserve ne permet plus aucune découverte, le 5ᵉ pli consécutif dans cet état donne forcément une brique qui en rend une possible.
 - La validation d'atteignabilité simule aussi les quantités : un joueur qui ouvre des plis peut toujours finir par découvrir chaque mot publié.
 - Un contenu cyclique n'est publiable que si au moins un point d'entrée externe existe.
@@ -257,7 +258,7 @@ Voir l'[ADR 0014](adr/0014-sources-et-fascicules.md) et la [page des plis](plis.
 
 ### Indices
 
-Les indices peuvent être débloqués par l'expérimentation, le temps, des objectifs ou l'encre (gagnée par les exemplaires reçus au-delà du plafond), mais pas par un paiement dans le MVP :
+Les indices peuvent être débloqués par l'expérimentation, le temps, des objectifs ou l'encre (30 gouttes l'indice ; au moins 2 gouttes par pli), mais pas par un paiement dans le MVP :
 
 1. famille ou langue du résultat ;
 2. nombre d'ingrédients ;
@@ -278,8 +279,9 @@ Les indices peuvent être débloqués par l'expérimentation, le temps, des obje
 
 ### Proposition MVP
 
-- Une charge d'énergie permet d'ouvrir un pli gratuit.
-- Une charge revient après une durée configurable ; **douze heures est une hypothèse initiale**, pas une règle codée en dur.
+- Une charge d'énergie permet d'ouvrir un pli gratuit. L'énergie compte **2 charges au plus** : deux plis peuvent attendre le joueur ([ADR 0020](adr/0020-deux-plis-en-attente-et-sabliers.md)).
+- Une charge revient toutes les **douze heures**, durée configurable. Quand les deux charges sont prêtes, le temps s'arrête ; ouvrir un pli relance la recharge. Un joueur qui vient une fois par jour ne perd donc rien.
+- Des **sabliers**, à 1 goutte d'encre chacun, avancent la recharge d'une heure (voir plus bas).
 - Le serveur calcule la disponibilité afin d'éviter la manipulation de l'horloge locale.
 - L'énergie limite uniquement les plis, jamais les fusions avec des briques possédées.
 - Les plis sont la seule source d'exemplaires après la réserve de départ.
@@ -289,11 +291,12 @@ Les indices peuvent être débloqués par l'expérimentation, le temps, des obje
 
 Les plis ont leur propre écran, distinct de la table de fusion. Le joueur y **choisit d'abord un fascicule** parmi ceux qui sont parus : chacun montre sa jaquette, ses briques connues et ses exemplaires en réserve. Il ouvre ensuite le pli de ce fascicule, et peut revenir au choix à tout moment. Sur l'écran d'ouverture, on retrouve :
 
-- l'énergie et le temps de recharge ;
+- l'énergie (« 1 / 2 ») et le temps de recharge, arrêté à 2 / 2 ;
+- les sabliers disponibles, l'échange contre de l'encre et le plafond du jour ;
 - les chances du fascicule choisi par rareté et par type, et les chances exactes de chaque brique (les briques inconnues restent en silhouette). Les légendaires inconnues sont regroupées en une seule ligne, avec la somme exacte de leurs chances mais sans leur nombre ;
 - la garantie de nouveauté et le filet d'utilité, avec leurs compteurs ;
 - la réserve de chaque brique (« ×2 / 5 » ou « épuisée ») ;
-- l'encre disponible et l'échange contre un indice ;
+- l'encre disponible et l'échange contre un indice (30 gouttes) ;
 - l'historique des derniers tirages ;
 - les règles du pli.
 
@@ -329,7 +332,7 @@ L'ouverture dure entre 1,5 et 2 secondes. Toucher l'écran ou appuyer sur Échap
 3. **Explosion** (environ 0,3 s) : la fenêtre d'écriture éclate, le pli se fend en deux, un flash éclate et des glyphes sont projetés.
 4. **Révélation** : la brique atterrit avec un rebond devant des rayons de lumière, avec son origine (« du grec ancien ἄστρον « astre » »). Deux actions sont proposées : essayer la brique sur la table, ou continuer.
 
-Une brique déjà connue suit le même rituel. La révélation affiche alors « +1 exemplaire · ×3 », « De retour ! » si la brique était épuisée, ou « Réserve pleine » et les gouttes d'encre gagnées si elle avait déjà 5 exemplaires. L'intensité du rituel grandit avec la rareté : rayons plus rapides, flash plus long, annonce « Rare ! » ou « Légendaire ! ».
+Une brique déjà connue suit le même rituel. La révélation affiche alors « +1 exemplaire · ×3 · +3 gouttes », « De retour ! » si la brique était épuisée, ou « Réserve pleine » et les gouttes d'encre gagnées si elle avait déjà 5 exemplaires. L'intensité du rituel grandit avec la rareté : rayons plus rapides, flash plus long, annonce « Rare ! » ou « Légendaire ! ».
 
 ### Contenu d'un pli
 
@@ -337,12 +340,29 @@ Voir l'[ADR 0011](adr/0011-plis-raretes-et-doublons.md), l'[ADR 0012](adr/0012-b
 
 - chaque pli tire une brique parmi les briques de son fascicule, nouvelles ou reprises : **les doublons font partie du jeu** ;
 - les chances dépendent de la **rareté** (quatre niveaux : triangle commune, carré peu commune, pentagone rare, diamant légendaire) et du **type** (les suffixes sortent un peu plus souvent) ;
-- un doublon ajoute **un exemplaire** à la réserve, jusqu'à 5 par brique ; au-delà, il rapporte des **gouttes d'encre**, d'autant plus que la brique est rare ; l'encre s'échange contre des indices ;
+- un doublon ajoute **un exemplaire** à la réserve, jusqu'à 5 par brique, et rapporte d'autant plus de **gouttes d'encre** que la brique est rare ;
+- chaque pli rapporte **2 gouttes**, plus, pour un doublon, 1, 2, 4 ou 10 gouttes selon la rareté, le double quand la réserve est pleine ([ADR 0019](adr/0019-encre-a-chaque-doublon.md), [ADR 0020](adr/0020-deux-plis-en-attente-et-sabliers.md)) ; l'encre s'échange contre des sabliers (1 goutte) ou des indices (30 gouttes) ;
 - une brique nouvelle est **garantie au plus tard au 6ᵉ pli** du même fascicule après sa dernière nouveauté ;
 - si la réserve ne permet plus aucune découverte, une brique utile de ce fascicule est **garantie au plus tard au 5ᵉ pli** du même fascicule. Si aucune de ses briques ne peut aider, l'écran invite à choisir un autre fascicule ;
-- objectif de rythme : le codex ne doit pas se remplir trop vite. Sur le catalogue de démonstration (9 mots, réserve de départ 4 × 2), il faut 22 plis en médiane pour tout découvrir, soit environ onze jours, et jamais plus de 30 plis dans la simulation. Ce rythme, calculé sur un catalogue unique, est à recalculer par fascicule.
+- objectif de rythme : le codex ne doit pas se remplir trop vite. Sur le catalogue de démonstration (9 mots, réserve de départ 4 × 2), il faut 22 plis en médiane pour tout découvrir, soit environ onze jours, et jamais plus de 30 plis dans la simulation (ADR 0012). Avec deux fascicules et les sabliers, la simulation de l'ADR 0020 donne 20 plis et 7,5 jours en médiane. Ce rythme, calculé sur un catalogue unique, est à recalculer par fascicule.
 
 Les poids, les raretés et la garantie relèvent de l'équilibrage. Ils doivent être observables et modifiables sans changer les données linguistiques.
+
+### Sabliers
+
+Dans le MVP ([ADR 0020](adr/0020-deux-plis-en-attente-et-sabliers.md)) :
+
+- un **sablier** fait avancer d'une heure la recharge en cours. Il ne s'utilise que si l'énergie est sous 2 ; le temps en trop passe à la charge suivante, et il n'est perdu que si l'énergie atteint 2, ce que l'interface annonce avant de confirmer ;
+- il coûte **1 goutte d'encre** : une goutte, une heure. Certains jalons en donnent aussi ;
+- il achète du temps, jamais un tirage : chances, garantie, filet et contenu du pli ne changent pas ;
+- au plus **12 sabliers par 24 h**, soit au plus un pli de plus par jour ; au plus 36 sabliers détenus ;
+- **pli offert garanti** : un joueur qui vient chaque jour ouvre 6 plis en 3 jours et gagne au moins 12 gouttes, soit 12 sabliers, soit un pli de plus tous les 3 jours. Sur la démo, changer toute son encre en sabliers fait passer le temps pour tout découvrir de 10 à 7,5 jours en médiane.
+
+Après le MVP, proposition de l'[ADR 0018](adr/0018-sabliers-et-boutique.md) :
+
+- les plafonds ci-dessus comptent aussi les sabliers achetés ;
+- la boutique vend des lots en euros, sans monnaie intermédiaire, avec le prix par sablier affiché, sans offre limitée ni relance ; lot sans sablier utilisé remboursable pendant 14 jours ;
+- revue juridique et boutique désactivable par territoire, contrôle parental, achats validés par le serveur.
 
 ### Principes éthiques
 
@@ -352,6 +372,7 @@ Les poids, les raretés et la garantie relèvent de l'équilibrage. Ils doivent 
 - ne jamais faire payer une erreur : seuls les succès consomment des exemplaires ;
 - borner l'attente quand la réserve ne permet plus aucune découverte (filet au 5ᵉ pli) ;
 - ne pas préparer des mécanismes trompeurs sous prétexte d'une monétisation future ;
+- ne jamais vendre un tirage, une brique ou une chance : une future boutique ne vend que du temps, plafonné (ADR 0018) ;
 - soumettre toute future boutique à une décision séparée.
 
 ## Identité visuelle
@@ -454,7 +475,7 @@ Le niveau de confiance ne doit pas être transformé en rareté ludique.
 
 ### Reporté
 
-- paiements, publicités et monnaie premium ;
+- paiements (boutique de sabliers proposée par l'[ADR 0018](adr/0018-sabliers-et-boutique.md)), publicités et monnaie premium ;
 - soumission de mots par les joueurs ;
 - contenu généré ou validé automatiquement par IA ;
 - multijoueur, échanges et classements ;
@@ -494,7 +515,7 @@ Ces événements doivent être agrégés avec des identifiants techniques pseudo
 | Le contenu contient des erreurs | Sources, relecture, niveau de confiance, versions et corrections traçables. |
 | Une branche devient impossible | Validation d'atteignabilité à chaque publication. |
 | Le joueur essaie au hasard | Objectifs de famille, silhouettes, indices graduels et coût nul des essais. |
-| Le pli devient frustrant | Doublons utiles (un exemplaire de plus, puis de l'encre), garantie de nouveauté au 6ᵉ pli, chances affichées, chemin critique jamais dépendant d'un pli. |
+| Le pli devient frustrant | Doublons utiles (un exemplaire de plus et de l'encre à chaque fois), garantie de nouveauté au 6ᵉ pli, chances affichées, chemin critique jamais dépendant d'un pli. |
 | La réserve s'épuise et le joueur décroche | Réserve de départ suffisante pour trois découvertes, essais ratés gratuits, filet d'utilité au 5ᵉ pli, compteurs visibles. |
 | L'interface est trop dense sur mobile | Limite de briques sur la table, gestes alternatifs et révélation progressive. |
 | L'ambition multilingue explose le coût éditorial | Architecture générique, mais lots de contenu petits et cohérents. |

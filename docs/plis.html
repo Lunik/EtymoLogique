@@ -25,7 +25,7 @@
     <div class="wrap">
       <div class="sec-head">
         <div data-reveal><span class="sec-num">Jeu · Plis</span><h2>L’atelier <em>des plis</em></h2></div>
-        <div class="sec-intro" data-reveal style="--d:120ms"><p>Une interface à part, pensée comme un petit rituel. Toutes les 12 heures, un pli gratuit tente d’écrire une racine : parfois nouvelle, parfois un exemplaire de plus pour votre réserve. Choisissez d’abord le fascicule dont vous ouvrez le pli : il porte sa jaquette et ne contient que ses briques. C’est la seule façon d’obtenir des briques. Les briques rares se méritent, pour que le codex ne se remplisse jamais trop vite.</p><p class="xrefs"><span>Voir aussi</span><a class="xref" href="adr.html#adr-0011" data-kind="adr">ADR 0011 : raretés et doublons</a><a class="xref" href="adr.html#adr-0012" data-kind="adr">ADR 0012 : réserve et filet</a><a class="xref" href="adr.html#adr-0016" data-kind="adr">ADR 0016 : plis par fascicule</a><a class="xref" href="identite.html#formes">Les formes de rareté</a><a class="xref" href="mouvement.html">Le rythme du rituel</a></p></div>
+        <div class="sec-intro" data-reveal style="--d:120ms"><p>Une interface à part, pensée comme un petit rituel. Toutes les 12 heures, un pli gratuit, jusqu’à deux en attente, tente d’écrire une racine : parfois nouvelle, parfois un exemplaire de plus pour votre réserve. Choisissez d’abord le fascicule dont vous ouvrez le pli : il porte sa jaquette et ne contient que ses briques. C’est la seule façon d’obtenir des briques. Les briques rares se méritent, pour que le codex ne se remplisse jamais trop vite.</p><p class="xrefs"><span>Voir aussi</span><a class="xref" href="adr.html#adr-0011" data-kind="adr">ADR 0011 : raretés et doublons</a><a class="xref" href="adr.html#adr-0012" data-kind="adr">ADR 0012 : réserve et filet</a><a class="xref" href="adr.html#adr-0016" data-kind="adr">ADR 0016 : plis par fascicule</a><a class="xref" href="identite.html#formes">Les formes de rareté</a><a class="xref" href="mouvement.html">Le rythme du rituel</a></p></div>
       </div>
 
       <div class="pk-chooser" id="pkChooser" data-reveal>
@@ -46,13 +46,23 @@
 
       <div class="pk-layout" id="pkLayout" hidden>
         <aside class="pk-side">
-          <div class="pk-card">
+          <div class="pk-card" id="energie">
             <p class="pk-label">Énergie</p>
             <div class="energy">
               <svg viewBox="0 0 60 60" aria-hidden="true"><circle class="ring-track" cx="30" cy="30" r="26"></circle><circle class="ring-fill" id="ring" cx="30" cy="30" r="26"></circle><circle class="ring-edge" cx="30" cy="30" r="29.5"></circle><circle class="ring-edge" cx="30" cy="30" r="22.5"></circle></svg>
-              <div><strong id="energyValue">1 / 1</strong><small id="timer">Pli prêt</small></div>
+              <div><strong id="energyValue">2 / 2</strong><small id="timer">Deux plis prêts</small></div>
             </div>
-            <p class="pk-note">Recharge démo : 12 h en 7 s. L’énergie ne sert qu’aux plis, jamais aux fusions.</p>
+            <p class="pk-note">Deux plis au plus vous attendent : une charge revient toutes les 12 h (démo : 7 s), et le temps s’arrête quand les deux sont prêts. L’énergie ne sert qu’aux plis, jamais aux fusions.</p>
+          </div>
+          <div class="pk-card" id="sablier">
+            <p class="pk-label">Sabliers</p>
+            <div class="pk-inkbox"><svg class="pk-glass" viewBox="0 0 16 20" aria-hidden="true"><path d="M2 1.5h12M2 18.5h12M3.5 1.5c0 5 4.5 5.5 4.5 8.5s-4.5 3.5-4.5 8.5h9c0-5-4.5-5.5-4.5-8.5s4.5-3.5 4.5-8.5z"/></svg><strong id="sandValue">3</strong><small>sabliers · 36 au plus</small></div>
+            <p class="pk-note">Un sablier fait avancer la recharge d’une heure. Une goutte d’encre, une heure : le temps en trop passe à la charge suivante. Il achète du temps, jamais un tirage.</p>
+            <button class="btn btn-secondary pk-hintbtn pk-sandbtn" id="useSand" type="button" disabled>Utiliser un sablier · −1 h</button>
+            <p class="pk-note" id="sandDaily">Aujourd’hui : 0 h avancée sur 12 h.</p>
+            <button class="btn btn-secondary pk-hintbtn pk-sandbtn" id="inkSand" type="button" disabled>Sablier · 1 goutte</button>
+            <p class="pk-note">Venez chaque jour : vos plis rapportent au moins 12 gouttes en 3 jours, soit un pli offert. Démo : 3 sabliers offerts, comme par un jalon, et une journée de 14 s. Aucun paiement : une boutique n’est envisagée qu’après le MVP.</p>
+            <p class="xrefs"><span>Décision</span><a class="xref" href="adr.html#adr-0020" data-kind="adr">ADR 0020 : sabliers</a><a class="xref" href="adr.html#adr-0018" data-kind="adr">ADR 0018 : boutique</a></p>
           </div>
           <div class="pk-card" id="chances">
             <p class="pk-label">Chances par rareté</p>
@@ -70,12 +80,12 @@
             <p class="pk-label">Règles du pli</p>
             <ul class="pk-rules">
               <li>Gratuit, et seule source d’exemplaires après les briques de départ.</li>
-              <li>Doublons possibles : chacun ajoute un exemplaire à votre réserve, 5 au plus par brique. Au-delà, il se change en encre.</li>
+              <li>Doublons possibles : chacun ajoute un exemplaire à votre réserve, 5 au plus par brique. Chaque pli rapporte de l’encre, davantage pour un doublon.</li>
               <li>Chances affichées pour chaque rareté, chaque type et chaque brique. Les légendaires inconnues forment une seule ligne : leur nombre reste secret.</li>
               <li>Une brique nouvelle garantie au moins tous les 6 plis.</li>
               <li>Réserve bloquée : une brique utile garantie au plus tard au 5ᵉ pli.</li>
               <li>Les briques de départ permettent les premières découvertes sans pli.</li>
-              <li>Le temps de recharge est toujours affiché.</li>
+              <li>Deux plis au plus en attente, un toutes les 12 h. Le temps de recharge est toujours affiché.</li>
               <li><span>Vous choisissez le <a href="#fascicules">fascicule</a> du pli : il porte sa jaquette et ne tire que parmi ses briques, nouvelles ou reprises.</span></li>
               <li>La garantie de nouveauté et le filet se comptent par fascicule.</li>
             </ul>
@@ -99,11 +109,11 @@
         </div>
 
         <aside class="pk-side">
-          <div class="pk-card">
+          <div class="pk-card" id="encre">
             <p class="pk-label">Encre</p>
             <div class="pk-inkbox"><span class="pk-drop" aria-hidden="true"></span><strong id="inkValue">0</strong><small>gouttes</small></div>
-            <p class="pk-note">Un exemplaire reçu au-delà de 5 se change en encre. Plus la brique est rare, plus elle en rend.</p>
-            <button class="btn btn-secondary pk-hintbtn" id="buyHint" type="button" disabled>Indice · 10 gouttes</button>
+            <p class="pk-note">Chaque pli rapporte 2 gouttes. Un doublon en ajoute 1, 2, 4 ou 10 selon sa rareté, le double si la réserve est pleine.</p>
+            <button class="btn btn-secondary pk-hintbtn" id="buyHint" type="button" disabled>Indice · 30 gouttes</button>
             <p class="pk-note pk-hint" id="pkHint" hidden></p>
           </div>
           <div class="pk-card">

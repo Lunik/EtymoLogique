@@ -945,7 +945,7 @@ html { scroll-padding-top: 96px; }
             <table class="t compact" style="margin-top:12px"><tbody>
               <tr><td>Nouvelle découverte</td><td>−1 exemplaire de chaque brique ; « −1 » s’envole (1,3 s)</td></tr>
               <tr><td>Déjà connu, presque, échec</td><td>rien n’est consommé</td></tr>
-              <tr><td>Pli, brique connue</td><td>+1 exemplaire, 5 au plus ; au-delà, encre</td></tr>
+              <tr><td>Pli, brique connue</td><td>+1 exemplaire, 5 au plus, et de l’encre ; au-delà, plus d’encre</td></tr>
               <tr><td>Réserve bloquée</td><td>brique utile garantie au plus tard au 5ᵉ pli</td></tr>
             </tbody></table>
           </div>
@@ -1035,7 +1035,7 @@ html { scroll-padding-top: 96px; }
         <p class="xrefs"><span>En situation</span><a class="xref" href="plis.html">L’atelier des plis</a><a class="xref" href="plis.html#jaquettes">Les dix jaquettes</a><a class="xref" href="adr.html#adr-0011" data-kind="adr">ADR 0011</a></p>
         <div class="grid g4">
           <div class="card"><span class="k">Pli</span><div class="demo center"><span class="mini-pack"></span></div><p class="spec">Jaquette illustrée propre à chaque fascicule (neutres et Ambre seulement), cadre Encre 2, sceau Ambre. La jaquette dit le fascicule choisi, jamais la brique tirée. Flotte au repos ; en recharge, silhouette en pointillé, jamais grisée.</p></div>
-          <div class="card"><span class="k">Énergie</span><div class="demo center"><svg class="ring" viewBox="0 0 60 60" aria-hidden="true"><circle class="bg" cx="30" cy="30" r="26"/><circle class="fg" cx="30" cy="30" r="26" style="stroke-dashoffset:110"/><circle class="edge" cx="30" cy="30" r="29.5"/><circle class="edge" cx="30" cy="30" r="22.5"/></svg><span><b style="font-family:var(--mono)">0 / 1</b><br><span class="spec">Prochain pli dans 08:12:40</span></span></div><p class="spec">Anneau Ambre cerné d’Encre. Temps restant toujours en clair.</p></div>
+          <div class="card"><span class="k">Énergie</span><div class="demo center"><svg class="ring" viewBox="0 0 60 60" aria-hidden="true"><circle class="bg" cx="30" cy="30" r="26"/><circle class="fg" cx="30" cy="30" r="26" style="stroke-dashoffset:110"/><circle class="edge" cx="30" cy="30" r="29.5"/><circle class="edge" cx="30" cy="30" r="22.5"/></svg><span><b style="font-family:var(--mono)">1 / 2</b><br><span class="spec">Prochain pli dans 08:12:40</span></span></div><p class="spec">Anneau Ambre cerné d’Encre. Deux charges au plus ; temps restant toujours en clair, arrêté à 2 / 2.</p></div>
           <div class="card"><span class="k">Chances</span><div class="demo col" style="min-height:0;gap:6px;font-size:13px"><span style="display:flex;justify-content:space-between"><span><svg class="rar" aria-hidden="true"><use href="#rar-commune"/></svg> Commune</span><b style="font-family:var(--mono)">66 %</b></span><span style="display:flex;justify-content:space-between"><span><svg class="rar" aria-hidden="true"><use href="#rar-peu"/></svg> Peu commune</span><b style="font-family:var(--mono)">28 %</b></span><span style="display:flex;justify-content:space-between"><span><svg class="rar" aria-hidden="true"><use href="#rar-rare"/></svg> Rare</span><b style="font-family:var(--mono)">5,9 %</b></span><span style="display:flex;justify-content:space-between"><span><svg class="rar" aria-hidden="true"><use href="#rar-legendaire"/></svg> Légendaire</span><b style="font-family:var(--mono)">0,9 %</b></span><span style="display:flex;justify-content:space-between"><span class="bchip miss">?</span><b style="font-family:var(--mono)">2,9 %</b></span></div><p class="spec">Pourcentages exacts, format français « 5,9 % ». Briques inconnues en silhouette.</p></div>
           <div class="card"><span class="k">Rituel</span><div class="demo col" style="min-height:0"><span style="font-family:var(--script);font-size:24px;text-decoration:line-through;text-decoration-color:var(--c-action);opacity:.4">σοφία</span><span style="font-family:var(--script);font-size:24px;text-decoration:line-through;text-decoration-color:var(--c-action)">sofia</span><span class="bchip" data-kind="suffixe" style="align-self:flex-start;font-size:20px">-sophie</span></div><p class="spec">Charge 0,3 s · écriture 1,3 s <b>dans la carte</b>, qui grossit (× 1,14) et vibre · explosion 0,3 s · révélation. Passable en touchant ou avec Échap.</p></div>
         </div>
@@ -1088,7 +1088,7 @@ html { scroll-padding-top: 96px; }
             <tr><td>Échec</td><td>losange Gris encre</td><td>secousse 500 ms</td><td>clic sourd</td><td>aucune</td><td>« Aucune recette connue. Rien n’est perdu. »</td></tr>
             <tr><td>Déjà connu</td><td>losange Encre, fiche rouverte</td><td>fondu 240 ms</td><td>aucun</td><td>aucune</td><td>« biologie est déjà dans votre codex. »</td></tr>
             <tr><td>Nouvelle brique (pli)</td><td>rituel, rayons Ambre</td><td>1,8 s</td><td>plume, puis éclat</td><td>1 impulsion longue</td><td>« Nouvelle brique ! »</td></tr>
-            <tr><td>Brique connue (pli)</td><td>« +1 exemplaire · ×3 », « De retour ! » si épuisée</td><td>1,8 s</td><td>plume, puis éclat doux</td><td>1 impulsion courte</td><td>« +1 exemplaire : ×3 dans votre réserve »</td></tr>
+            <tr><td>Brique connue (pli)</td><td>« +1 exemplaire · ×3 · +3 gouttes », « De retour ! » si épuisée</td><td>1,8 s</td><td>plume, puis éclat doux</td><td>1 impulsion courte</td><td>« +1 exemplaire : ×3 dans votre réserve · +3 gouttes d’encre »</td></tr>
             <tr><td>Réserve pleine (pli)</td><td>« Réserve pleine · ×5 », gouttes</td><td>1,8 s</td><td>plume, puis goutte</td><td>1 impulsion courte</td><td>« Réserve pleine : +4 gouttes d’encre »</td></tr>
             <tr><td>Brique indisponible</td><td>losange contour Encre, petite brique dans le message</td><td>aucun</td><td>aucun</td><td>aucune</td><td>« Plus aucun exemplaire de <span class="bchip" data-kind="suffixe">-logie</span>. Ouvrez un pli pour en retrouver. »</td></tr>
           </tbody></table>
@@ -1252,8 +1252,9 @@ html { scroll-padding-top: 96px; }
           <tr><td>Pli</td><td>Pli scellé et gratuit qui contient une brique ; seule source d’exemplaires. On l’ouvre en brisant le sceau.</td><td>pack, coffre, loot box, booster</td></tr>
           <tr><td>Fascicule</td><td>Nouvel ensemble de mots et de briques, publié environ tous les 30 jours, avec sa jaquette et son pli.</td><td>pack, extension, saison, mise à jour</td></tr>
           <tr><td>Doublon</td><td>Brique déjà connue reçue dans un pli : un exemplaire de plus.</td><td>raté, perte</td></tr>
-          <tr><td>Gouttes d’encre</td><td>Ce que rapporte un exemplaire reçu au-delà de 5 ; s’échangent contre des indices.</td><td>monnaie, gemmes</td></tr>
-          <tr><td>Énergie</td><td>Ce qui permet d’ouvrir un pli ; se recharge avec le temps.</td><td>vies, stamina</td></tr>
+          <tr><td>Gouttes d’encre</td><td>Ce que rapporte chaque pli : 2 gouttes, plus un bonus pour un doublon ; s’échangent contre des sabliers ou des indices.</td><td>monnaie, gemmes</td></tr>
+          <tr><td>Énergie</td><td>Ce qui permet d’ouvrir un pli ; deux charges au plus, une toutes les 12 h.</td><td>vies, stamina</td></tr>
+          <tr><td>Sablier</td><td>Fait avancer la recharge d’une heure, pour 1 goutte d’encre, 12 par jour au plus. Du temps, jamais un tirage.</td><td>boost, accélérateur, skip</td></tr>
           <tr><td>Sens littéral</td><td>Ce que disent les briques mises bout à bout.</td><td>traduction</td></tr>
         </tbody></table></div>
       </div>

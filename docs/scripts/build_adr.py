@@ -33,6 +33,9 @@ XREFS = {
     "0015": [("codex.html#codex", "Complétude par fascicule"), ("plis.html#chances", "Légendaires inconnues regroupées")],
     "0014": [("modele.html#sources", "Sources et fascicules"), ("plis.html#fascicules", "Les fascicules côté joueur")],
     "0017": [("modele.html#sources", "Sources et licence du catalogue")],
+    "0018": [("plis.html#sablier", "Le sablier dans l’atelier des plis")],
+    "0019": [("plis.html#encre", "L’encre gagnée à chaque doublon")],
+    "0020": [("plis.html#energie", "Deux plis en attente"), ("plis.html#sablier", "Une goutte, une heure")],
     "0013": [("modele.html", "Le modèle de données"), ("modele.html#decisions", "Quatre cas, quatre règles"), ("codex.html#filiation", "Formes et filiation dans le codex")],
 }
 
