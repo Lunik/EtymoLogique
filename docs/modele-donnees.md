@@ -504,7 +504,6 @@ Le joueur recompose *philo-* + *-sophie*, mais le mot n'a pas été formé en fr
 
 - **Segments.** Faut-il compter les segments en points de code ou en graphèmes, pour les écritures à diacritiques combinants ?
 - **Familles.** Faut-il un regroupement éditorial (couche ludique) ou une notion dérivée des relations ?
-- **Licence du catalogue.** Aucun texte du Wiktionnaire n'étant copié, la licence reste à choisir.
 - **Retour d'une exclusion.** Que dit le jeu quand le joueur tente une combinaison attestée mais écartée ?
 - **Traductions.** Les gloses et définitions ne seront d'abord rédigées qu'en français : faut-il imposer une locale de référence unique ?
 - **Homographes sur la table.** Quand le joueur pose le mauvais homographe, faut-il un indice « même forme, autre sens » plutôt qu'un échec neutre ?

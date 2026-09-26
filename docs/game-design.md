@@ -430,6 +430,7 @@ Le niveau de confiance ne doit pas être transformé en rareté ludique.
 - Distinguer composition synchronique, dérivation historique, héritage et emprunt.
 - Montrer les formes intermédiaires utiles plutôt que prétendre à un saut direct.
 - Sourcer les faits éditoriaux auprès de sources de référence (TLFi, Académie française, Gaffiot, Bailly, Chantraine…). Le Wiktionnaire aide à repérer des pistes, mais aucun de ses textes n'est repris et il ne suffit jamais à publier un fait ([ADR 0014](adr/0014-sources-et-fascicules.md)).
+- Publier le code sous AGPL 3.0 et le contenu, catalogue compris, sous CC BY-SA 4.0 ; le nom « ÉtymoLogique » et le logo restent réservés ([ADR 0017](adr/0017-licences.md)).
 - Expliquer les simplifications nécessaires au gameplay.
 - Ne pas valider une fusion sur la seule ressemblance de deux chaînes de caractères.
 - Permettre la correction et la migration d'un contenu déjà publié.
@@ -534,5 +535,4 @@ Comparer une révélation instantanée à une révélation en trois temps :
 - Quand un indice « presque » aide-t-il sans transformer le jeu en recherche exhaustive ?
 - Une découverte doit-elle débloquer toutes ses briques immédiatement ou certaines via des mini-objectifs ?
 - Quel volume de contenu permet de tester la rétention sans surinvestir dans l'éditorial ? Hypothèse : des fascicules de 20 à 40 mots tous les 30 jours.
-- Sous quelle licence publier le catalogue, sachant qu'aucun texte du Wiktionnaire n'y est repris ?
 - Le compte utilisateur est-il obligatoire, facultatif ou différé jusqu'à la synchronisation multi-appareil ?

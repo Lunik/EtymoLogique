@@ -17,7 +17,7 @@ Le [modèle de données](../modele-donnees.md) décrit les langues, mots, préfi
 - Le Wiktionnaire (français et anglais) est une **source de repérage**. Il sert à proposer des candidats : unités, formes, relations et compositions. **Aucun de ses textes n'est copié** dans le catalogue.
 - Chaque import est un fichier daté, conservé hors du catalogue publié. Un fait proposé par un import naît à l'état `brouillon`.
 - Les gloses, définitions, sens littéraux et explications sont **rédigés par l'équipe**.
-- La licence du catalogue reste donc un choix libre de l'équipe, à trancher séparément.
+- La licence du catalogue reste donc un choix libre de l'équipe, tranché depuis par l'[ADR 0017](0017-licences.md) : CC BY-SA 4.0.
 
 ### Sources de référence et niveaux de confiance
 
@@ -102,7 +102,7 @@ Conséquences pour l'édition :
 ### Positives
 
 - Tout fait publié repose sur une source de référence, et le Wiktionnaire accélère le travail sans en devenir l'autorité.
-- La licence du catalogue reste ouverte.
+- La licence du catalogue reste un choix libre (CC BY-SA 4.0 depuis l'[ADR 0017](0017-licences.md)).
 - Le joueur reçoit un apport régulier et cohérent : chaque fascicule se joue sans brique manquante.
 - Les fusions entre fascicules sont encouragées et jamais punies par un faux échec.
 
@@ -119,4 +119,4 @@ Conséquences pour l'édition :
 - Un fascicule ne peut pas être bouclé en 30 jours à cause de la rédaction ou de la vérification.
 - La règle de fermeture impose plus de la moitié des mots d'un fascicule en mots croisés.
 - Les joueurs actifs épuisent un fascicule en moins de 10 jours, ou n'en découvrent pas la moitié avant le suivant.
-- L'équipe décide d'une licence libre compatible avec CC BY-SA : l'import direct du Wiktionnaire pourrait alors être reconsidéré.
+- L'équipe décide d'une licence libre compatible avec CC BY-SA : l'import direct du Wiktionnaire pourrait alors être reconsidéré. C'est le cas depuis l'[ADR 0017](0017-licences.md), qui maintient toutefois le Wiktionnaire en source de repérage.

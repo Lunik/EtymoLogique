@@ -30,6 +30,7 @@ Une modification importante se fait dans un nouvel ADR. Les corrections factuell
 | [0014](0014-sources-et-fascicules.md) | Sources de référence et publication par fascicules | Proposé |
 | [0015](0015-codex-fascicules-et-legendaires.md) | Codex par fascicule et légendaires secrètes | Accepté |
 | [0016](0016-plis-et-jaquettes-par-fascicule.md) | Un pli et une jaquette par fascicule | Accepté |
+| [0017](0017-licences.md) | Code sous AGPL, contenu sous CC BY-SA, nom réservé | Accepté |
 
 ## Page HTML
 

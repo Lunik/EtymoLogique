@@ -32,6 +32,7 @@ XREFS = {
     "0016": [("plis.html#pkChooser", "Choisir un fascicule"), ("plis.html#jaquettes", "Une jaquette par fascicule")],
     "0015": [("codex.html#codex", "Complétude par fascicule"), ("plis.html#chances", "Légendaires inconnues regroupées")],
     "0014": [("modele.html#sources", "Sources et fascicules"), ("plis.html#fascicules", "Les fascicules côté joueur")],
+    "0017": [("modele.html#sources", "Sources et licence du catalogue")],
     "0013": [("modele.html", "Le modèle de données"), ("modele.html#decisions", "Quatre cas, quatre règles"), ("codex.html#filiation", "Formes et filiation dans le codex")],
 }
 
