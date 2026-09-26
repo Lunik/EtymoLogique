@@ -54,7 +54,7 @@ Pour chaque composant ajouté ou modifié :
 - [ ] 10. Au plus 3 couleurs de ressource par composant (Corail non compté), et une seule surface colorée : son bandeau.
 
 **États et rareté** :
-- [ ] Les états se lisent par un losange : Corail plein = découverte, contour Encre = presque, Gris encre = échec, Encre plein = déjà connu.
+- [ ] Les états se lisent par un cercle : Corail plein = découverte, contour Encre = presque, Gris encre = échec, Encre plein = déjà connu.
 - [ ] Rareté : triangle (commune), carré (peu commune), pentagone (rare), diamant taillé (légendaire). La forme est remplie d'Ambre, cernée d'Encre 1,5 px, accompagnée d'un libellé ou d'un nom accessible, et **jamais posée sur une brique**. Tailles : 12, 16 et 22 px.
 - [ ] Confiance éditoriale : trois traits Encre, sans couleur ni forme géométrique.
 

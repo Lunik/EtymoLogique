@@ -8,7 +8,7 @@
 
 Avec les fascicules ([ADR 0014](0014-sources-et-fascicules.md)), le joueur veut savoir où il en est : quelles cartes appartiennent à quel fascicule, et combien il lui en reste à trouver. Le codex affichait jusqu'ici un compteur global et quelques silhouettes.
 
-Mais un compteur exact dévoile tout, y compris le nombre de briques légendaires (forme : diamant taillé). Or la découverte d'une légendaire doit rester une surprise : le joueur ne doit pas savoir combien il en existe, ni combien il lui en manque. L'ADR 0011 imposait d'afficher, sur l'écran des plis, la chance exacte de chaque brique, légendaires inconnues comprises, chacune avec sa silhouette. Cela révèle leur nombre.
+Mais un compteur exact dévoile tout, y compris le nombre de briques légendaires (forme : diamant). Or la découverte d'une légendaire doit rester une surprise : le joueur ne doit pas savoir combien il en existe, ni combien il lui en manque. L'ADR 0011 imposait d'afficher, sur l'écran des plis, la chance exacte de chaque brique, légendaires inconnues comprises, chacune avec sa silhouette. Cela révèle leur nombre.
 
 ## Décision
 
@@ -27,7 +27,7 @@ Mais un compteur exact dévoile tout, y compris le nombre de briques légendaire
 
 - Une **brique légendaire inconnue** n'a ni carte, ni silhouette, et n'entre dans aucun compteur.
 - Un **mot qui exige une légendaire inconnue** est traité de même, pour ne pas la trahir. Sa silhouette apparaît dès que la légendaire est trouvée.
-- Une légendaire trouvée a sa carte, mais **ne compte jamais** dans les totaux : sinon le total changerait à sa découverte et trahirait les autres. Elle apparaît à part : « 1 légendaire trouvée », avec le diamant taillé.
+- Une légendaire trouvée a sa carte, mais **ne compte jamais** dans les totaux : sinon le total changerait à sa découverte et trahirait les autres. Elle apparaît à part : « 1 légendaire trouvée », avec le diamant.
 - Un fascicule est donc « complet » quand toutes ses cartes non légendaires sont découvertes.
 
 ### Écran des plis : chances exactes, nombre caché

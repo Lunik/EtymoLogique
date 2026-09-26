@@ -165,13 +165,16 @@ Le jeu ne doit pas marquer une tentative « presque correcte » si le graphe éd
 ### Vue globale
 
 - Grille de petites cartes, avec un bandeau de couleur par type : mot, préfixe, suffixe, langue. Les cartes de langue prennent la couleur de leur langue.
+- Au milieu de chaque petite carte découverte, sous le mot, une ligne discrète donne son sens : le sens littéral d'un mot (*géographie* « description de la terre »), la glose d'une brique (*géo-* « terre »). Une carte de langue y porte son nom.
+- Chaque carte découverte porte en fond une silhouette simple de son sens (une hélice pour *biologie*, une amphore pour le grec ancien), en aplat monochrome. Une carte inconnue n'en a pas, pour ne rien révéler ([ADR 0023](adr/0023-textures-des-cartes.md)).
 - Filtres par type et par fascicule avec compteurs, et tri par numéro de découverte, par ordre alphabétique, par type ou par fascicule. Les cartes se réorganisent avec une animation.
 - Chaque fascicule affiche sa complétude (« 10 / 11 cartes ») avec une barre de progression. Toucher un fascicule n'affiche que ses cartes.
 - Les cartes encore inconnues restent visibles en silhouette, avec une piste de sens, sans révéler la réponse.
-- **Exception : les légendaires** (diamant taillé). Une légendaire inconnue, et tout mot qui en dépend, n'a ni silhouette ni place dans les compteurs. Une légendaire trouvée a sa carte, mais s'affiche à part (« 1 légendaire trouvée ») et n'entre jamais dans les totaux, pour garder le suspense sur leur nombre ([ADR 0015](adr/0015-codex-fascicules-et-legendaires.md)).
+- Une carte nouvelle se signale par une pastille Corail dans son bandeau, après son numéro, et par un halo Corail diffus, qui disparaissent à sa première consultation. La carte garde sa structure et son contour.
+- **Exception : les légendaires** (diamant). Une légendaire inconnue, et tout mot qui en dépend, n'a ni silhouette ni place dans les compteurs. Une légendaire trouvée a sa carte, mais s'affiche à part (« 1 légendaire trouvée ») et n'entre jamais dans les totaux, pour garder le suspense sur leur nombre ([ADR 0015](adr/0015-codex-fascicules-et-legendaires.md)).
 - Toucher une petite carte l'agrandit au centre de l'écran, depuis sa position dans la grille. On peut passer à la carte précédente ou suivante sans revenir à la grille.
 - **Recto** : mot, langue, définition actuelle, sens littéral et niveau de confiance.
-- **Verso** (en touchant la carte) : les formes trouvées dans chaque langue, avec leur progression (par exemple 2 sur 3). Les formes manquantes restent en silhouette. Il affiche aussi les composants ou les mots formés.
+- **Verso** (en touchant la carte) : les formes trouvées dans chaque langue, avec leur progression (par exemple 2 sur 3). Les formes manquantes restent en silhouette. Il affiche aussi les composants ou les mots formés ; pour une brique, la progression de sa famille (par exemple 4 mots formés sur 5).
 - Le verso d'une carte de langue regroupe automatiquement toutes les formes découvertes dans cette langue.
 - **Navigation entre les cartes** : tout ce qui correspond à une carte déjà découverte est cliquable.
   - Au recto : chaque brique de la composition, chaque morceau coloré du mot, la langue.
@@ -393,7 +396,7 @@ Le [design système](design-system.html) la prolonge en système complet : princ
 | Langue | Palimpseste `#8F7BF0` | **Toutes** les langues, sans distinction de couleur entre elles |
 | Mot | Encre `#0F1F19` sur Crème `#FFFBF3` | Cartes de mots : neutres, pour laisser parler les briques |
 | Famille | Rosée `#F59AC1` | Cartes et progression de famille |
-| Pli et énergie | Ambre `#F4B740` | Plis, sceau, énergie, recharge, rituel d'ouverture, formes de rareté (triangle, carré, pentagone, diamant ; remplies d'Ambre, cernées d'Encre, jamais posées sur une brique), gouttes d'encre |
+| Pli et énergie | Ambre `#F4B740` | Plis, sceau, énergie, recharge, rituel d'ouverture, formes de rareté (triangle, carré, pentagone, diamant ; remplies d'Ambre, cernées d'Encre, ou de la teinte profonde du bandeau d'une carte, sans contour, jamais posées sur une brique), gouttes d'encre |
 | Action et marque | Corail `#FF6B4A` (survol `#FF8667`, pression `#E24E2D`) | Bouton principal, focus, nouveauté, marque |
 | Danger | Corail profond `#C23D1F` (texte Crème, 5,1:1) | Bouton qui confirme une action irréversible (effacer, réinitialiser), avec l'icône octogone et toujours après une confirmation. Variante discrète en contour. Jamais pour un échec de jeu, qui reste en Gris encre. |
 
@@ -411,23 +414,23 @@ Règles complémentaires :
   9. Contraste minimum : 4,5:1 pour le texte ; 3:1 pour les grands titres, les icônes et les bordures utiles. Gris encre `#5C6B62` : 4,9:1 sur Papier.
   10. Au plus trois couleurs de ressource par composant, le Corail d'action n'entrant pas dans ce compte. Une seule surface colorée par composant, son bandeau.
 
-- **États** : ils n'ont pas de teinte propre. Ils se lisent par un losange :
+- **États** : ils n'ont pas de teinte propre. Ils se lisent par un cercle :
   - Corail plein : découverte ;
   - contour Encre : presque ;
   - Gris encre : échec, jamais rouge ;
   - Encre plein : déjà connu.
-- **Rareté** : quatre niveaux, une forme chacun. Plus la forme a de côtés, plus la brique est rare :
+- **Rareté** : quatre niveaux, une forme chacun. Pour les trois premiers, plus la forme a de côtés, plus la brique est rare ; le diamant des légendaires est à part :
   - triangle : commune ;
   - carré : peu commune ;
   - pentagone : rare ;
-  - diamant taillé (table plate et facettes, pour ne jamais être confondu avec le losange d'état) : légendaire.
+  - diamant (losange étiré, nettement plus haut que large, bien distinct du cercle des états) : légendaire.
 
-  La forme est remplie d'Ambre et cernée d'Encre 1,5 px. Elle est toujours accompagnée de son libellé ou d'un nom accessible, et n'est jamais posée sur une brique. Tailles : 12 px en liste, 16 px dans les chances, 22 px à la révélation.
+  Sur fond neutre, la forme est remplie d'Ambre et cernée d'Encre 1,5 px ; dans le bandeau d'une carte, elle prend la teinte profonde du bandeau, sans contour. Elle est toujours accompagnée de son libellé ou d'un nom accessible, et n'est jamais posée sur une brique. Tailles : 12 px en liste, 16 px dans les chances, 22 px à la révélation.
 - **Confiance éditoriale** : trois traits Encre, jamais de couleur ni de forme géométrique, pour ne pas ressembler à une rareté.
 - **Formes** :
   - brique : rayon 10, ombre dure 4, élément manipulable ;
   - petite brique : rayon 6, pour une mention dans un texte ;
-  - carte : format 3:4 avec un bandeau de la couleur de son type ;
+  - carte : format 3:4 avec un bandeau de la couleur de son type ; une fois découverte, une silhouette de son sens en fond ;
   - pastille : rayon 999, métadonnée ;
   - pointillé : ce qui manque ou reste inconnu, y compris une brique épuisée.
 - **Interactions** :
@@ -437,6 +440,7 @@ Règles complémentaires :
   - désactivé : opacité 40 % ;
   - sélectionné : fond Encre.
 - **Tailles** : cible tactile d'au moins 44 px, boutons de 48 px de haut, briques d'au moins 96 × 52 px.
+- **Textures de carte** ([charte](identite.html#textures), [ADR 0023](adr/0023-textures-des-cartes.md)) : une silhouette pleine par carte découverte, d'une seule teinte (Encre à 10 % en grille, 8,5 % en carte agrandie, Papier en nocturne), détails évidés dans la couleur du fond, recadrée par le bord, jamais sous le bandeau ni au verso. Le texte se pose directement dessus ; le texte secondaire passe en Encre secondaire, le sens littéral en pastille Crème cernée de Gris encre. Pour une langue, un objet de sa culture, jamais un drapeau. La grammaire de dessin (traits pleins de 9 à 24 unités sur une grille de 300 × 400, évidements de 4 à 7, arrondis de 6 à 14, débord à droite ou en bas) est détaillée dans la [charte](identite.html#textures-grammaire).
 
 ## Exactitude et ton pédagogique
 

@@ -19,6 +19,7 @@ Tout le contenu est **en français**. Rédigez en français (documentation, micr
 | `docs/jeu.html`, `plis.html`, `codex.html` | Démonstrations jouables (table de fusion, plis, codex). |
 | `docs/boussole.html`, `moodboard.html` | Piliers, à cultiver / à éviter, ambiance. |
 | `docs/logo.html` | Page de travail hors navigation : les dix pistes de logo, dont le sceau ÉL retenu (ADR 0021). |
+| `docs/cartes-visuels.html` | Page de travail hors navigation : dix pistes de texture pour les cartes du codex, dont la piste 02 (aplat découpé) retenue par l’ADR 0023. Les silhouettes du codex sont dans `cardArt` (`assets/etymo.js`). |
 | `docs/assets/etymo.css` | **Jetons de référence** (couleurs, polices, rayons, easing) et styles partagés. |
 | `docs/assets/etymo.js` | Démo partagée (réserve, découvertes, plis) stockée dans `localStorage` (`etymologique.demo.v1`, thème `etymologique.theme`). |
 | `docs/assets/logo.svg` | Icône des pages : le sceau ÉL (ADR 0021). |

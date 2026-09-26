@@ -330,7 +330,7 @@ table.t { width: 100%; min-width: 760px; border-collapse: collapse; font-size: 1
 .toast-zone { position: fixed; z-index: var(--z-toast); right: 20px; bottom: 20px; display: grid; gap: 8px; }
 .toast { display: flex; align-items: center; gap: 10px; max-width: 340px; padding: 12px 16px; border: 1.5px solid var(--fixed-ink); border-radius: 12px; background: var(--fixed-ink); color: #f3eee3; box-shadow: 0 16px 30px -12px rgba(15, 31, 25, 0.5); font-size: 13px; animation: toastIn var(--dur-base) var(--ease-spring); }
 .toast.out { animation: toastOut var(--dur-fast) var(--ease-in) forwards; }
-.toast .d { width: 10px; height: 10px; flex: none; rotate: 45deg; background: #f3eee3; }
+.toast .d { width: 10px; height: 10px; flex: none; border-radius: 50%; background: #f3eee3; }
 .toast.win .d { background: var(--c-action); }
 @keyframes toastIn { from { opacity: 0; transform: translateY(12px) scale(0.96); } }
 @keyframes toastOut { to { opacity: 0; transform: translateY(8px); } }
@@ -408,12 +408,26 @@ table.t { width: 100%; min-width: 760px; border-collapse: collapse; font-size: 1
 .lit span { margin-right: 8px; color: var(--ink-3); font-family: var(--mono); font-size: 10px; font-style: normal; letter-spacing: 0.1em; text-transform: uppercase; }
 .mcard { position: relative; display: inline-flex; flex-direction: column; justify-content: space-between; gap: 6px; width: 132px; aspect-ratio: 3 / 4; padding: 32px 10px 10px; overflow: hidden; border: 1.5px solid var(--line-strong); border-radius: var(--radius-m); background: var(--paper); color: var(--ink); vertical-align: top; }
 .mcard::before { position: absolute; inset: 0 0 auto; height: 24px; border-bottom: 1.5px solid var(--line-strong); background: var(--band); content: ""; }
-.mcard .top { position: absolute; z-index: 1; top: 5px; right: 10px; left: 10px; display: flex; justify-content: space-between; color: var(--tt, #0f1f19); font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; }
+.mcard .top { position: absolute; z-index: 1; top: 5px; right: 10px; left: 10px; display: flex; align-items: center; justify-content: space-between; min-height: 14px; color: var(--tt, #0f1f19); font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; }
+.mcard .top .side { display: inline-flex; align-items: center; gap: 5px; }
+.mcard .top .rar { width: 12px; height: 12px; margin-right: -4px; fill: var(--rd); stroke: var(--band); }
 .mcard .w { font-family: var(--serif); font-size: 18px; font-weight: 600; line-height: 1.1; }
+.mcard .lit { color: var(--ink-2); font-family: var(--serif); font-size: 13px; font-style: italic; line-height: 1.2; }
 .mcard .f { display: flex; justify-content: space-between; color: var(--ink-2); font-family: var(--mono); font-size: 9px; }
 .mcard.locked { background: repeating-linear-gradient(-45deg, var(--paper) 0 8px, var(--paper-2) 8px 16px); }
 .mcard.locked .q { color: var(--ink-3); font-family: var(--serif); font-size: 44px; font-style: italic; text-align: center; }
-.mcard.new { border: 3px solid var(--c-action); }
+.new-dot { display: inline-block; flex: none; width: 8px; height: 8px; margin-left: 6px; border: 1.5px solid var(--fixed-ink); border-radius: 50%; background: var(--c-action); vertical-align: 0; }
+.mcard.new { box-shadow: 0 0 30px 8px color-mix(in srgb, var(--c-action) 60%, transparent); }
+/* Texture de carte (ADR 0023) : silhouettes générées par cardArt (assets/etymo.js), copiées ici car cette page est autonome. */
+.mcard, .ds-bigcard { isolation: isolate; }
+.ds-bigcard { position: relative; }
+.card-art { position: absolute; z-index: -1; inset: 25px 0 0; overflow: hidden; color: var(--ink); opacity: 0.1; pointer-events: none; --art-bg: var(--paper); }
+.card-art svg { display: block; width: 100%; height: 100%; }
+.mini-grid .mcard .card-art { inset: 17px 0 0; }
+.ds-bigcard .card-art { inset: 0; color: #0f1f19; opacity: 0.085; --art-bg: #fffbf3; }
+.mini-grid .mcard.new { box-shadow: 0 0 14px 3px color-mix(in srgb, var(--c-action) 60%, transparent); }
+.new-dot.lg { width: 12px; height: 12px; margin-left: 0; }
+.mini-grid .mcard .new-dot { width: 6px; height: 6px; margin-left: 4px; border-width: 1px; }
 .anat { position: relative; display: inline-block; }
 .split { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; align-items: center; }
 .anat-list { display: grid; gap: 6px; counter-reset: a; padding: 0; list-style: none; font-size: 13px; }
@@ -426,7 +440,7 @@ table.t { width: 100%; min-width: 760px; border-collapse: collapse; font-size: 1
 .inkbox b { font-family: var(--serif); font-size: 30px; line-height: 1; }
 .drop { width: 14px; height: 14px; border: 1.5px solid #0f1f19; border-radius: 50% 0 50% 50%; background: var(--c-pli); rotate: -45deg; align-self: center; }
 .feedback { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--ink-2); }
-.feedback::before { width: 9px; height: 9px; flex: none; border-radius: 2px; background: var(--ink-3); content: ""; rotate: 45deg; }
+.feedback::before { width: 9px; height: 9px; flex: none; border-radius: 50%; background: var(--ink-3); content: ""; }
 .feedback.win::before { background: var(--c-action); }
 .feedback.hint::before { background: transparent; box-shadow: inset 0 0 0 1.5px var(--ink); }
 .feedback.known::before { background: var(--ink); }
@@ -458,6 +472,7 @@ table.t { width: 100%; min-width: 760px; border-collapse: collapse; font-size: 1
 .mini-grid .mcard .top { top: 3px; left: 5px; right: 5px; font-size: 6px; }
 .mini-grid .mcard .w { font-size: 10px; overflow-wrap: anywhere; hyphens: auto; }
 .mini-grid .mcard .bchip { font-size: 10px; padding: 1px 5px; box-shadow: 1px 1px 0 #0f1f19; }
+.mini-grid .mcard .lit { display: none; }
 .mini-grid .mcard .q { font-size: 24px; }
 .app-btn { margin-top: auto; }
 .app-btn .btn { width: 100%; min-height: 40px; font-size: 11px; }
@@ -506,7 +521,7 @@ html { scroll-padding-top: 96px; }
     <symbol id="rar-commune" viewBox="0 0 16 16"><path d="M8 1.8 14.8 14H1.2Z"/></symbol>
     <symbol id="rar-peu" viewBox="0 0 16 16"><rect x="2.3" y="2.3" width="11.4" height="11.4" rx="0.6"/></symbol>
     <symbol id="rar-rare" viewBox="0 0 16 16"><path d="M8 1.3 14.8 6.3 12.2 14.4H3.8L1.2 6.3Z"/></symbol>
-    <symbol id="rar-legendaire" viewBox="0 0 16 16"><path d="M4.4 2h7.2L15.2 6.3 8 14.8.8 6.3Z"/><path fill="none" d="M.8 6.3h14.4M5.8 6.3 8 14.8l2.2-8.5M5.8 6.3 8 2l2.2 4.3"/></symbol>
+    <symbol id="rar-legendaire" viewBox="0 0 16 16"><path d="M8 .6 13.6 8 8 15.4 2.4 8Z"/></symbol>
     <symbol id="i-table" viewBox="0 0 24 24"><rect x="2.5" y="8" width="7.5" height="8" rx="2"/><rect x="14" y="8" width="7.5" height="8" rx="2"/><path d="M12 10.8v2.4M10.8 12h2.4"/></symbol>
     <symbol id="i-codex" viewBox="0 0 24 24"><rect x="7" y="3.5" width="12" height="16" rx="2"/><path d="M7 7.5h12"/><path d="M4 7v11.5a2 2 0 0 0 2 2h9"/></symbol>
     <symbol id="i-pli" viewBox="0 0 24 24"><rect x="5" y="2.5" width="14" height="19" rx="2.5"/><circle cx="12" cy="12" r="3.2"/></symbol>
@@ -832,8 +847,8 @@ html { scroll-padding-top: 96px; }
         <h3 class="block-title" id="ds-2-5"><small>2.5</small>Badges, indicateurs et info-bulles</h3>
         <div class="grid g4">
           <div class="card"><span class="k">Compteur</span><div class="demo center"><span class="count">4</span><span class="count">18</span></div><p class="spec">Encre, texte Papier. Nombre exact jusqu’à 99, puis « 99+ ».</p></div>
-          <div class="card"><span class="k">Nouveauté</span><div class="demo center"><span class="badge-new">Nouveau</span></div><p class="spec">Corail, texte Encre. Disparaît après la première consultation.</p></div>
-          <div class="card"><span class="k">Rareté</span><div class="demo center"><div class="rar-scale"><span><svg class="rar" aria-hidden="true"><use href="#rar-commune"/></svg>Commune<small>triangle</small></span><span><svg class="rar" aria-hidden="true"><use href="#rar-peu"/></svg>Peu commune<small>carré</small></span><span><svg class="rar" aria-hidden="true"><use href="#rar-rare"/></svg>Rare<small>pentagone</small></span><span><svg class="rar" aria-hidden="true"><use href="#rar-legendaire"/></svg>Légendaire<small>diamant</small></span></div></div><p class="spec">4 niveaux, 1 forme chacun : plus de côtés = plus rare. Ambre cerné d’Encre 1,5 px, + libellé ou <code>aria-label</code>. Diamant taillé, jamais un losange (réservé aux états). Jamais sur une brique. Tailles 12 · 16 · 22.</p></div>
+          <div class="card"><span class="k">Nouveauté</span><div class="demo center"><span class="new-dot lg" role="img" aria-label="Nouvelle carte"></span><span class="badge-new">Nouveau</span></div><p class="spec">Carte : pastille Corail cernée d’Encre, dans le bandeau après le N°, et halo Corail diffus, jusqu’à la première consultation. Fascicule paru : badge Corail, texte Encre.</p></div>
+          <div class="card"><span class="k">Rareté</span><div class="demo center"><div class="rar-scale"><span><svg class="rar" aria-hidden="true"><use href="#rar-commune"/></svg>Commune<small>triangle</small></span><span><svg class="rar" aria-hidden="true"><use href="#rar-peu"/></svg>Peu commune<small>carré</small></span><span><svg class="rar" aria-hidden="true"><use href="#rar-rare"/></svg>Rare<small>pentagone</small></span><span><svg class="rar" aria-hidden="true"><use href="#rar-legendaire"/></svg>Légendaire<small>diamant</small></span></div></div><p class="spec">4 niveaux, 1 forme chacun : plus de côtés = plus rare pour les trois premiers, le diamant des légendaires est à part. Ambre cerné d’Encre 1,5 px sur fond neutre, + libellé ou <code>aria-label</code>. Dans le bandeau d’une carte : teinte profonde du bandeau, sans contour, jamais d’Ambre sur une couleur vive. Diamant : losange étiré, nettement plus haut que large, distinct du cercle des états. Jamais sur une brique. Tailles 12 · 16 · 22.</p></div>
           <div class="card"><span class="k">Confiance</span><div class="demo center" style="flex-direction:column;gap:6px"><span class="conf"><i></i><i></i><i></i><b>Établie</b></span><span class="conf p2"><i></i><i></i><i></i><b>Probable</b></span><span class="conf p1"><i></i><i></i><i></i><b>Discutée</b></span></div><p class="spec">Traits Encre, jamais de couleur ni de forme géométrique (réservées à la rareté).</p></div>
           <div class="card"><span class="k">Langue</span><div class="demo center"><span class="pill"><i></i>Grec ancien</span></div><p class="spec">Point Palimpseste + nom complet. Jamais d’abréviation.</p></div>
           <div class="card"><span class="k">Info-bulle</span><div class="demo center"><span class="tip-wrap"><button class="icon-btn" type="button" aria-describedby="tipA" aria-label="Qu’est-ce que la confiance ?"><svg class="ic"><use href="#i-info"/></svg></button><span class="tooltip" role="tooltip" id="tipA">Degré de consensus des spécialistes sur cette étymologie.</span></span></div><p class="spec">Au survol et au focus. Jamais d’information indispensable, jamais d’action à l’intérieur.</p></div>
@@ -974,7 +989,7 @@ html { scroll-padding-top: 96px; }
               <p class="feedback">Aucune recette connue. Rien n’est perdu : vos exemplaires restent dans la réserve.</p>
               <p class="feedback known">biologie est déjà dans votre codex. Aucun exemplaire utilisé.</p>
             </div>
-            <p class="spec">Losange d’état + phrase courte. Annoncé par <code>aria-live="polite"</code>.</p>
+            <p class="spec">Cercle d’état + phrase courte. Annoncé par <code>aria-live="polite"</code>.</p>
           </div>
         </div>
       </div>
@@ -1004,25 +1019,37 @@ html { scroll-padding-top: 96px; }
 
       <div class="block">
         <h3 class="block-title" id="ds-3-5"><small>3.5</small>Cartes du codex</h3>
-        <p class="xrefs"><span>En situation</span><a class="xref" href="codex.html">Vue globale et carte agrandie</a></p>
+        <p class="xrefs"><span>En situation</span><a class="xref" href="codex.html">Vue globale et carte agrandie</a><a class="xref" href="identite.html#textures">Textures de carte</a></p>
         <div class="grid g2">
           <div class="card">
             <span class="k">Mini-cartes (grille)</span>
             <div class="demo">
-              <span class="mcard" style="--band:#0f1f19;--tt:#f3eee3"><span class="top"><span>N° 008</span><span>Mot</span></span><span class="w">biologie</span><span class="f"><span>● Français</span><span>●●</span></span></span>
-              <span class="mcard" style="--band:var(--c-suffix)"><span class="top"><span>N° 006</span><span>Suffixe</span></span><span><span class="bchip" data-kind="suffixe">-logie</span></span><span class="f"><span>● Français</span><span>●●●</span></span></span>
-              <span class="mcard" style="--band:var(--c-lang)"><span class="top"><span>N° 004</span><span>Langue</span></span><span class="w"><span style="font-size:34px;display:block">Ω</span>Grec ancien</span><span class="f"><span>6 / 10 formes</span></span></span>
-              <span class="mcard new" style="--band:#0f1f19;--tt:#f3eee3"><span class="top"><span>N° 010</span><span>Mot</span></span><span class="w">philosophie</span><span class="f"><span>● Français</span><span>●●○</span></span></span>
+              <span class="mcard" style="--band:#0f1f19;--tt:#f3eee3"><span class="card-art" aria-hidden="true"><svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice" focusable="false"><path d="M149.3 534.2L140.5 531M201.1 518L111.2 485.3M227.1 492.5L107.7 449M219 454.4L138.4 425.1M187.7 408L192.1 409.6M157.8 362.1L244.6 393.7M152.7 325.1L272.3 368.7M181.8 300.7L265.6 331.2M235 285L235 285M288.2 269.3L204.4 238.8M317.3 244.9L197.7 201.3M312.2 207.9L225.4 176.3M282.3 162L277.9 160.4M251 115.6L331.6 144.9M242.9 77.5L362.3 121M268.9 52L358.8 84.7M320.7 35.8L329.5 39" fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"></path><path d="M117.7 540.3L129 538.2L140.5 536.2L152 534.2L163.4 532.1L174.6 529.9L185.2 527.6L195.2 525L204.4 522.2L212.6 519L219.9 515.4L225.9 511.4L230.8 506.9L234.4 502L236.6 496.7L237.6 490.8L237.3 484.5L235.7 477.7L233 470.5L229.1 462.9L224.3 454.9L218.6 446.6L212.2 438.1L205.3 429.4L198 420.5L190.5 411.6L182.9 402.6L175.5 393.7L168.5 384.9L161.9 376.4L156 368L151 359.9L146.8 352.2L143.7 344.9L141.8 338L141.1 331.5L141.7 325.5L143.6 320L146.8 315L151.3 310.4L157.1 306.3L164 302.6L172 299.3L180.9 296.4L190.7 293.7L201.1 291.3L212.1 289.1L223.5 287L235 285L246.5 283L257.9 280.9L268.9 278.7L279.3 276.3L289.1 273.6L298 270.7L306 267.4L312.9 263.7L318.7 259.6L323.2 255L326.4 250L328.3 244.5L328.9 238.5L328.2 232L326.3 225.1L323.2 217.8L319 210.1L314 202L308.1 193.6L301.5 185.1L294.5 176.3L287.1 167.4L279.5 158.4L272 149.5L264.7 140.6L257.8 131.9L251.4 123.4L245.7 115.1L240.9 107.1L237 99.5L234.3 92.3L232.7 85.5L232.4 79.2L233.4 73.3L235.6 68L239.2 63.1L244.1 58.6L250.1 54.6L257.4 51L265.6 47.8L274.8 45L284.8 42.4L295.4 40.1L306.6 37.9L318 35.8L329.5 33.8L341 31.8L352.3 29.7M160.7 555.9L153.5 547.1L146 538.1L138.4 529.2L131 520.3L123.9 511.5L117.2 502.9L111.2 494.5L106 486.4L101.7 478.6L98.5 471.2L96.4 464.2L95.6 457.7L96 451.7L97.7 446.1L100.7 441L105 436.3L110.6 432.2L117.3 428.4L125.2 425L134 422L143.6 419.4L154 416.9L164.9 414.7L176.2 412.6L187.7 410.6L199.3 408.6L210.7 406.5L221.7 404.3L232.3 401.9L242.1 399.3L251.2 396.4L259.3 393.2L266.4 389.5L272.3 385.5L277 381L280.4 376L282.5 370.6L283.2 364.6L282.7 358.2L281 351.4L278.1 344.1L274.1 336.5L269.1 328.5L263.4 320.2L256.9 311.6L249.9 302.8L242.5 293.9L235 285L227.5 276.1L220.1 267.2L213.1 258.4L206.6 249.8L200.9 241.5L195.9 233.5L191.9 225.9L189 218.6L187.3 211.8L186.8 205.4L187.5 199.4L189.6 194L193 189L197.7 184.5L203.6 180.5L210.7 176.8L218.8 173.6L227.9 170.7L237.7 168.1L248.3 165.7L259.3 163.5L270.7 161.4L282.3 159.4L293.8 157.4L305.1 155.3L316 153.1L326.4 150.6L336 148L344.8 145L352.7 141.6L359.4 137.8L365 133.7L369.3 129L372.3 123.9L374 118.3L374.4 112.3L373.6 105.8L371.5 98.8L368.3 91.4L364 83.6L358.8 75.5L352.8 67.1L346.1 58.5L339 49.7L331.6 40.8L324 31.9L316.5 22.9L309.3 14.1" fill="none" stroke="currentColor" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span class="top"><span>N° 008</span><span>Mot</span></span><span class="w">biologie</span><span class="lit">« étude de la vie »</span><span class="f"><span>● Français</span><span>●●</span></span></span>
+              <span class="mcard" style="--band:var(--c-suffix);--rd:var(--c-suffix-deep)"><span class="card-art" aria-hidden="true"><svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice" focusable="false"><g transform="rotate(-10 185 320)"><path d="M185 244C146 216 88 212 34 226L34 404C88 390 146 394 185 420C224 394 282 390 336 404L336 226C282 212 224 216 185 244Z" fill="currentColor"></path>
+          <path d="M185 250L185 416" fill="none" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--art-bg)"></path><path d="M58 268C98 259 140 260 170 272M200 272C230 260 272 259 312 268M58 292C98 283 140 284 170 296M200 296C230 284 272 283 312 292M58 316C98 307 140 308 170 320M200 320C230 308 272 307 312 316M58 340C98 331 140 332 170 344M200 344C230 332 272 331 312 340M58 364C98 355 140 356 170 368M200 368C230 356 272 355 312 364" fill="none" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--art-bg)"></path></g></svg></span><span class="top"><span>N° 006</span><span class="side">Suffixe<svg class="rar" role="img" aria-label="Commune"><use href="#rar-commune"/></svg></span></span><span><span class="bchip" data-kind="suffixe">-logie</span></span><span class="lit">« étude »</span><span class="f"><span>● Français</span><span>●●●</span></span></span>
+              <span class="mcard" style="--band:var(--c-lang)"><span class="card-art" aria-hidden="true"><svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice" focusable="false"><g transform="translate(46 0) rotate(8 205 280)"><rect x="173" y="100" width="64" height="18" rx="6" fill="currentColor"></rect>
+          <path d="M187 116L223 116C222 150 224 168 232 180C272 195 290 240 288 285C286 340 250 385 228 420L226 452L184 452L182 420C160 385 124 340 122 285C120 240 138 195 178 180C186 168 188 150 187 116Z" fill="currentColor"></path>
+          <path d="M223 136C266 128 278 162 262 198M187 136C144 128 132 162 148 198" fill="none" stroke="currentColor" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path d="M126 232L284 232M126 280L284 280M150 330L260 330" fill="none" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--art-bg)"></path><path d="M124 262L124 250L136 250L136 262L148 262L148 250L160 250L160 262L172 262L172 250L184 250L184 262L196 262L196 250L208 250L208 262L220 262L220 250L232 250L232 262L244 262L244 250L256 250L256 262L268 262L268 250L280 250L280 262L292 262" fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--art-bg)"></path></g></svg></span><span class="top"><span>N° 004</span><span>Langue</span></span><span class="w"><span style="font-size:34px;display:block">Ω</span>Grec ancien</span><span class="f"><span>6 / 10 formes</span></span></span>
+              <span class="mcard new" style="--band:#0f1f19;--tt:#f3eee3"><span class="card-art" aria-hidden="true"><svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice" focusable="false"><g transform="translate(-16 -6)">
+          <path d="M96 430C104 352 164 318 230 318C300 318 344 360 344 430Z" fill="currentColor"></path>
+          <rect x="206" y="214" width="56" height="112" rx="14" fill="currentColor"></rect>
+          <circle cx="228" cy="164" r="64" fill="currentColor"></circle>
+          <path d="M170 142L146 188L172 194Z" fill="currentColor"></path>
+          <path d="M168 196C160 244 182 294 216 304C252 300 274 266 276 224C252 238 212 236 168 196Z" fill="currentColor"></path>
+          <path d="M238 118C256 116 272 128 276 146M252 156C266 158 278 170 280 186M226 104C236 94 252 92 264 98" fill="none" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--art-bg)"></path>
+          <path d="M186 164L200 162M186 214C200 226 214 230 232 228M190 244C204 262 222 272 244 270" fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--art-bg)"></path>
+          <path d="M130 372C170 352 212 360 246 396M190 334C232 344 268 376 290 430M262 332C286 346 316 362 340 368" fill="none" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--art-bg)"></path></g></svg></span><span class="top"><span>N° 010<span class="new-dot" title="Nouvelle carte"></span><span class="sr-only">, nouvelle carte</span></span><span>Mot</span></span><span class="w">philosophie</span><span class="lit">« amour de la sagesse »</span><span class="f"><span>● Français</span><span>●●○</span></span></span>
               <span class="mcard locked" style="--band:#0f1f19;--tt:#f3eee3"><span class="top"><span>N° 017</span><span>Mot</span></span><span class="q">?</span><span class="f"><span>Piste : « loi des astres »</span></span></span>
             </div>
-            <p class="spec">Format 3:4, bandeau de 24 px de la couleur du type (Encre pour les mots). Pastilles de formes trouvées. Nouvelle : contour Corail. Inconnue : hachures, « ? » et piste.</p>
+            <p class="spec">Format 3:4, bandeau de 24 px de la couleur du type (Encre pour les mots). Rareté en haut à droite du bandeau, dans la teinte profonde du bandeau et sans contour, à égale distance du haut et du bord. Pastilles de formes trouvées. Nouvelle : pastille Corail cernée d’Encre dans le bandeau, après le N°, et halo Corail diffus autour de la carte, jusqu’à la première consultation ; la carte garde sa structure et son contour. Inconnue : hachures, « ? » et piste. Découverte : silhouette de son sens en fond, aplat d’Encre à 10 %, recadré par le bord, jamais sous le bandeau (<a href="identite.html#textures">textures de carte</a>, <a href="adr.html#adr-0023">ADR 0023</a>).</p>
           </div>
           <div class="card">
             <span class="k">Carte agrandie</span>
             <ul class="list">
               <li><span><b>Ouverture</b> : la carte s’envole depuis sa position dans la grille (FLIP, 600 ms, ressort).</span></li>
-              <li><span><b>Recto</b> : mot, langue (lien), définition, équation en briques (liens), confiance, bouton « Voir les formes ».</span></li>
-              <li><span><b>Verso</b> : formes trouvées par langue, progression, composants ou mots formés (liens).</span></li>
+              <li><span><b>Recto</b> : mot, langue (lien), définition, équation en briques (liens), confiance, bouton « Voir les formes ». En fond, la même silhouette qu’en grille, à 8,5 % ; le verso reste nu.</span></li>
+              <li><span><b>Verso</b> : formes trouvées par langue, progression, composants ou mots formés (liens) ; pour une brique, progression de sa famille (« 4 / 5 mots »).</span></li>
               <li><span><b>Retourner</b> : toucher la carte ou le bouton ; rotation 3D de 850 ms.</span></li>
               <li><span><b>Naviguer</b> : flèches, balayage horizontal sur mobile, liens internes ; fil d’Ariane au-dessus de la carte.</span></li>
               <li><span><b>Fermer</b> : croix, Échap, toucher le voile ; la carte revient à sa place et le focus aussi.</span></li>
@@ -1084,14 +1111,14 @@ html { scroll-padding-top: 96px; }
         <p class="xrefs"><span>En situation</span><a class="xref" href="jeu.html#table">Essayer chaque retour</a><a class="xref" href="mouvement.html">Mouvements associés</a></p>
         <div class="table-wrap">
           <table class="t"><thead><tr><th>Résultat</th><th>Visuel</th><th>Mouvement</th><th>Son</th><th>Vibration</th><th>Texte</th></tr></thead><tbody>
-            <tr><td>Découverte</td><td>fiche, losange Corail, confettis aux couleurs des briques</td><td>pop à ressort 480 ms, onde</td><td>accord ascendant, 0,6 s</td><td>2 impulsions courtes</td><td>« Nouvelle découverte : biologie ! » · « −1 » sur chaque brique utilisée</td></tr>
-            <tr><td>Presque</td><td>losange contour Encre</td><td>légère secousse 300 ms</td><td>note suspendue</td><td>1 impulsion courte</td><td>« Bonnes briques… mais l’ordre compte. »</td></tr>
-            <tr><td>Échec</td><td>losange Gris encre</td><td>secousse 500 ms</td><td>clic sourd</td><td>aucune</td><td>« Aucune recette connue. Rien n’est perdu. »</td></tr>
-            <tr><td>Déjà connu</td><td>losange Encre, fiche rouverte</td><td>fondu 240 ms</td><td>aucun</td><td>aucune</td><td>« biologie est déjà dans votre codex. »</td></tr>
+            <tr><td>Découverte</td><td>fiche, cercle Corail, confettis aux couleurs des briques</td><td>pop à ressort 480 ms, onde</td><td>accord ascendant, 0,6 s</td><td>2 impulsions courtes</td><td>« Nouvelle découverte : biologie ! » · « −1 » sur chaque brique utilisée</td></tr>
+            <tr><td>Presque</td><td>cercle contour Encre</td><td>légère secousse 300 ms</td><td>note suspendue</td><td>1 impulsion courte</td><td>« Bonnes briques… mais l’ordre compte. »</td></tr>
+            <tr><td>Échec</td><td>cercle Gris encre</td><td>secousse 500 ms</td><td>clic sourd</td><td>aucune</td><td>« Aucune recette connue. Rien n’est perdu. »</td></tr>
+            <tr><td>Déjà connu</td><td>cercle Encre, fiche rouverte</td><td>fondu 240 ms</td><td>aucun</td><td>aucune</td><td>« biologie est déjà dans votre codex. »</td></tr>
             <tr><td>Nouvelle brique (pli)</td><td>rituel, rayons Ambre</td><td>1,8 s</td><td>plume, puis éclat</td><td>1 impulsion longue</td><td>« Nouvelle brique ! »</td></tr>
             <tr><td>Brique connue (pli)</td><td>« +1 exemplaire · ×3 · +3 gouttes », « De retour ! » si épuisée</td><td>1,8 s</td><td>plume, puis éclat doux</td><td>1 impulsion courte</td><td>« +1 exemplaire : ×3 dans votre réserve · +3 gouttes d’encre »</td></tr>
             <tr><td>Réserve pleine (pli)</td><td>« Réserve pleine · ×5 », gouttes</td><td>1,8 s</td><td>plume, puis goutte</td><td>1 impulsion courte</td><td>« Réserve pleine : +4 gouttes d’encre »</td></tr>
-            <tr><td>Brique indisponible</td><td>losange contour Encre, petite brique dans le message</td><td>aucun</td><td>aucun</td><td>aucune</td><td>« Plus aucun exemplaire de <span class="bchip" data-kind="suffixe">-logie</span>. Ouvrez un pli pour en retrouver. »</td></tr>
+            <tr><td>Brique indisponible</td><td>cercle contour Encre, petite brique dans le message</td><td>aucun</td><td>aucun</td><td>aucune</td><td>« Plus aucun exemplaire de <span class="bchip" data-kind="suffixe">-logie</span>. Ouvrez un pli pour en retrouver. »</td></tr>
           </tbody></table>
         </div>
         <p class="spec" style="margin-top:8px">Sons et vibrations désactivables séparément. Jamais de son pour un échec qui puisse sembler moqueur.</p>
@@ -1179,11 +1206,27 @@ html { scroll-padding-top: 96px; }
             <div class="input" style="min-height:34px;border-radius:10px"><svg class="ic" style="width:14px"><use href="#i-search"/></svg><span class="spec">Rechercher</span></div>
             <div style="display:flex;gap:4px;flex-wrap:wrap"><span class="chip-f" aria-pressed="true" style="min-height:24px;padding:3px 8px;font-size:8px">Tout</span><span class="chip-f" style="min-height:24px;padding:3px 8px;font-size:8px"><i style="--c:var(--c-prefix);width:8px;height:8px"></i>Préfixes</span><span class="chip-f" style="min-height:24px;padding:3px 8px;font-size:8px"><i style="--c:var(--c-lang);width:8px;height:8px"></i>Langues</span></div>
             <div class="mini-grid">
-              <span class="mcard" style="--band:#0f1f19;--tt:#f3eee3"><span class="top"><span>001</span></span><span class="w">étymologique</span></span>
-              <span class="mcard" style="--band:var(--c-lang)"><span class="top"><span>002</span></span><span class="w">Français</span></span>
-              <span class="mcard" style="--band:var(--c-suffix)"><span class="top"><span>006</span></span><span><span class="bchip" data-kind="suffixe">-logie</span></span></span>
-              <span class="mcard" style="--band:var(--c-prefix)"><span class="top"><span>007</span></span><span><span class="bchip">bio-</span></span></span>
-              <span class="mcard new" style="--band:#0f1f19;--tt:#f3eee3"><span class="top"><span>010</span></span><span class="w">philosophie</span></span>
+              <span class="mcard" style="--band:#0f1f19;--tt:#f3eee3"><span class="card-art" aria-hidden="true"><svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice" focusable="false"><g transform="translate(78 16) rotate(32 150 250)"><circle cx="150" cy="110" r="62" fill="currentColor"></circle><circle cx="150" cy="110" r="24" style="fill:var(--art-bg)"></circle>
+          <rect x="134" y="160" width="32" height="232" rx="10" fill="currentColor"></rect><rect x="150" y="318" width="54" height="26" rx="6" fill="currentColor"></rect><rect x="150" y="356" width="40" height="26" rx="6" fill="currentColor"></rect>
+          <path d="M150 190L150 300" fill="none" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--art-bg)"></path></g></svg></span><span class="top"><span>001</span></span><span class="w">étymologique</span></span>
+              <span class="mcard" style="--band:var(--c-lang)"><span class="card-art" aria-hidden="true"><svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice" focusable="false"><circle cx="215" cy="275" r="138" fill="currentColor"></circle><path d="M261 275L343 275M254.8 298L325.9 339M238 314.8L279 385.9M215 321L215 403M192 314.8L151 385.9M175.2 298L104.1 339M169 275L87 275M175.2 252L104.1 211M192 235.2L151 164.1M215 229L215 147M238 235.2L279 164.1M254.8 252L325.9 211" fill="none" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--art-bg)"></path>
+          <circle cx="215" cy="275" r="104" fill="none" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--art-bg)"></circle><circle cx="215" cy="275" r="46" fill="none" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--art-bg)"></circle><circle cx="291" cy="275" r="17" style="fill:var(--art-bg)"></circle><circle cx="280.8" cy="313" r="17" style="fill:var(--art-bg)"></circle><circle cx="253" cy="340.8" r="17" style="fill:var(--art-bg)"></circle><circle cx="215" cy="351" r="17" style="fill:var(--art-bg)"></circle><circle cx="177" cy="340.8" r="17" style="fill:var(--art-bg)"></circle><circle cx="149.2" cy="313" r="17" style="fill:var(--art-bg)"></circle><circle cx="139" cy="275" r="17" style="fill:var(--art-bg)"></circle><circle cx="149.2" cy="237" r="17" style="fill:var(--art-bg)"></circle><circle cx="177" cy="209.2" r="17" style="fill:var(--art-bg)"></circle><circle cx="215" cy="199" r="17" style="fill:var(--art-bg)"></circle><circle cx="253" cy="209.2" r="17" style="fill:var(--art-bg)"></circle><circle cx="280.8" cy="237" r="17" style="fill:var(--art-bg)"></circle><circle cx="215" cy="275" r="18" style="fill:var(--art-bg)"></circle></svg></span><span class="top"><span>002</span></span><span class="w">Français</span></span>
+              <span class="mcard" style="--band:var(--c-suffix)"><span class="card-art" aria-hidden="true"><svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice" focusable="false"><g transform="rotate(-10 185 320)"><path d="M185 244C146 216 88 212 34 226L34 404C88 390 146 394 185 420C224 394 282 390 336 404L336 226C282 212 224 216 185 244Z" fill="currentColor"></path>
+          <path d="M185 250L185 416" fill="none" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--art-bg)"></path><path d="M58 268C98 259 140 260 170 272M200 272C230 260 272 259 312 268M58 292C98 283 140 284 170 296M200 296C230 284 272 283 312 292M58 316C98 307 140 308 170 320M200 320C230 308 272 307 312 316M58 340C98 331 140 332 170 344M200 344C230 332 272 331 312 340M58 364C98 355 140 356 170 368M200 368C230 356 272 355 312 364" fill="none" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--art-bg)"></path></g></svg></span><span class="top"><span>006</span></span><span><span class="bchip" data-kind="suffixe">-logie</span></span></span>
+              <span class="mcard" style="--band:var(--c-prefix)"><span class="card-art" aria-hidden="true"><svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice" focusable="false"><g transform="rotate(6 200 300)"><path d="M196 440C190 380 200 300 188 200" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path d="M192 300C150 232 92 214 44 222C74 282 132 318 192 300Z" fill="currentColor"></path>
+          <path d="M190 236C222 160 278 128 330 124C318 196 262 244 190 236Z" fill="currentColor"></path>
+          <path d="M187 204C166 164 170 124 196 92C222 128 216 170 187 204Z" fill="currentColor"></path>
+          <path d="M184 292C150 262 110 246 70 236M194 228C232 196 272 164 312 142M188 192C188 164 192 138 196 112" fill="none" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--art-bg)"></path></g></svg></span><span class="top"><span>007</span></span><span><span class="bchip">bio-</span></span></span>
+              <span class="mcard new" style="--band:#0f1f19;--tt:#f3eee3"><span class="card-art" aria-hidden="true"><svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice" focusable="false"><g transform="translate(-16 -6)">
+          <path d="M96 430C104 352 164 318 230 318C300 318 344 360 344 430Z" fill="currentColor"></path>
+          <rect x="206" y="214" width="56" height="112" rx="14" fill="currentColor"></rect>
+          <circle cx="228" cy="164" r="64" fill="currentColor"></circle>
+          <path d="M170 142L146 188L172 194Z" fill="currentColor"></path>
+          <path d="M168 196C160 244 182 294 216 304C252 300 274 266 276 224C252 238 212 236 168 196Z" fill="currentColor"></path>
+          <path d="M238 118C256 116 272 128 276 146M252 156C266 158 278 170 280 186M226 104C236 94 252 92 264 98" fill="none" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--art-bg)"></path>
+          <path d="M186 164L200 162M186 214C200 226 214 230 232 228M190 244C204 262 222 272 244 270" fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--art-bg)"></path>
+          <path d="M130 372C170 352 212 360 246 396M190 334C232 344 268 376 290 430M262 332C286 346 316 362 340 368" fill="none" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--art-bg)"></path></g></svg></span><span class="top"><span>010<span class="new-dot" title="Nouvelle carte"></span><span class="sr-only">, nouvelle carte</span></span></span><span class="w">philosophie</span></span>
               <span class="mcard locked" style="--band:#0f1f19;--tt:#f3eee3"><span class="top"><span>017</span></span><span class="q">?</span></span>
             </div>
           </div>
@@ -1208,11 +1251,14 @@ html { scroll-padding-top: 96px; }
           <div class="status" style="color:#f3eee3"><span>9:41</span><span>●●●</span></div>
           <div style="display:flex;align-items:center;justify-content:center;gap:4px;padding:4px 10px;color:#f3eee3;font-family:var(--serif);font-size:10px"><span style="opacity:.6">géographie ›</span><span class="bchip" style="font-size:9px;padding:0 4px">géo-</span><span>› géologie</span></div>
           <div style="flex:1;display:grid;place-items:center;padding:8px 16px">
-            <div style="width:100%;border:2px solid #0f1f19;border-radius:18px;overflow:hidden;background:#fffbf3;color:#0f1f19">
+            <div class="ds-bigcard" style="width:100%;border:2px solid #0f1f19;border-radius:18px;overflow:hidden;background:#fffbf3;color:#0f1f19"><span class="card-art" aria-hidden="true"><svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice" focusable="false"><path d="M-10 190C50 170 110 196 170 178C220 164 270 188 320 176L320 420L-10 420Z" fill="currentColor"></path>
+          <path d="M-10 234C40 224 80 242 130 234C150 231 165 230 178 234M186 252C220 242 270 260 320 252M-10 282C40 272 80 290 130 282C150 279 165 278 178 282M186 300C220 290 270 308 320 300M-10 328C40 318 80 336 130 328C150 325 165 324 178 328M186 346C220 336 270 354 320 346M-10 372C40 362 80 380 130 372C150 369 165 368 178 372M186 390C220 380 270 398 320 390" fill="none" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--art-bg)"></path>
+          <path d="M196 170L168 420" fill="none" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--art-bg)"></path>
+          <circle cx="90" cy="306" r="7" style="fill:var(--art-bg)"></circle><circle cx="118" cy="300" r="4" style="fill:var(--art-bg)"></circle><circle cx="250" cy="352" r="6" style="fill:var(--art-bg)"></circle><circle cx="276" cy="258" r="5" style="fill:var(--art-bg)"></circle></svg></span>
               <div style="display:flex;justify-content:space-between;padding:8px 12px;background:#0f1f19;color:#f3eee3;font-family:var(--mono);font-size:8px"><span>N° 015</span><span>MOT</span></div>
               <div style="display:grid;gap:6px;padding:12px">
                 <span class="word" style="font-size:26px"><span class="seg" style="--c:var(--c-prefix)">géo</span><span class="seg" style="--c:var(--c-suffix)">logie</span></span>
-                <span style="font-family:var(--mono);font-size:8px;color:#c23d1f">● FRANÇAIS →</span>
+                <span style="font-family:var(--mono);font-size:8px;color:#44564d;text-decoration:underline;text-underline-offset:2px">● FRANÇAIS →</span>
                 <span style="font-family:var(--serif);font-size:11px">Science qui étudie la Terre : ses roches, sa structure et son histoire.</span>
                 <span class="eq" style="gap:4px"><span class="bchip" style="font-size:11px">géo-</span><span>+</span><span class="bchip" data-kind="suffixe" style="font-size:11px">-logie</span></span>
                 <span class="lit" style="font-size:10px"><span style="font-size:7px">Sens littéral</span>« étude de la terre »</span>
@@ -1277,7 +1323,7 @@ html { scroll-padding-top: 96px; }
         <p class="sec-intro">Objectif WCAG 2.2 niveau AA sur tout le produit. Cette liste sert de contrôle avant chaque publication d’écran.</p>
       </div>
       <div class="grid g3">
-        <div class="card"><h3>Voir</h3><ul class="list"><li><span>Texte 4,5:1, grands titres et icônes 3:1 minimum.</span></li><li><span>La couleur n’est jamais le seul signal (type écrit, trait d’union, losange + texte).</span></li><li><span>Tailles en rem : l’interface supporte un zoom de 200 % sans perte.</span></li><li><span>Mode nocturne et mode clair testés séparément.</span></li></ul></div>
+        <div class="card"><h3>Voir</h3><ul class="list"><li><span>Texte 4,5:1, grands titres et icônes 3:1 minimum.</span></li><li><span>La couleur n’est jamais le seul signal (type écrit, trait d’union, cercle d’état + texte).</span></li><li><span>Tailles en rem : l’interface supporte un zoom de 200 % sans perte.</span></li><li><span>Mode nocturne et mode clair testés séparément.</span></li></ul></div>
         <div class="card"><h3>Toucher et clavier</h3><ul class="list"><li><span>Cibles tactiles de 44 × 44 minimum, espacées de 8.</span></li><li><span>Chaque glissement a une alternative au toucher ou au clavier.</span></li><li><span>Focus toujours visible : anneau Corail 2 px (Encre sur un bouton Corail).</span></li><li><span>Ordre de tabulation = ordre de lecture ; focus piégé dans les superpositions et restitué à la fermeture.</span></li></ul></div>
         <div class="card"><h3>Entendre et comprendre</h3><ul class="list"><li><span>Résultats de fusion et de pli annoncés par <code>aria-live="polite"</code>.</span></li><li><span>Textes brouillés ou animés doublés d’une version lisible (<code>sr-only</code>).</span></li><li><span>Formes grecques et latines balisées avec leur attribut <code>lang</code>.</span></li><li><span>Sons jamais porteurs d’une information absente du texte.</span></li></ul></div>
         <div class="card"><h3>Mouvement</h3><ul class="list"><li><span>Respect de <code>prefers-reduced-motion</code> et réglage du jeu.</span></li><li><span>Aucun clignotement au-delà de 3 fois par seconde.</span></li><li><span>Rituel des plis passable ; aucune action bloquée par une animation.</span></li></ul></div>

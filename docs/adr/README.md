@@ -36,6 +36,7 @@ Une modification importante se fait dans un nouvel ADR. Les corrections factuell
 | [0020](0020-deux-plis-en-attente-et-sabliers.md) | Deux plis en attente, sabliers gagnés par l'encre | Accepté |
 | [0021](0021-logo-sceau-el.md) | Logo : le sceau ÉL affiné | Accepté |
 | [0022](0022-fascicules-de-20-a-30-mots.md) | Fascicules de 20 à 30 mots, un par mois | Accepté |
+| [0023](0023-textures-des-cartes.md) | Une silhouette monochrome en fond de chaque carte | Accepté |
 
 ## Page HTML
 

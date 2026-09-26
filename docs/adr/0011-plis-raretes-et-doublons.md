@@ -22,14 +22,14 @@ La probabilité d'une brique dépend de deux paramètres d'équilibrage :
 | Commune | triangle | 62 | 2 gouttes |
 | Peu commune | carré | 26 | 4 gouttes |
 | Rare | pentagone | 10 | 8 gouttes |
-| Légendaire | diamant taillé | 2 | 20 gouttes |
+| Légendaire | diamant | 2 | 20 gouttes |
 
 - **Type** : les suffixes ont un poids légèrement supérieur aux préfixes (1,25 contre 1), car ils se combinent plus souvent.
 - **Poids d'une brique** : poids de sa rareté × poids de son type, réparti entre les briques de même rareté et de même type.
 
 Ces valeurs sont des paramètres versionnés de la couche d'équilibrage ([ADR 0009](0009-contenu-et-equilibrage.md)). La rareté ne dépend jamais du niveau de confiance d'une étymologie.
 
-Il y a exactement quatre niveaux de rareté, chacun avec sa forme. Le nombre de côtés croît avec la rareté : triangle, carré, pentagone, puis un diamant taillé. Ce vocabulaire reste distinct du losange des états de retour et des traits de la confiance éditoriale. La forme, remplie d'Ambre et cernée d'Encre, est toujours accompagnée de son libellé ou d'un nom accessible.
+Il y a exactement quatre niveaux de rareté, chacun avec sa forme. Pour les trois premiers, le nombre de côtés croît avec la rareté : triangle, carré, pentagone. Le diamant, réservé aux légendaires, est à part : il ne suit pas cette progression et se reconnaît à sa silhouette, un losange étiré nettement plus haut que large. Ce vocabulaire reste distinct du cercle des états de retour et des traits de la confiance éditoriale. La forme est toujours accompagnée de son libellé ou d'un nom accessible ; ses couleurs sont fixées par la charte ([identité](../identite.html#formes)).
 
 ### Doublons et encre
 

@@ -446,7 +446,7 @@
     { id: "philo", n: 9, fasc: 2, rar: "peu", type: "prefixe", lang: "fr", word: "philo-", gloss: "qui aime", def: "Élément savant qui signifie « qui aime ».", conf: "Établie",
       forms: [fm("fr", "philo-"), fm("grc", "φιλο-", true, "philo-")],
       links: { label: "Mots formés", items: [["philosophie", true], ["philologie", true]] } },
-    { id: "philosophie", n: 10, fasc: 2, type: "mot", lang: "fr", word: "philosophie", def: "Réflexion critique sur le savoir, l’existence et les valeurs.", lit: "amour de la sagesse", parts: [{ label: "philo-", kind: "préfixe", gloss: "qui aime" }, { label: "-sophie", kind: "suffixe", gloss: "sagesse" }], conf: "Établie",
+    { id: "philosophie", n: 10, fasc: 2, fresh: true, type: "mot", lang: "fr", word: "philosophie", def: "Réflexion critique sur le savoir, l’existence et les valeurs.", lit: "amour de la sagesse", parts: [{ label: "philo-", kind: "préfixe", gloss: "qui aime" }, { label: "-sophie", kind: "suffixe", gloss: "sagesse" }], conf: "Établie",
       forms: [fm("fr", "philosophie"), fm("la", "philosophia"), fm("grc", "φιλοσοφία", false, "philosophía")],
       links: { label: "Composants", items: [["philo-", true], ["-sophie", true]] } },
     { id: "sophie", n: 11, fasc: 2, rar: "rare", type: "suffixe", lang: "fr", word: "-sophie", gloss: "sagesse", def: "Élément savant qui signifie « sagesse, savoir ».", conf: "Établie",
@@ -1506,6 +1506,173 @@
     recharge();
   }
 
+  /* ---------- Textures des cartes (ADR 0023) ----------
+     Une silhouette pleine par carte découverte, sur une grille 300 × 400 recadrée par la carte.
+     Une seule teinte : currentColor (Encre, ou Papier en nocturne), opacité portée par .card-art.
+     Les détails sont évidés dans la couleur du fond de la carte (--art-bg), jamais dans un second ton. */
+  const cardArt = (() => {
+    const r1 = (n) => Math.round(n * 10) / 10;
+    const line = (pts) => "M" + pts.map(([x, y]) => `${r1(x)} ${r1(y)}`).join("L");
+    const seg = ([a, b], [c, d]) => `M${r1(a)} ${r1(b)}L${r1(c)} ${r1(d)}`;
+    const F = 'fill="currentColor"';
+    const S = (w) => `fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"`;
+    const CUT = (w) => `fill="none" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--art-bg)"`;
+    const HOLE = 'style="fill:var(--art-bg)"';
+    let uid = 0;
+    const ART = {
+      // Mots
+      biologie() {
+        const len = 560, amp = 74, turns = 2.1, a = (-70 * Math.PI) / 180, k = (turns * 2 * Math.PI) / len;
+        const P = (u, v) => [235 + u * Math.cos(a) - v * Math.sin(a), 285 + u * Math.sin(a) + v * Math.cos(a)];
+        const off = (u) => amp * Math.sin(k * u);
+        const us = Array.from({ length: 97 }, (_, i) => -len / 2 + (len * i) / 96);
+        const n = Math.round(turns * 8);
+        const rungs = Array.from({ length: n }, (_, i) => -len / 2 + (len * (i + 0.5)) / n).map((u) => seg(P(u, off(u) * 0.86), P(u, -off(u) * 0.86))).join("");
+        return `<path d="${rungs}" ${S(9)}/><path d="${line(us.map((u) => P(u, off(u))))}${line(us.map((u) => P(u, -off(u))))}" ${S(24)}/>`;
+      },
+      etymologique() {
+        return `<g transform="translate(78 16) rotate(32 150 250)"><circle cx="150" cy="110" r="62" ${F}/><circle cx="150" cy="110" r="24" ${HOLE}/>
+          <rect x="134" y="160" width="32" height="232" rx="10" ${F}/><rect x="150" y="318" width="54" height="26" rx="6" ${F}/><rect x="150" y="356" width="40" height="26" rx="6" ${F}/>
+          <path d="M150 190L150 300" ${CUT(5)}/></g>`;
+      },
+      etymologie() {
+        return `<g transform="translate(18 0)"><rect x="167" y="70" width="46" height="196" rx="14" ${F}/>
+          <path d="M190 240C160 290 110 300 60 350M190 240C200 300 170 360 150 430M190 240C230 290 280 300 330 330M190 240C220 320 250 370 260 430M190 240C150 270 100 260 40 280" ${S(18)}/>
+          <path d="M120 322C100 340 90 370 96 400M270 316C290 340 300 380 296 420M80 272C60 300 30 320 0 326" ${S(9)}/>
+          <path d="M184 90L184 200M198 120L198 230" ${CUT(4)}/></g>`;
+      },
+      philosophie() {
+        // Buste de penseur grec, de profil : crâne, nez, barbe, himation.
+        return `<g transform="translate(-16 -6)">
+          <path d="M96 430C104 352 164 318 230 318C300 318 344 360 344 430Z" ${F}/>
+          <rect x="206" y="214" width="56" height="112" rx="14" ${F}/>
+          <circle cx="228" cy="164" r="64" ${F}/>
+          <path d="M170 142L146 188L172 194Z" ${F}/>
+          <path d="M168 196C160 244 182 294 216 304C252 300 274 266 276 224C252 238 212 236 168 196Z" ${F}/>
+          <path d="M238 118C256 116 272 128 276 146M252 156C266 158 278 170 280 186M226 104C236 94 252 92 264 98" ${CUT(5)}/>
+          <path d="M186 164L200 162M186 214C200 226 214 230 232 228M190 244C204 262 222 272 244 270" ${CUT(4)}/>
+          <path d="M130 372C170 352 212 360 246 396M190 334C232 344 268 376 290 430M262 332C286 346 316 362 340 368" ${CUT(5)}/></g>`;
+      },
+      geographie() {
+        const id = `ca${++uid}`;
+        return `<defs><clipPath id="${id}"><circle cx="220" cy="270" r="116"/></clipPath></defs>
+          <circle cx="220" cy="270" r="128" ${S(14)}/>
+          <g clip-path="url(#${id})" ${F}>
+            <path d="M205 250C235 245 262 262 268 292C272 320 250 345 238 372C230 390 212 386 208 360C204 336 190 318 186 296C182 272 186 254 205 250Z"/>
+            <path d="M188 166C214 152 252 160 266 182C254 200 230 206 214 224C196 216 176 196 188 166Z"/>
+            <path d="M282 180C310 176 340 196 340 226C322 236 300 226 286 214C278 204 274 190 282 180Z"/>
+            <path d="M108 262C130 254 150 274 146 302C142 334 124 360 110 374C100 344 94 298 108 262Z"/>
+            <path d="M104 150C136 132 168 144 166 172C158 200 132 216 114 236C98 214 92 178 104 150Z"/>
+            <path d="M92 270C120 300 150 340 160 400M300 250C320 280 336 300 350 310" ${CUT(4)}/>
+          </g>
+          <path d="M220 142C180 190 180 350 220 398M220 142C260 190 260 350 220 398M100 230C160 250 280 250 340 230M100 310C160 290 280 290 340 310" ${CUT(4)}/>`;
+      },
+      geologie() {
+        const wave = (y, d) => `M-10 ${y}C40 ${y - 10} 80 ${y + 8} 130 ${y}C150 ${y - 3} 165 ${y - 4} 178 ${y}M186 ${y + d}C220 ${y + d - 10} 270 ${y + d + 8} 320 ${y + d}`;
+        return `<path d="M-10 190C50 170 110 196 170 178C220 164 270 188 320 176L320 420L-10 420Z" ${F}/>
+          <path d="${wave(234, 18)}${wave(282, 18)}${wave(328, 18)}${wave(372, 18)}" ${CUT(7)}/>
+          <path d="M196 170L168 420" ${CUT(6)}/>
+          <circle cx="90" cy="306" r="7" ${HOLE}/><circle cx="118" cy="300" r="4" ${HOLE}/><circle cx="250" cy="352" r="6" ${HOLE}/><circle cx="276" cy="258" r="5" ${HOLE}/>`;
+      },
+      philologie() {
+        const book = (x, y, w, h, rot) => `<g transform="rotate(${rot} ${x + w / 2} ${y + h / 2})"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" ${F}/>
+          <path d="M${x + 24} ${y + 5}L${x + 24} ${y + h - 5}M${x + w - 24} ${y + 5}L${x + w - 24} ${y + h - 5}" ${CUT(6)}/>
+          <path d="M${x + 44} ${y + h / 2}L${x + w - 44} ${y + h / 2}" ${CUT(4)}/></g>`;
+        return `${book(76, 350, 260, 52, -2)}${book(100, 292, 220, 50, 4)}${book(64, 236, 240, 50, -5)}${book(118, 182, 190, 46, 3)}`;
+      },
+      biographie() {
+        const id = `ca${++uid}`;
+        return `<defs><clipPath id="${id}"><ellipse cx="215" cy="272" rx="74" ry="99"/></clipPath></defs>
+          <path d="M215 160C200 124 168 118 178 96C188 76 215 100 215 150C215 100 242 76 252 96C262 118 230 124 215 160" ${S(9)}/>
+          <ellipse cx="215" cy="272" rx="96" ry="122" ${F}/><ellipse cx="215" cy="272" rx="74" ry="99" ${HOLE}/>
+          <ellipse cx="215" cy="272" rx="85" ry="110" ${CUT(4)}/>
+          <path clip-path="url(#${id})" d="M236 196C266 196 284 220 284 250C284 268 276 282 266 290L270 322C288 328 300 340 306 380L140 380C146 348 166 330 192 322L198 304C188 302 182 294 182 286L172 282L180 272L174 260C178 226 202 196 236 196Z" ${F}/>`;
+      },
+      // Préfixes
+      bio() {
+        return `<g transform="rotate(6 200 300)"><path d="M196 440C190 380 200 300 188 200" ${S(18)}/>
+          <path d="M192 300C150 232 92 214 44 222C74 282 132 318 192 300Z" ${F}/>
+          <path d="M190 236C222 160 278 128 330 124C318 196 262 244 190 236Z" ${F}/>
+          <path d="M187 204C166 164 170 124 196 92C222 128 216 170 187 204Z" ${F}/>
+          <path d="M184 292C150 262 110 246 70 236M194 228C232 196 272 164 312 142M188 192C188 164 192 138 196 112" ${CUT(5)}/></g>`;
+      },
+      philo() {
+        return `<g transform="translate(30 30) rotate(-12 200 270)"><path d="M200 380C130 330 70 280 70 214C70 170 104 140 144 140C170 140 190 154 200 176C210 154 230 140 256 140C296 140 330 170 330 214C330 280 270 330 200 380Z" ${F}/>
+          <path d="M112 206C112 184 128 170 148 170" ${CUT(5)}/></g>`;
+      },
+      geo() {
+        return `<path d="M-20 430L88 250L134 300L214 168L330 356L330 430Z" ${F}/>
+          <path d="M60 296L88 250L112 276M180 222L214 168L246 220L228 214L214 230L198 212Z" ${CUT(5)}/>
+          <path d="M40 360C90 344 140 372 200 350C240 336 280 352 320 340" ${CUT(5)}/>`;
+      },
+      etymo() {
+        return `<path d="M212 -10L212 170" ${S(6)}/><rect x="162" y="168" width="100" height="30" rx="8" ${F}/>
+          <path d="M150 208L274 208C274 258 244 306 212 372C180 306 150 258 150 208Z" ${F}/>
+          <path d="M168 232L256 232" ${CUT(5)}/><path d="M212 250L212 330" ${CUT(4)}/>`;
+      },
+      // Suffixes
+      logie() {
+        let lines = "";
+        for (let i = 0; i < 5; i++) {
+          const y = 268 + i * 24;
+          lines += `M58 ${y}C98 ${y - 9} 140 ${y - 8} 170 ${y + 4}M200 ${y + 4}C230 ${y - 8} 272 ${y - 9} 312 ${y}`;
+        }
+        return `<g transform="rotate(-10 185 320)"><path d="M185 244C146 216 88 212 34 226L34 404C88 390 146 394 185 420C224 394 282 390 336 404L336 226C282 212 224 216 185 244Z" ${F}/>
+          <path d="M185 250L185 416" ${CUT(6)}/><path d="${lines}" ${CUT(5)}/></g>`;
+      },
+      sophie() {
+        let v = "";
+        for (let row = 0; row < 4; row++) for (let i = 0; i < 4 - (row % 2); i++) {
+          const x = 168 + i * 30 + (row % 2) * 15, y = 300 + row * 26;
+          v += `M${x - 9} ${y}L${x} ${y + 9}L${x + 9} ${y}`;
+        }
+        return `<g transform="translate(20 0)"><path d="M130 190L140 130L178 168C196 162 216 162 234 168L272 130L282 190C300 220 306 252 304 290C300 370 256 420 206 420C156 420 112 370 108 290C106 252 112 220 130 190Z" ${F}/>
+          <circle cx="170" cy="224" r="30" ${HOLE}/><circle cx="242" cy="224" r="30" ${HOLE}/>
+          <circle cx="174" cy="226" r="12" ${F}/><circle cx="238" cy="226" r="12" ${F}/>
+          <path d="M206 240L196 262L206 278L216 262Z" ${HOLE}/><path d="${v}" ${CUT(4)}/></g>`;
+      },
+      graphie() {
+        return `<path d="M24 386C64 362 96 398 136 372C160 356 178 360 196 372" ${S(9)}/>
+          <g transform="translate(80 -6) rotate(30 150 230)"><rect x="122" y="40" width="56" height="290" rx="10" ${F}/><path d="M122 330L178 330L150 404Z" ${F}/>
+          <path d="M126 92L174 92M126 108L174 108" ${CUT(5)}/><path d="M124 330L150 346L176 330" ${CUT(5)}/><path d="M140 384L160 384" ${CUT(5)}/><path d="M150 124L150 314" ${CUT(4)}/></g>`;
+      },
+      // Langues
+      francais() {
+        let petals = "", spokes = "";
+        for (let i = 0; i < 12; i++) {
+          const t = (i / 12) * Math.PI * 2, c = Math.cos(t), s = Math.sin(t);
+          petals += `<circle cx="${r1(215 + 76 * c)}" cy="${r1(275 + 76 * s)}" r="17" ${HOLE}/>`;
+          spokes += seg([215 + 46 * c, 275 + 46 * s], [215 + 128 * c, 275 + 128 * s]);
+        }
+        return `<circle cx="215" cy="275" r="138" ${F}/><path d="${spokes}" ${CUT(6)}/>
+          <circle cx="215" cy="275" r="104" ${CUT(6)}/><circle cx="215" cy="275" r="46" ${CUT(6)}/>${petals}<circle cx="215" cy="275" r="18" ${HOLE}/>`;
+      },
+      latin() {
+        const arch = (x, w, top, bottom) => `M${x} ${bottom}L${x} ${top + w / 2}A${w / 2} ${w / 2} 0 0 1 ${x + w} ${top + w / 2}L${x + w} ${bottom}Z`;
+        let big = "", small = "";
+        for (let i = 0; i < 4; i++) big += arch(-40 + i * 100, 64, 300, 430);
+        for (let i = 0; i < 8; i++) small += arch(-30 + i * 50, 30, 214, 262);
+        return `<rect x="-20" y="188" width="360" height="250" ${F}/><path d="${big}${small}" ${HOLE}/><path d="M-20 280L340 280" ${CUT(6)}/>`;
+      },
+      grec() {
+        let key = "M124 262";
+        for (let x = 124; x < 290; x += 24) key += `L${x} 250L${x + 12} 250L${x + 12} 262L${x + 24} 262`;
+        return `<g transform="translate(46 0) rotate(8 205 280)"><rect x="173" y="100" width="64" height="18" rx="6" ${F}/>
+          <path d="M187 116L223 116C222 150 224 168 232 180C272 195 290 240 288 285C286 340 250 385 228 420L226 452L184 452L182 420C160 385 124 340 122 285C120 240 138 195 178 180C186 168 188 150 187 116Z" ${F}/>
+          <path d="M223 136C266 128 278 162 262 198M187 136C144 128 132 162 148 198" ${S(13)}/>
+          <path d="M126 232L284 232M126 280L284 280M150 330L260 330" ${CUT(6)}/><path d="${key}" ${CUT(4)}/></g>`;
+      },
+    };
+    return (id) => {
+      if (!ART[id]) return null;
+      const el = document.createElement("span");
+      el.className = "card-art";
+      el.setAttribute("aria-hidden", "true");
+      el.innerHTML = `<svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice" focusable="false">${ART[id]()}</svg>`;
+      return el;
+    };
+  })();
+
   /* ---------- Codex ---------- */
   function initCodex() {
     let trail = [];
@@ -1547,17 +1714,31 @@
     let cbSort = "n";
     let visibleIds = [];
 
+    function newDot() {
+      const dot = mk("span", "new-dot");
+      dot.title = "Nouvelle carte";
+      dot.setAttribute("role", "img");
+      dot.setAttribute("aria-label", "Nouvelle carte");
+      return dot;
+    }
+
     function buildMini(e) {
       const card = mk("button", "mini");
       card.type = "button";
       const [tc, tt] = bandOf(e);
       card.style.setProperty("--tc", tc);
       card.style.setProperty("--tt", tt);
+      card.dataset.type = e.type;
       const top = mk("span", "m-top");
-      top.append(mk("span", null, `N°\u00a0${pad(e.n)}`), mk("span", "m-kind", TYPES[e.type].label));
+      const side = mk("span", "m-side");
+      side.append(mk("span", "m-kind", TYPES[e.type].label));
+      // La rareté se pose dans le bandeau, en haut à droite, jamais sur une brique.
+      if (e.rar) { const r = rarityEl(e.rar, true); r.classList.add("m-rar"); side.append(r); }
+      const num = mk("span", null, `N°\u00a0${pad(e.n)}`);
+      // Nouvelle carte : pastille Corail dans le bandeau, jusqu’à sa première consultation.
+      if (e.fresh && !e.locked) { num.append(newDot()); card.classList.add("is-new"); }
+      top.append(num, side);
       card.append(top);
-      // La rareté se pose sous le bandeau, jamais sur une couleur vive ni sur une brique.
-      if (e.rar) { const r = rarityEl(e.rar, true); r.classList.add("m-rar"); card.append(r); }
       if (isLegend(e)) card.classList.add("is-legend");
       if (e.locked) {
         card.classList.add("locked");
@@ -1566,12 +1747,18 @@
       } else {
         const forms = formsOf(e);
         const got = forms.filter((x) => x.found).length;
+        // Texture de la carte : seulement une fois découverte, pour ne rien trahir.
+        const art = cardArt(e.id);
+        if (art) card.append(art);
         if (e.type === "langue") card.append(mk("span", "m-glyph", e.glyph));
         const isAffix = e.type === "prefixe" || e.type === "suffixe";
         const word = isAffix ? chipEl(e.word, KIND_FR[e.type]) : mk("span", "m-word", e.word);
         if (isAffix) word.classList.add("m-brick");
         if (e.type !== "langue") word.lang = e.lang;
         card.append(word);
+        // Sens littéral (mot) ou glose (brique), au milieu de la carte comme le nom d’une langue.
+        const sense = isAffix ? e.gloss : e.lit;
+        if (sense) card.append(mk("span", "m-lit", `«\u00a0${sense}\u00a0»`));
         const foot = mk("span", "m-foot");
         if (e.type === "langue") {
           foot.append(mk("span", null, `${got} / ${forms.length} formes`));
@@ -1585,7 +1772,7 @@
           foot.append(lang, dots);
         }
         card.append(foot);
-        card.setAttribute("aria-label", `${e.word}, ${TYPES[e.type].label.toLowerCase()}, fascicule ${e.fasc}, ${got} formes trouvées sur ${forms.length}`);
+        card.setAttribute("aria-label", `${e.fresh ? "Nouvelle carte : " : ""}${e.word}, ${TYPES[e.type].label.toLowerCase()}${sense ? `, «\u00a0${sense}\u00a0»` : ""}, fascicule ${e.fasc}, ${got} formes trouvées sur ${forms.length}`);
       }
       card.addEventListener("click", () => openViewer(e.id, card));
       return card;
@@ -1717,7 +1904,9 @@
 
     function faceTop(e, right) {
       const top = mk("div", "bf-top");
-      top.append(mk("span", null, `N° ${pad(e.n)}`), mk("span", "bf-type", right));
+      const num = mk("span", null, `N° ${pad(e.n)}`);
+      if (e.fresh && !e.locked) num.append(newDot());
+      top.append(num, mk("span", "bf-type", right));
       return top;
     }
     function flipButton(label, icon) {
@@ -1761,7 +1950,8 @@
       if (e.locked) conf.append(mk("b", null, "Inconnue"));
       else conf.append(mk("i"), mk("i"), mk("i"), mk("b", null, e.conf));
       foot.append(conf, flipButton("Voir les formes", "↻"));
-      bigFront.replaceChildren(faceTop(e, TYPES[e.type].label), body, foot);
+      const art = e.locked ? null : cardArt(e.id);
+      bigFront.replaceChildren(...[art, faceTop(e, TYPES[e.type].label), body, foot].filter(Boolean));
     }
 
     function buildBack(e) {
@@ -1814,6 +2004,19 @@
       }
       if (e.links) {
         body.append(mk("p", "bb-links-title", e.links.label));
+        // Famille d’une brique : combien de mots formés sont déjà trouvés.
+        if (e.links.label === "Mots formés") {
+          const done = e.links.items.filter(([, ok]) => ok).length;
+          const progress = mk("div", "bb-progress");
+          const bar = mk("span", "bb-bar");
+          const fill = mk("i");
+          fill.style.width = "0%";
+          fill.dataset.w = `${(done / e.links.items.length) * 100}%`;
+          bar.append(fill);
+          progress.append(bar, mk("span", null, `${done} / ${e.links.items.length} mots`));
+          progress.setAttribute("aria-label", `Famille : ${done} mots formés trouvés sur ${e.links.items.length}`);
+          body.append(progress);
+        }
         const links = mk("div", "bb-links");
         e.links.items.forEach(([text, ok]) => {
           const isBrick = e.links.label === "Composants" || kindOf(text) !== "mot";
@@ -1846,6 +2049,13 @@
       buildFront(e);
       buildBack(e);
       setFlipped(false);
+      if (e.fresh) {
+        e.fresh = false;
+        const mini = miniById.get(e.id);
+        mini.classList.remove("is-new");
+        $(".new-dot", mini)?.remove();
+        mini.setAttribute("aria-label", mini.getAttribute("aria-label").replace(/^Nouvelle carte : /, ""));
+      }
       $("#vTitle").textContent = e.locked ? `Carte ${e.n}, à découvrir` : `${e.word}, ${TYPES[e.type].label.toLowerCase()}`;
     }
 
@@ -2025,4 +2235,11 @@
   if ($("#tray")) initGame();
   if ($("#pkStage")) initPacks();
   if ($("#cbGrid")) initCodex();
+  // Cartes statiques (charte, maquettes) : <div class="mq-card" data-card-art="bio"> reçoit sa texture.
+  document.querySelectorAll("[data-card-art]").forEach((el) => {
+    const art = cardArt(el.dataset.cardArt);
+    if (!art) return;
+    el.classList.add("has-card-art");
+    el.prepend(art);
+  });
 })();

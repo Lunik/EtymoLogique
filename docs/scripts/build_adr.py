@@ -37,6 +37,7 @@ XREFS = {
     "0019": [("plis.html#encre", "L’encre gagnée à chaque doublon")],
     "0020": [("plis.html#energie", "Deux plis en attente"), ("plis.html#sablier", "Une goutte, une heure")],
     "0021": [("logo.html#piste-1", "Le sceau retenu et ses déclinaisons"), ("plis.html#plis", "Le logo monochrome sur la face du pli"), ("identite.html#logo", "Le logo dans la charte")],
+    "0023": [("codex.html#codex", "Les textures dans le codex"), ("identite.html#textures", "La règle des textures"), ("cartes-visuels.html#declinaison", "Les dix pistes et la piste retenue")],
     "0022": [("plis.html#fascicules", "Les fascicules côté joueur"), ("modele.html#sources", "Le choix d’un fascicule")],
     "0013": [("modele.html", "Le modèle de données"), ("modele.html#decisions", "Quatre cas, quatre règles"), ("codex.html#filiation", "Formes et filiation dans le codex")],
 }
