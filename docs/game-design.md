@@ -469,6 +469,15 @@ Le niveau de confiance ne doit pas être transformé en rareté ludique.
 - Ne pas valider une fusion sur la seule ressemblance de deux chaînes de caractères.
 - Permettre la correction et la migration d'un contenu déjà publié.
 
+## Architecture technique
+
+Voir l'[ADR 0024](adr/0024-architecture-logicielle-et-hebergement.md). En résumé :
+
+- la PWA React est servie comme des fichiers statiques, chez Scaleway, en France ;
+- le catalogue est un artefact statique publié à chaque fascicule. Le client n'en reçoit ni recette ni brique : le serveur lui envoie seulement ce que le joueur a débloqué (réserve, fiches découvertes, silhouettes, chances), sans jamais trahir une légendaire ;
+- une seule API serverless, écrite en Rust, résout chaque fusion et chaque pli. Hors connexion, la table se prépare, mais le résultat attend le réseau ;
+- la progression vit dans des tables relationnelles PostgreSQL, qui garantissent les plafonds et soldes, et chaque commande est une transaction.
+
 ## Périmètre du MVP
 
 ### Inclus
