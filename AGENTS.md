@@ -8,7 +8,7 @@ Tout le contenu est **en français**. Rédigez en français (documentation, micr
 
 | Chemin | Rôle |
 |---|---|
-| `README.md` | Présentation du projet, prévisualisation, contribution, licences. |
+| `README.md` | Présentation du projet, prévisualisation, contribution, licences. Ses captures sont dans `.github/readme/`. |
 | `LICENSE`, `LICENSE-CONTENT` | Code sous AGPL 3.0 ou ultérieure, contenu sous CC BY-SA 4.0 ; nom et logo réservés (ADR 0017). |
 | `docs/game-design.md` | Vision du jeu : piliers, vocabulaire, boucle, règles de jeu, identité, périmètre du MVP. |
 | `docs/adr/*.md` | Architecture Decision Records, numérotés `NNNN-titre.md`, indexés dans `docs/adr/README.md`. |
