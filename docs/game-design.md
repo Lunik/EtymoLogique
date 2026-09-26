@@ -381,6 +381,10 @@ Après le MVP, proposition de l'[ADR 0018](adr/0018-sabliers-et-boutique.md) :
 - ne jamais vendre un tirage, une brique ou une chance : une future boutique ne vend que du temps, plafonné (ADR 0018) ;
 - soumettre toute future boutique à une décision séparée.
 
+## Interfaces
+
+L'inventaire des interfaces de la PWA (coque, première session, table de fusion, codex, plis, réglages et erreurs), avec leur forme sur mobile et sur ordinateur, est tenu dans la [page des interfaces](interfaces.html). Les objectifs et jalons y forment un onglet du codex. Chaque interface est dessinée sur mobile et sur ordinateur dans les [maquettes](maquettes.html).
+
 ## Identité visuelle
 
 La charte complète, avec ses démonstrations interactives, est sur la page [identité visuelle](identite.html). Son principe : **une couleur, un seul sens**.

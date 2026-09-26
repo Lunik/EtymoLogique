@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="L’inventaire des interfaces de la PWA d’ÉtymoLogique, sur mobile et sur ordinateur.">
+  <meta name="theme-color" content="#f3eee3">
+  <title>Interfaces · ÉtymoLogique</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/site-nav.css">
+  <link rel="stylesheet" href="assets/etymo.css">
+</head>
+<body>
+<div class="progress" aria-hidden="true"></div>
+<a class="skip-link" href="#contenu">Aller au contenu</a>
+<header class="site-nav"></header>
+
+<main id="contenu">
+  <section class="section if-intro" id="interfaces">
+    <div class="wrap">
+      <div class="sec-head">
+        <div data-reveal><span class="sec-num">Jeu · Interfaces</span><h2>Vingt-cinq <em>interfaces</em></h2></div>
+        <div class="sec-intro" data-reveal style="--d:120ms"><p>L’inventaire des écrans et des états de la PWA, chacun avec sa maquette. Une seule application, responsive et installable : le même modèle d’interaction sur mobile et sur ordinateur, avec une mise en page adaptée plutôt qu’un écran réduit.</p><p class="xrefs"><span>Voir aussi</span><a class="xref" href="adr.html#adr-0001" data-kind="adr">ADR 0001</a><a class="xref" href="maquettes.html">Les maquettes</a><a class="xref" href="design-system.html#ecrans">Écrans types</a><a class="xref" href="game-design.md">Vision du jeu (Markdown)</a></p></div>
+      </div>
+      <p class="if-legend" data-reveal><span>Avancement</span><span class="if-status is-demo">Démo</span>une démonstration jouable existe <span class="if-status is-model">Maquette</span>un composant ou un écran type existe <span class="if-status is-model">Maquette</span>rien n’est encore dessiné</p>
+    </div>
+  </section>
+
+  <section class="section" id="responsive">
+    <div class="wrap">
+      <div class="sec-head">
+        <div data-reveal><span class="sec-num">Interfaces · Principes</span><h2>Adapter, <em>pas réduire</em></h2></div>
+        <div class="sec-intro" data-reveal style="--d:120ms"><p>Conception mobile d’abord. Les règles ci-dessous valent pour tous les écrans de l’inventaire.</p><p class="xrefs"><span>Voir aussi</span><a class="xref" href="design-system.html#ds-1-7">Grille et points de rupture</a><a class="xref" href="design-system.html#ds-4-7">Choisir la bonne superposition</a></p></div>
+      </div>
+      <div class="pillars">
+        <article class="pillar" data-reveal style="--d:0ms"><span>Règle 01</span><h3>Quatre destinations</h3><p>Table, Codex, Plis, Réglages, dans cet ordre. Barre d’onglets en bas sur mobile, rail vertical à gauche au-delà de 1 100 px. Changer d’onglet conserve l’état de chaque écran.</p><p class="xrefs"><span></span><a class="xref" href="design-system.html#ds-4-1">Navigation principale</a></p></article>
+        <article class="pillar" data-reveal style="--d:60ms"><span>Règle 02</span><h3>Un geste, deux voies</h3><p>Glisser-déposer au pointeur ; toucher puis « Ajouter à la table » au doigt. Tout se fait aussi au clavier.</p><p class="xrefs"><span></span><a class="xref" href="design-system.html#ds-4-4">Gestes</a><a class="xref" href="design-system.html#ds-4-5">Clavier</a></p></article>
+        <article class="pillar" data-reveal style="--d:120ms"><span>Règle 03</span><h3>Côte à côte ou empilé</h3><p>Sur ordinateur, les panneaux liés se montrent ensemble (réserve et table, grille et carte). Sur mobile, ils s’empilent ou passent dans une feuille.</p><p class="xrefs"><span></span><a class="xref" href="design-system.html#ds-2-7">Superpositions</a></p></article>
+        <article class="pillar" data-reveal style="--d:180ms"><span>Règle 04</span><h3>Une superposition à la fois</h3><p>Toujours la plus légère qui convient : message en ligne, toast, feuille (mobile) ou menu (ordinateur), dialogue pour l’irréversible seulement. Jamais de dialogue au lancement.</p><p class="xrefs"><span></span><a class="xref" href="design-system.html#ds-4-7">Le bon niveau</a></p></article>
+        <article class="pillar" data-reveal style="--d:240ms"><span>Règle 05</span><h3>Hors connexion honnête</h3><p>Codex et préparation d’une fusion restent disponibles. Plis, énergie, découvertes et synchronisation attendent le serveur : aucune découverte n’est annoncée avant validation.</p><p class="xrefs"><span></span><a class="xref" href="adr.html#adr-0001" data-kind="adr">ADR 0001</a><a class="xref" href="adr.html#adr-0007" data-kind="adr">ADR 0007</a></p></article>
+        <article class="pillar" data-reveal style="--d:300ms"><span>Règle 06</span><h3>Pour tous les joueurs</h3><p>Cibles d’au moins 44 px, zones sûres respectées, contrastes 4,5:1, couleur jamais seule, animations réduites sur demande.</p><p class="xrefs"><span></span><a class="xref" href="design-system.html#accessibilite">Accessibilité</a></p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="inventaire">
+    <div class="wrap">
+      <div class="sec-head">
+        <div data-reveal><span class="sec-num">Interfaces · Inventaire</span><h2>Écran <em>par écran</em></h2></div>
+        <div class="sec-intro" data-reveal style="--d:120ms"><p>Six groupes. Pour chaque interface : son rôle, ce qu’elle montre, sa forme sur mobile et sur ordinateur, et les décisions dont elle découle.</p></div>
+      </div>
+
+      <div class="dm-block" id="coque" data-reveal>
+        <div class="dm-block-head"><span>Groupe A</span><h3>Coque de l’application</h3><p>Ce qui entoure tous les écrans : navigation, compteurs, démarrage et réseau.</p></div>
+        <div class="if-grid">
+          <article class="if-card" id="i-01">
+            <div class="if-head"><span class="if-num">I-01</span><span class="if-status is-model">Maquette</span></div>
+            <h4>Navigation principale</h4>
+            <p>Mène aux quatre destinations et signale une nouveauté par un compteur Corail (pli prêt, carte nouvelle).</p>
+            <dl class="if-facts"><dt>Mobile</dt><dd>Barre d’onglets en bas, à portée du pouce.</dd><dt>Ordinateur</dt><dd>Rail vertical à gauche, au-delà de 1 100 px.</dd></dl>
+            <p class="xrefs"><span></span><a class="xref" href="maquettes.html#m-01">Maquette</a><a class="xref" href="design-system.html#ds-4-1">Navigation principale</a><a class="xref" href="adr.html#adr-0001" data-kind="adr">ADR 0001</a></p>
+          </article>
+          <article class="if-card" id="i-02">
+            <div class="if-head"><span class="if-num">I-02</span><span class="if-status is-model">Maquette</span></div>
+            <h4>En-têtes et compteurs</h4>
+            <p>Titre de l’écran et ressource utile à cet endroit : énergie « 1 / 2 » et recharge, encre, sabliers, complétude du codex.</p>
+            <dl class="if-facts"><dt>Mobile</dt><dd>En-tête compact ; seul le compteur de l’écran courant.</dd><dt>Ordinateur</dt><dd>Mêmes compteurs, dans l’en-tête du panneau concerné.</dd></dl>
+            <p class="xrefs"><span></span><a class="xref" href="maquettes.html#m-02">Maquette</a><a class="xref" href="design-system.html#ds-3-6">Plis, énergie et encre</a><a class="xref" href="adr.html#adr-0020" data-kind="adr">ADR 0020</a></p>
+          </article>
+          <article class="if-card" id="i-03">
+            <div class="if-head"><span class="if-num">I-03</span><span class="if-status is-model">Maquette</span></div>
+            <h4>Démarrage et catalogue</h4>
+            <p>Lancement de la PWA, chargement du shell et du dernier catalogue publié, mise à jour d’un catalogue ou d’une version de l’application.</p>
+            <dl class="if-facts"><dt>Mobile</dt><dd>Écran de lancement au sceau ÉL, puis la dernière destination ouverte.</dd><dt>Ordinateur</dt><dd>Identique, sans écran intermédiaire si le cache suffit.</dd></dl>
+            <p class="xrefs"><span></span><a class="xref" href="maquettes.html#m-03">Maquette</a><a class="xref" href="adr.html#adr-0001" data-kind="adr">ADR 0001</a><a class="xref" href="adr.html#adr-0005" data-kind="adr">ADR 0005</a><a class="xref" href="identite.html#logo">Le sceau</a></p>
+          </article>
+          <article class="if-card" id="i-04">
+            <div class="if-head"><span class="if-num">I-04</span><span class="if-status is-model">Maquette</span></div>
+            <h4>Hors connexion et resynchronisation</h4>
+            <p>Dit ce qui fonctionne encore et ce qui n’a pas été perdu. Une tentative préparée hors connexion attend la validation ; un conflit déclenche une resynchronisation explicite.</p>
+            <dl class="if-facts"><dt>Mobile</dt><dd>Bannière Sable en haut de l’écran.</dd><dt>Ordinateur</dt><dd>Même bannière, au-dessus du contenu.</dd></dl>
+            <p class="xrefs"><span></span><a class="xref" href="maquettes.html#m-04">Maquette</a><a class="xref" href="design-system.html#ds-2-8">Hors ligne et erreurs</a><a class="xref" href="adr.html#adr-0007" data-kind="adr">ADR 0007</a></p>
+          </article>
+          <article class="if-card" id="i-05">
+            <div class="if-head"><span class="if-num">I-05</span><span class="if-status is-model">Maquette</span></div>
+            <h4>Installation</h4>
+            <p>Propose d’installer la PWA, sans jamais l’imposer, pour faciliter le retour quand un pli est prêt.</p>
+            <dl class="if-facts"><dt>Mobile</dt><dd>Suggestion discrète après une première découverte, et dans les réglages.</dd><dt>Ordinateur</dt><dd>Dans les réglages seulement.</dd></dl>
+            <p class="xrefs"><span></span><a class="xref" href="maquettes.html#m-05">Maquette</a><a class="xref" href="adr.html#adr-0001" data-kind="adr">ADR 0001</a></p>
+          </article>
+        </div>
+      </div>
+
+      <div class="dm-block" id="premiere-session" data-reveal>
+        <div class="dm-block-head"><span>Groupe B</span><h3>Première session</h3><p>Trois étapes guidées au plus, sur les écrans réels, jamais en diaporama. « Passer » reste visible.</p></div>
+        <div class="if-grid">
+          <article class="if-card" id="i-06">
+            <div class="if-head"><span class="if-num">I-06</span><span class="if-status is-model">Maquette</span></div>
+            <h4>Premier lancement</h4>
+            <p>Un mot, « étymologie », est déjà visible, mais son histoire reste masquée. Quelques briques se révèlent ensuite.</p>
+            <dl class="if-facts"><dt>Mobile</dt><dd>Sur la table, bulle guidée en Encre, le reste légèrement voilé.</dd><dt>Ordinateur</dt><dd>Même bulle, la réserve déjà visible à côté.</dd></dl>
+            <p class="xrefs"><span></span><a class="xref" href="maquettes.html#m-06">Maquette</a><a class="xref" href="design-system.html#ds-4-6">Première utilisation</a></p>
+          </article>
+          <article class="if-card" id="i-07">
+            <div class="if-head"><span class="if-num">I-07</span><span class="if-status is-model">Maquette</span></div>
+            <h4>Fusion guidée</h4>
+            <p>Première réussite en quelques interactions : poser, ordonner, fusionner. Montre que l’ordre compte et qu’une erreur ne coûte rien.</p>
+            <dl class="if-facts"><dt>Mobile</dt><dd>« Touchez… pour la poser sur la table. »</dd><dt>Ordinateur</dt><dd>« Glissez… sur la table », avec l’alternative au clic.</dd></dl>
+            <p class="xrefs"><span></span><a class="xref" href="maquettes.html#m-07">Maquette</a><a class="xref" href="design-system.html#ds-4-6">Bulle guidée</a><a class="xref" href="adr.html#adr-0003" data-kind="adr">ADR 0003</a></p>
+          </article>
+          <article class="if-card" id="i-08">
+            <div class="if-head"><span class="if-num">I-08</span><span class="if-status is-model">Maquette</span></div>
+            <h4>Réserve de départ</h4>
+            <p>Remise des graines, avec leurs exemplaires, qui ouvrent au moins trois recettes et deux familles. Explique que les plis rempliront ensuite la réserve.</p>
+            <dl class="if-facts"><dt>Mobile</dt><dd>Les briques arrivent une à une dans la réserve.</dd><dt>Ordinateur</dt><dd>Identique, dans le panneau de réserve.</dd></dl>
+            <p class="xrefs"><span></span><a class="xref" href="maquettes.html#m-08">Maquette</a><a class="xref" href="jeu.html#table">La réserve de départ</a><a class="xref" href="adr.html#adr-0004" data-kind="adr">ADR 0004</a><a class="xref" href="adr.html#adr-0012" data-kind="adr">ADR 0012</a></p>
+          </article>
+        </div>
+      </div>
+
+      <div class="dm-block" id="table" data-reveal>
+        <div class="dm-block-head"><span>Groupe C</span><h3>Table de fusion</h3><p>L’écran central : formuler une hypothèse, la tester, lire le résultat.</p></div>
+        <div class="if-grid">
+          <article class="if-card" id="i-09">
+            <div class="if-head"><span class="if-num">I-09</span><span class="if-status is-demo">Démo</span></div>
+            <h4>Table de fusion</h4>
+            <p>Réserve filtrable avec pastilles « ×n » et briques épuisées, rail ordonné limité à quelques briques, boutons Fusionner et Vider. Le codex reste accessible sans perdre la proposition.</p>
+            <dl class="if-facts"><dt>Mobile</dt><dd>Table en haut, réserve dessous ; toucher puis « Ajouter à la table ».</dd><dt>Ordinateur</dt><dd>Réserve et table côte à côte ; glisser-déposer et réorganisation au pointeur.</dd></dl>
+            <p class="xrefs"><span></span><a class="xref" href="maquettes.html#m-09">Maquette</a><a class="xref" href="jeu.html#table">Essayer</a><a class="xref" href="design-system.html#ds-3-3">Composant</a><a class="xref" href="adr.html#adr-0012" data-kind="adr">ADR 0012</a></p>
+          </article>
+          <article class="if-card" id="i-10">
+            <div class="if-head"><span class="if-num">I-10</span><span class="if-status is-demo">Démo</span></div>
+            <h4>Retours d’une tentative</h4>
+            <p>Échec neutre, « presque » avec indice optionnel, recette déjà connue avec rappel de sa fiche, piste encore à découvrir. Rien n’est consommé.</p>
+            <dl class="if-facts"><dt>Mobile</dt><dd>Message en ligne sous la table.</dd><dt>Ordinateur</dt><dd>Même message, au même endroit.</dd></dl>
+            <p class="xrefs"><span></span><a class="xref" href="maquettes.html#m-10">Maquette</a><a class="xref" href="jeu.html#feedback">Sur la table</a><a class="xref" href="design-system.html#ds-4-3">Retours</a><a class="xref" href="adr.html#adr-0003" data-kind="adr">ADR 0003</a></p>
+          </article>
+          <article class="if-card" id="i-11">
+            <div class="if-head"><span class="if-num">I-11</span><span class="if-status is-demo">Démo</span></div>
+            <h4>Révélation et fiche de découverte</h4>
+            <p>Le mot, sa définition actuelle, sa composition en briques et son sens littéral, la transformation, puis les nouvelles pistes. Un « −1 » s’envole des briques utilisées.</p>
+            <dl class="if-facts"><dt>Mobile</dt><dd>Fiche plein écran, révélée en trois temps.</dd><dt>Ordinateur</dt><dd>Fiche centrée au-dessus de la table, qui reste visible.</dd></dl>
+            <p class="xrefs"><span></span><a class="xref" href="maquettes.html#m-11">Maquette</a><a class="xref" href="jeu.html#result">La révélation</a><a class="xref" href="design-system.html#ds-3-4">Fiche</a><a class="xref" href="mouvement.html">Mouvement</a></p>
+          </article>
+          <article class="if-card" id="i-12">
+            <div class="if-head"><span class="if-num">I-12</span><span class="if-status is-demo">Démo</span></div>
+            <h4>Indices</h4>
+            <p>Indices graduels (famille ou langue, nombre d’ingrédients, transformation, emplacement, solution), débloqués par l’expérimentation, le temps, les objectifs ou 30 gouttes d’encre.</p>
+            <dl class="if-facts"><dt>Mobile</dt><dd>Feuille ouverte depuis l’en-tête de la table.</dd><dt>Ordinateur</dt><dd>Panneau à côté de la table.</dd></dl>
+            <p class="xrefs"><span></span><a class="xref" href="maquettes.html#m-12">Maquette</a><a class="xref" href="plis.html#encre">L’encre et l’indice</a><a class="xref" href="adr.html#adr-0020" data-kind="adr">ADR 0020</a></p>
+          </article>
+          <article class="if-card" id="i-13">
+            <div class="if-head"><span class="if-num">I-13</span><span class="if-status is-model">Maquette</span></div>
+            <h4>Réserve sans découverte possible</h4>
+            <p>Quand la réserve ne permet plus aucune découverte, l’écran le dit sans reproche et mène aux plis, avec le temps de recharge et le filet d’utilité.</p>
+            <dl class="if-facts"><dt>Mobile</dt><dd>État vide sur la table, bouton vers les plis.</dd><dt>Ordinateur</dt><dd>Identique, dans le panneau de la table.</dd></dl>
+            <p class="xrefs"><span></span><a class="xref" href="maquettes.html#m-13">Maquette</a><a class="xref" href="design-system.html#ds-2-8">États vides</a><a class="xref" href="plis.html#chances">Filet d’utilité</a></p>
+          </article>
+        </div>
+      </div>
+
+      <div class="dm-block" id="codex" data-reveal>
+        <div class="dm-block-head"><span>Groupe D</span><h3>Codex</h3><p>La collection : ce qui est trouvé, ce qui reste en silhouette, et les objectifs qui donnent envie de finir une famille.</p></div>
+        <div class="if-grid">
+          <article class="if-card" id="i-14">
+            <div class="if-head"><span class="if-num">I-14</span><span class="if-status is-demo">Démo</span></div>
+            <h4>Vue globale</h4>
+            <p>Grille de petites cartes, vues (récentes, mots, briques, langues, familles), filtres, tri, fascicules et leur complétude, silhouettes. La rareté d’une brique se lit en haut à droite du bandeau. Les légendaires trouvées s’affichent à part.</p>
+            <dl class="if-facts"><dt>Mobile</dt><dd>Grille de trois colonnes, filtres en puces défilantes, tri dans une feuille.</dd><dt>Ordinateur</dt><dd>Grille large, fascicules et filtres visibles en permanence.</dd></dl>
+            <p class="xrefs"><span></span><a class="xref" href="maquettes.html#m-14">Maquette</a><a class="xref" href="codex.html#codex">Le codex</a><a class="xref" href="design-system.html#ds-3-5">Cartes</a><a class="xref" href="adr.html#adr-0015" data-kind="adr">ADR 0015</a></p>
+          </article>
+          <article class="if-card" id="i-15">
+            <div class="if-head"><span class="if-num">I-15</span><span class="if-status is-demo">Démo</span></div>
+            <h4>Carte agrandie</h4>
+            <p>Recto (mot, langue, définition, sens littéral, confiance) et verso (formes par langue, composants, mots formés). Carte précédente ou suivante, liens entre cartes et fil d’Ariane.</p>
+            <dl class="if-facts"><dt>Mobile</dt><dd>Plein écran ; balayer pour changer de carte.</dd><dt>Ordinateur</dt><dd>Carte centrée au-dessus de la grille, flèches et clavier.</dd></dl>
+            <p class="xrefs"><span></span><a class="xref" href="maquettes.html#m-15">Maquette</a><a class="xref" href="codex.html#filiation">La filiation</a><a class="xref" href="adr.html#adr-0002" data-kind="adr">ADR 0002</a></p>
+          </article>
+          <article class="if-card" id="i-16">
+            <div class="if-head"><span class="if-num">I-16</span><span class="if-status is-model">Maquette</span></div>
+            <h4>En savoir plus</h4>
+            <p>Section secondaire d’une fiche : relation historique détaillée, transformations, sources et niveau de certitude. Jamais un cours.</p>
+            <dl class="if-facts"><dt>Mobile</dt><dd>Section dépliée sous la fiche.</dd><dt>Ordinateur</dt><dd>Même section, ou colonne à côté de la carte.</dd></dl>
+            <p class="xrefs"><span></span><a class="xref" href="maquettes.html#m-16">Maquette</a><a class="xref" href="adr.html#adr-0005" data-kind="adr">ADR 0005</a><a class="xref" href="adr.html#adr-0014" data-kind="adr">ADR 0014</a></p>
+          </article>
+          <article class="if-card" id="i-17">
+            <div class="if-head"><span class="if-num">I-17</span><span class="if-status is-model">Maquette</span></div>
+            <h4>Recherche</h4>
+            <p>Retrouver un mot, une brique ou un sens parmi ce qui est découvert, sans jamais révéler une silhouette. Partagée avec la réserve de la table.</p>
+            <dl class="if-facts"><dt>Mobile</dt><dd>Champ en haut du codex et de la réserve.</dd><dt>Ordinateur</dt><dd>Même champ, raccourci clavier.</dd></dl>
+            <p class="xrefs"><span></span><a class="xref" href="maquettes.html#m-17">Maquette</a><a class="xref" href="design-system.html#ds-2-2">Recherche et champs</a></p>
+          </article>
+          <article class="if-card" id="i-18">
+            <div class="if-head"><span class="if-num">I-18</span><span class="if-status is-model">Maquette</span></div>
+            <h4>Objectifs et jalons</h4>
+            <p>Un onglet du codex : familles à compléter, langues à relier, jalons atteints et à venir, avec leurs récompenses (plis au contenu déterministe, sabliers).</p>
+            <dl class="if-facts"><dt>Mobile</dt><dd>Onglet « Objectifs » en tête du codex.</dd><dt>Ordinateur</dt><dd>Même onglet, liste et détail côte à côte.</dd></dl>
+            <p class="xrefs"><span></span><a class="xref" href="maquettes.html#m-18">Maquette</a><a class="xref" href="adr.html#adr-0004" data-kind="adr">ADR 0004</a><a class="xref" href="adr.html#adr-0020" data-kind="adr">ADR 0020</a></p>
+          </article>
+        </div>
+      </div>
+
+      <div class="dm-block" id="plis" data-reveal>
+        <div class="dm-block-head"><span>Groupe E</span><h3>Plis</h3><p>Un écran à part, distinct de la table : choisir un fascicule, ouvrir son pli, gérer l’encre.</p></div>
+        <div class="if-grid">
+          <article class="if-card" id="i-19">
+            <div class="if-head"><span class="if-num">I-19</span><span class="if-status is-demo">Démo</span></div>
+            <h4>Choix du fascicule</h4>
+            <p>Les fascicules parus, chacun avec sa jaquette, ses briques connues et ses exemplaires en réserve. On peut y revenir à tout moment.</p>
+            <dl class="if-facts"><dt>Mobile</dt><dd>Liste de jaquettes, une par ligne.</dd><dt>Ordinateur</dt><dd>Grille de jaquettes.</dd></dl>
+            <p class="xrefs"><span></span><a class="xref" href="maquettes.html#m-19">Maquette</a><a class="xref" href="plis.html#plis">L’atelier</a><a class="xref" href="plis.html#jaquettes">Jaquettes</a><a class="xref" href="adr.html#adr-0016" data-kind="adr">ADR 0016</a></p>
+          </article>
+          <article class="if-card" id="i-20">
+            <div class="if-head"><span class="if-num">I-20</span><span class="if-status is-demo">Démo</span></div>
+            <h4>Atelier du pli</h4>
+            <p>Énergie « 1 / 2 » et recharge, sabliers, chances par rareté, par type et par brique, garantie de nouveauté et filet d’utilité, réserve, encre, historique et règles.</p>
+            <dl class="if-facts"><dt>Mobile</dt><dd>Le pli et « Ouvrir le pli » d’abord ; chances, historique et règles dessous.</dd><dt>Ordinateur</dt><dd>Le pli au centre, chances et réserve en colonnes latérales.</dd></dl>
+            <p class="xrefs"><span></span><a class="xref" href="maquettes.html#m-20">Maquette</a><a class="xref" href="plis.html#energie">Énergie</a><a class="xref" href="plis.html#chances">Chances</a><a class="xref" href="adr.html#adr-0011" data-kind="adr">ADR 0011</a></p>
+          </article>
+          <article class="if-card" id="i-21">
+            <div class="if-head"><span class="if-num">I-21</span><span class="if-status is-demo">Démo</span></div>
+            <h4>Rituel d’ouverture</h4>
+            <p>Charge, écriture, explosion, révélation : 1,5 à 2 s, passable au toucher ou par Échap, résultat direct si les animations sont réduites. Puis « Essayer sur la table » ou « Continuer ».</p>
+            <dl class="if-facts"><dt>Mobile</dt><dd>Plein écran.</dd><dt>Ordinateur</dt><dd>Dans la scène centrale de l’atelier.</dd></dl>
+            <p class="xrefs"><span></span><a class="xref" href="maquettes.html#m-21">Maquette</a><a class="xref" href="plis.html#plis">Ouvrir un pli</a><a class="xref" href="mouvement.html">Mouvement</a></p>
+          </article>
+          <article class="if-card" id="i-22">
+            <div class="if-head"><span class="if-num">I-22</span><span class="if-status is-demo">Démo</span></div>
+            <h4>Échanges d’encre</h4>
+            <p>Sablier contre 1 goutte (avance d’une heure, plafond de 12 par 24 h), indice contre 30 gouttes. L’interface annonce le temps perdu si l’énergie atteint 2 avant de confirmer.</p>
+            <dl class="if-facts"><dt>Mobile</dt><dd>Feuille de confirmation.</dd><dt>Ordinateur</dt><dd>Menu ou panneau au-dessus du bouton.</dd></dl>
+            <p class="xrefs"><span></span><a class="xref" href="maquettes.html#m-22">Maquette</a><a class="xref" href="plis.html#sablier">Sabliers</a><a class="xref" href="plis.html#encre">Encre</a><a class="xref" href="adr.html#adr-0020" data-kind="adr">ADR 0020</a></p>
+          </article>
+          <article class="if-card" id="i-23">
+            <div class="if-head"><span class="if-num">I-23</span><span class="if-status is-model">Maquette</span></div>
+            <h4>Nouveau fascicule</h4>
+            <p>Annonce d’une parution avec ses seuls nombres (mots, préfixes, suffixes, langues), légendaires exclues. Rien d’autre ne se devine.</p>
+            <dl class="if-facts"><dt>Mobile</dt><dd>Compteur sur l’onglet Plis, annonce en tête du choix des fascicules.</dd><dt>Ordinateur</dt><dd>Même annonce, dans l’atelier.</dd></dl>
+            <p class="xrefs"><span></span><a class="xref" href="maquettes.html#m-23">Maquette</a><a class="xref" href="plis.html#fascicules">Fascicules</a><a class="xref" href="adr.html#adr-0014" data-kind="adr">ADR 0014</a></p>
+          </article>
+        </div>
+      </div>
+
+      <div class="dm-block" id="transverse" data-reveal>
+        <div class="dm-block-head"><span>Groupe F</span><h3>Transverse</h3><p>Réglages, informations légales et états d’erreur.</p></div>
+        <div class="if-grid">
+          <article class="if-card" id="i-24">
+            <div class="if-head"><span class="if-num">I-24</span><span class="if-status is-model">Maquette</span></div>
+            <h4>Réglages</h4>
+            <p>Sons, vibrations, animations réduites, mode nocturne, translittérations, sources dans les fiches ; installation ; données collectées et leurs contrôles ; licences et crédits ; réinitialiser la progression.</p>
+            <dl class="if-facts"><dt>Mobile</dt><dd>Liste d’interrupteurs ; dialogue pour réinitialiser.</dd><dt>Ordinateur</dt><dd>Même liste, en colonne centrée.</dd></dl>
+            <p class="xrefs"><span></span><a class="xref" href="maquettes.html#m-24">Maquette</a><a class="xref" href="design-system.html#ds-2-4">Réglages</a><a class="xref" href="adr.html#adr-0010" data-kind="adr">ADR 0010</a><a class="xref" href="adr.html#adr-0017" data-kind="adr">ADR 0017</a></p>
+          </article>
+          <article class="if-card" id="i-25">
+            <div class="if-head"><span class="if-num">I-25</span><span class="if-status is-model">Maquette</span></div>
+            <h4>Erreurs</h4>
+            <p>Action refusée par le serveur (« Rien n’a été consommé »), catalogue incompatible, mise à jour requise, page introuvable. Toujours une issue.</p>
+            <dl class="if-facts"><dt>Mobile</dt><dd>Message en ligne ou bannière selon la durée du problème.</dd><dt>Ordinateur</dt><dd>Identique.</dd></dl>
+            <p class="xrefs"><span></span><a class="xref" href="maquettes.html#m-25">Maquette</a><a class="xref" href="design-system.html#ds-2-8">Erreurs</a><a class="xref" href="adr.html#adr-0007" data-kind="adr">ADR 0007</a></p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="plus-tard">
+    <div class="wrap">
+      <div class="sec-head">
+        <div data-reveal><span class="sec-num">Interfaces · Hors MVP</span><h2>Plus <em>tard</em></h2></div>
+        <div class="sec-intro" data-reveal style="--d:120ms"><p>Ces interfaces ne seront pas conçues pour le MVP. Elles sont notées pour ne pas les découvrir trop tard.</p><p class="xrefs"><span>Voir aussi</span><a class="xref" href="game-design.md">Périmètre du MVP (Markdown)</a></p></div>
+      </div>
+      <div class="if-grid" data-reveal>
+        <article class="if-card is-later"><h4>Boutique de sabliers</h4><p>Achat de lots de sabliers, avec ses garde-fous.</p><p class="xrefs"><span></span><a class="xref" href="adr.html#adr-0018" data-kind="adr">ADR 0018</a></p></article>
+        <article class="if-card is-later"><h4>Compte et synchronisation</h4><p>Récupération de la progression et usage sur plusieurs appareils. Le MVP utilise un profil invité.</p><p class="xrefs"><span></span><a class="xref" href="adr.html#adr-0007" data-kind="adr">ADR 0007</a></p></article>
+        <article class="if-card is-later"><h4>Vue Relations du codex</h4><p>Le chemin entre les formes, une fois son intérêt validé.</p></article>
+        <article class="if-card is-later"><h4>Défi quotidien</h4><p>Construit uniquement à partir des briques possédées.</p></article>
+        <article class="if-card is-later"><h4>Notifications de pli prêt</h4><p>Non garanties sur toutes les plateformes PWA.</p><p class="xrefs"><span></span><a class="xref" href="adr.html#adr-0001" data-kind="adr">ADR 0001</a></p></article>
+        <article class="if-card is-later"><h4>Fonctions sociales</h4><p>Profils publics, échanges, classements, multijoueur.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="ouvert">
+    <div class="wrap">
+      <div class="sec-head">
+        <div data-reveal><span class="sec-num">Interfaces · À trancher</span><h2>Questions <em>ouvertes</em></h2></div>
+        <div class="sec-intro" data-reveal style="--d:120ms"><p>À décider avant de dessiner les écrans concernés.</p></div>
+      </div>
+      <ol class="if-open" data-reveal>
+        <li><b>Réglages du MVP.</b> Quel contenu minimal : faut-il garder sons, vibrations et translittérations dès le MVP ? <a class="xref" href="#i-24">I-24</a></li>
+        <li><b>Contrôles de la collecte.</b> Quelle forme donner à l’explication et aux contrôles exigés avant une diffusion publique ? <a class="xref" href="adr.html#adr-0010" data-kind="adr">ADR 0010</a></li>
+        <li><b>Révélation.</b> Instantanée ou en trois temps : la maquette propose trois temps, l’expérimentation prévue tranchera. <a class="xref" href="#i-11">I-11</a></li>
+        <li><b>Geste de fusion.</b> Superposition, rail ordonné ou hybride : la maquette propose le rail ordonné et le bouton Fusionner, à tester sur mobile comme sur ordinateur. <a class="xref" href="#i-09">I-09</a></li>
+      </ol>
+    </div>
+  </section>
+</main>
+<nav class="site-pager" aria-label="Page précédente et page suivante"></nav>
+
+<footer class="footer">
+  <div class="foot-seal" aria-hidden="true">
+    <svg viewBox="0 0 200 200"><defs><path id="circ" d="M100 100 m-78 0 a78 78 0 1 1 156 0 a78 78 0 1 1 -156 0"></path></defs><text textLength="486" lengthAdjust="spacing"><textPath href="#circ">ÉtymoLogique · remonter le fil · ÉtymoLogique · remonter le fil ·</textPath></text></svg>
+    <b>ÉL</b>
+  </div>
+  <p class="foot-phrase"><span class="sr-only">Chaque mot est une piste.</span><span aria-hidden="true">Chaque mot est une <em id="footWord">piste</em>.</span></p>
+  <div class="foot-meta"><span>ÉtymoLogique · Direction visuelle 02</span><span>Cabinet linguistique contemporain</span><span>Dossier de direction · 2026</span></div>
+</footer>
+
+<div class="toast" role="status" aria-live="polite"></div>
+<script src="assets/site-nav.js"></script>
+<script src="assets/etymo.js"></script>
+</body>
+</html>

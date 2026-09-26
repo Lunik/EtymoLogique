@@ -17,7 +17,7 @@ PAGE = DOCS / "adr.html"
 
 # Renvois vers les pages qui illustrent chaque décision.
 XREFS = {
-    "0001": [("index.html", "Le dossier, pensé mobile d’abord"), ("design-system.html#ds-1-7", "Grille et points de rupture")],
+    "0001": [("index.html", "Le dossier, pensé mobile d’abord"), ("design-system.html#ds-1-7", "Grille et points de rupture"), ("interfaces.html", "L’inventaire des interfaces"), ("maquettes.html", "Chaque écran sur mobile et ordinateur")],
     "0002": [("codex.html#filiation", "La filiation dans le codex"), ("codex.html#carte-etymologique", "Une carte et ses formes")],
     "0003": [("jeu.html#table", "Des recettes ordonnées sur la table"), ("codex.html#carte-geologie", "Une transformation expliquée")],
     "0004": [("plis.html#chances", "Garantie et filet d’utilité"), ("jeu.html#table", "La réserve de départ")],

@@ -16,6 +16,7 @@ Tout le contenu est **en français**. Rédigez en français (documentation, micr
 | `docs/scripts/build_adr.py` | Génère `adr.html` ; contient aussi `XREFS`, les renvois de chaque ADR vers les pages. |
 | `docs/index.html` | Accueil du dossier de direction. |
 | `docs/identite.html`, `design-system.html`, `typographie.html`, `mouvement.html` | Identité visuelle et design système. |
+| `docs/interfaces.html`, `maquettes.html` | Inventaire des 25 interfaces de la PWA et leurs maquettes statiques, mobile et ordinateur (styles dans `docs/assets/maquettes.css`, préfixe `mq-`). |
 | `docs/jeu.html`, `plis.html`, `codex.html` | Démonstrations jouables (table de fusion, plis, codex). |
 | `docs/boussole.html`, `moodboard.html` | Piliers, à cultiver / à éviter, ambiance. |
 | `docs/logo.html` | Page de travail hors navigation : les dix pistes de logo, dont le sceau ÉL retenu (ADR 0021). |
