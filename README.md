@@ -1,7 +1,5 @@
 # ÉtymoLogique
 
-[![Accueil du dossier de direction d'ÉtymoLogique : le titre, et une carte « étymologique » qui remonte du français au latin puis au grec ancien](.github/readme/accueil.png)](https://lunik.github.io/EtymoLogique/)
-
 **[Parcourir le dossier en ligne →](https://lunik.github.io/EtymoLogique/)**
 
 > Comprendre comment les mots voyagent, se transforment et se composent en résolvant un monde de puzzles interconnectés.
@@ -22,34 +20,6 @@ Les piliers du jeu :
 - **Collection** : un codex lisible, qui donne envie de compléter une famille.
 - **Transmission** : le résultat explique la relation étymologique sans casser le rythme.
 - **Progression maîtrisée** : aucune brique n'est impossible à obtenir.
-
-## Aperçu
-
-### La table de fusion
-
-Posez deux briques dans l'ordre de votre choix, puis fusionnez. Une découverte consomme un exemplaire de chaque brique utilisée ; une erreur ne coûte rien.
-
-[![Table de fusion : bio- et -logie donnent « biologie », avec son sens littéral, son origine grecque et les exemplaires utilisés](.github/readme/table-de-fusion.png)](https://lunik.github.io/EtymoLogique/jeu.html)
-
-### Les plis
-
-Les plis sont le seul moyen d'obtenir des exemplaires. Les chances par rareté et par brique sont toujours affichées, et une brique nouvelle est garantie au plus tard au 6ᵉ pli.
-
-[![Ouverture d'un pli : une brique révélée, avec l'énergie, les chances par rareté, la garantie et toutes les briques du fascicule](.github/readme/pli.png)](https://lunik.github.io/EtymoLogique/plis.html)
-
-### Le codex
-
-Chaque découverte devient une carte éditoriale : découverte, nouvelle, silhouette d'un mot à trouver, ou famille à compléter.
-
-[![Cartes du codex : biologie, philosophie (nouvelle), un mot inconnu en silhouette et la famille du suffixe -logie](.github/readme/codex.png)](https://lunik.github.io/EtymoLogique/codex.html)
-
-### Mobile d'abord, en atelier comme en nocturne
-
-<p align="center">
-  <img src=".github/readme/mobile-nocturne.png" width="280" alt="Découverte de « biologie » sur mobile, en mode nocturne">
-  &nbsp;&nbsp;
-  <img src=".github/readme/mobile-atelier.png" width="280" alt="Cartes du codex sur mobile, en mode atelier">
-</p>
 
 ## Parcourir le dossier
 
