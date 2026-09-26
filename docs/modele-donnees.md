@@ -357,7 +357,7 @@ erDiagram
   - carte de langue : les unités de cette langue.
 - Les **étymons** (grec *gê*, *phílos*, latin *etymologia*) n'ont pas de carte propre. Ils apparaissent au verso des cartes qui en descendent (« formes dans chaque langue ») et sur la carte de leur langue.
 - Deux **homographes** sont deux unités, donc deux briques et deux cartes. Rien dans leur identifiant ni dans leur libellé ne les numérote : le joueur les distingue par les autres attributs de la carte (voir les contraintes).
-- Un **fascicule** est l'unité de publication du contenu : 20 à 40 mots environ tous les 30 jours ([ADR 0014](adr/0014-sources-et-fascicules.md)). Il déclare toutes les unités dont il a besoin :
+- Un **fascicule** est l'unité de publication du contenu : 20 à 30 mots environ tous les 30 jours ([ADR 0014](adr/0014-sources-et-fascicules.md), [ADR 0022](adr/0022-fascicules-de-20-a-30-mots.md)). Il déclare toutes les unités dont il a besoin :
   - `resultat` : les mots qu'il publie. Un mot est le résultat d'**un seul** fascicule ;
   - `ingredient` : les préfixes, suffixes et mots qui servent à ses recettes. Une unité déjà publiée peut être reprise comme ingrédient par plusieurs fascicules.
 - Une **exclusion** enregistre une combinaison attestée volontairement non publiée, avec sa raison.

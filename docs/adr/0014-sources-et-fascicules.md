@@ -1,6 +1,6 @@
 # ADR 0014 — Sources de référence et publication par fascicules
 
-- **Statut** : Proposé
+- **Statut** : Proposé, partiellement remplacé par l'[ADR 0022](0022-fascicules-de-20-a-30-mots.md) : un fascicule publie désormais de 20 à 30 mots. Le rythme, les sources, la complétude et le reste de la publication restent en vigueur.
 - **Complète** : [ADR 0002](0002-graphe-linguistique-editorial.md) (sources et confiance), [ADR 0004](0004-progression-atteignable.md) (atteignabilité par fascicule), [ADR 0005](0005-pipeline-de-contenu.md) (circuit d'édition), [ADR 0013](0013-schema-des-briques.md) (tables `source` et `fascicule`)
 
 ## Contexte

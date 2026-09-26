@@ -46,7 +46,7 @@ Les pages se renvoient les unes aux autres là où une règle est appliquée ou 
 | **Codex** | Collection de langues, mots, morphèmes, familles et relations déjà découverts. |
 | **Graine** | Brique de la réserve de départ, accordée avec quelques exemplaires pour amorcer le graphe. Ensuite, les jalons offrent des plis au contenu déterministe. |
 | **Pli** | Pli scellé, gratuit, seule source d'exemplaires après la réserve de départ. On dit « ouvrir un pli », « l'atelier des plis ». Le mot anglais « pack » n'est jamais employé. |
-| **Fascicule** | Nouvel ensemble de 20 à 40 mots, avec leurs briques et leurs langues, publié environ tous les 30 jours. Il a sa jaquette et son pli, que le joueur peut ouvrir à tout moment. On ne dit ni « pack », ni « extension », ni « saison ». |
+| **Fascicule** | Nouvel ensemble de 20 à 30 mots, avec leurs briques et leurs langues, publié environ tous les 30 jours. Il a sa jaquette et son pli, que le joueur peut ouvrir à tout moment. On ne dit ni « pack », ni « extension », ni « saison ». |
 | **Sablier** | Objet qui fait avancer d'une heure la recharge d'énergie, jamais un tirage. Il coûte 1 goutte d'encre ou se gagne par un jalon (ADR 0020) ; son achat n'arrivera qu'après le MVP (ADR 0018, proposé). On ne dit ni « boost », ni « accélérateur ». |
 
 Le terme « Pokédex » décrit bien l'intention de collection, mais le produit utilisera **codex** tant qu'aucun nom propre original n'aura été choisi.
@@ -247,14 +247,17 @@ Le contenu forme un graphe plutôt qu'une suite linéaire :
 
 ### Fascicules
 
-Voir l'[ADR 0014](adr/0014-sources-et-fascicules.md) et la [page des plis](plis.html#fascicules). Le contenu arrive par fascicules, environ tous les 30 jours :
+Voir l'[ADR 0014](adr/0014-sources-et-fascicules.md), l'[ADR 0022](adr/0022-fascicules-de-20-a-30-mots.md) et la [page des plis](plis.html#fascicules). Le contenu arrive par fascicules, environ tous les 30 jours :
 
-- un fascicule publie 20 à 40 mots, et déclare tous les préfixes, suffixes et mots qui servent à les former ;
+- un fascicule publie 20 à 30 mots, et déclare tous les préfixes, suffixes et mots qui servent à les former ;
 - **un fascicule ne dévoile pas son contenu** : son annonce et sa présentation n'affichent que des nombres (mots, préfixes, suffixes, langues), légendaires exclues. Avant sa parution, même ces nombres restent cachés. Dans le codex, les silhouettes gardent leur piste de sens ;
 - un mot n'appartient qu'à un seul fascicule ; une brique peut être reprise d'un fascicule à l'autre ;
 - chaque fascicule a sa jaquette et son pli : dès sa publication, le joueur peut ouvrir ses plis, qui ne tirent que parmi ses briques, et revenir à tout moment aux plis d'un ancien fascicule. Les fusions entre fascicules sont permises ;
-- **fermeture** : si des briques publiées, de n'importe quels fascicules, forment un mot attesté par une source de référence, ce mot est publié. Les mots « croisés » ouverts par un nouvel affixe appartiennent au nouveau fascicule et comptent dans ses 20 à 40 mots ;
-- une combinaison attestée ne peut être écartée que par une exclusion déclarée et justifiée (mot archaïque, rare, offensant ou analyse non établie).
+- **fermeture** : si des briques publiées, de n'importe quels fascicules, forment un mot attesté par une source de référence, ce mot est publié. Les mots « croisés » ouverts par un nouvel affixe appartiennent au nouveau fascicule et comptent dans ses 20 à 30 mots ;
+- une combinaison attestée ne peut être écartée que par une exclusion déclarée et justifiée (mot archaïque, rare, offensant ou analyse non établie) ;
+- **pourquoi 30 mots au plus** : il faut environ 2 plis par mot découvert, et un joueur assidu ouvre 70 à 80 plis par mois. Au-delà de 30 mots, il ne complète plus un fascicule avant le suivant ([ADR 0022](adr/0022-fascicules-de-20-a-30-mots.md)).
+
+Le corpus disponible, le nombre de fascicules possibles et la piste des fascicules spéciaux sont décrits dans le [potentiel d'évolution](potentiel-evolution.md).
 
 ### Indices
 
@@ -557,5 +560,5 @@ Comparer une révélation instantanée à une révélation en trois temps :
 - Combien de briques une recette peut-elle utiliser sans devenir illisible ?
 - Quand un indice « presque » aide-t-il sans transformer le jeu en recherche exhaustive ?
 - Une découverte doit-elle débloquer toutes ses briques immédiatement ou certaines via des mini-objectifs ?
-- Quel volume de contenu permet de tester la rétention sans surinvestir dans l'éditorial ? Hypothèse : des fascicules de 20 à 40 mots tous les 30 jours.
+- Quel volume de contenu permet de tester la rétention sans surinvestir dans l'éditorial ? Hypothèse : des fascicules de 20 à 30 mots tous les 30 jours ([ADR 0022](adr/0022-fascicules-de-20-a-30-mots.md)).
 - Le compte utilisateur est-il obligatoire, facultatif ou différé jusqu'à la synchronisation multi-appareil ?
