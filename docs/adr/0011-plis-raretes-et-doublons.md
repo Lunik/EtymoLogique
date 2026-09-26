@@ -1,6 +1,6 @@
 # ADR 0011 — Plis à raretés, doublons convertis en encre
 
-- **Statut** : Accepté, partiellement remplacé par l'[ADR 0012](0012-briques-rationnees.md). Un doublon ajoute désormais un exemplaire à la réserve, et l'encre ne vient que des exemplaires reçus au-delà du plafond. Le tirage, les raretés, la garantie et la transparence restent régis par le présent ADR.
+- **Statut** : Accepté, partiellement remplacé par l'[ADR 0012](0012-briques-rationnees.md). Un doublon ajoute désormais un exemplaire à la réserve, et l'encre ne vient que des exemplaires reçus au-delà du plafond. Le tirage, les raretés, la garantie et la transparence restent régis par le présent ADR. Partiellement remplacé aussi par l'[ADR 0015](0015-codex-fascicules-et-legendaires.md) : les légendaires inconnues sont regroupées en une ligne, sans leur nombre ; et par l'[ADR 0016](0016-plis-et-jaquettes-par-fascicule.md) : un pli ne tire que parmi les briques de son fascicule, et la garantie se compte par fascicule.
 - **Remplace partiellement** : [ADR 0008](0008-energie-et-plis.md), pour le contenu des plis
 
 ## Contexte

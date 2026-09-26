@@ -16,7 +16,7 @@ La direction « cabinet linguistique contemporain » est explorée dans le [doss
 
 - **Identité** : [identité visuelle](identite.html), [design système](design-system.html), [typographie](typographie.html), [mouvement](mouvement.html) ;
 - **Jeu** : [table de fusion](jeu.html), [plis](plis.html), [codex](codex.html) ;
-- **Décisions** : [ADR](adr.html), [boussole](boussole.html).
+- **Décisions** : [ADR](adr.html), [modèle de données](modele.html), [boussole](boussole.html).
 
 Les pages se renvoient les unes aux autres là où une règle est appliquée ou décidée. La démo garde la réserve, les découvertes et les plis d'une page à l'autre (stockage local du navigateur).
 
@@ -46,6 +46,7 @@ Les pages se renvoient les unes aux autres là où une règle est appliquée ou 
 | **Codex** | Collection de langues, mots, morphèmes, familles et relations déjà découverts. |
 | **Graine** | Brique de la réserve de départ, accordée avec quelques exemplaires pour amorcer le graphe. Ensuite, les jalons offrent des plis au contenu déterministe. |
 | **Pli** | Pli scellé, gratuit, seule source d'exemplaires après la réserve de départ. On dit « ouvrir un pli », « l'atelier des plis ». Le mot anglais « pack » n'est jamais employé. |
+| **Fascicule** | Nouvel ensemble de 20 à 40 mots, avec leurs briques et leurs langues, publié environ tous les 30 jours. Il a sa jaquette et son pli, que le joueur peut ouvrir à tout moment. On ne dit ni « pack », ni « extension », ni « saison ». |
 
 Le terme « Pokédex » décrit bien l'intention de collection, mais le produit utilisera **codex** tant qu'aucun nom propre original n'aura été choisi.
 
@@ -163,8 +164,10 @@ Le jeu ne doit pas marquer une tentative « presque correcte » si le graphe éd
 ### Vue globale
 
 - Grille de petites cartes, avec un bandeau de couleur par type : mot, préfixe, suffixe, langue. Les cartes de langue prennent la couleur de leur langue.
-- Filtres par type avec compteurs, et tri par numéro de découverte, par ordre alphabétique ou par type. Les cartes se réorganisent avec une animation.
+- Filtres par type et par fascicule avec compteurs, et tri par numéro de découverte, par ordre alphabétique, par type ou par fascicule. Les cartes se réorganisent avec une animation.
+- Chaque fascicule affiche sa complétude (« 10 / 11 cartes ») avec une barre de progression. Toucher un fascicule n'affiche que ses cartes.
 - Les cartes encore inconnues restent visibles en silhouette, avec une piste de sens, sans révéler la réponse.
+- **Exception : les légendaires** (diamant taillé). Une légendaire inconnue, et tout mot qui en dépend, n'a ni silhouette ni place dans les compteurs. Une légendaire trouvée a sa carte, mais s'affiche à part (« 1 légendaire trouvée ») et n'entre jamais dans les totaux, pour garder le suspense sur leur nombre ([ADR 0015](adr/0015-codex-fascicules-et-legendaires.md)).
 - Toucher une petite carte l'agrandit au centre de l'écran, depuis sa position dans la grille. On peut passer à la carte précédente ou suivante sans revenir à la grille.
 - **Recto** : mot, langue, définition actuelle, sens littéral et niveau de confiance.
 - **Verso** (en touchant la carte) : les formes trouvées dans chaque langue, avec leur progression (par exemple 2 sur 3). Les formes manquantes restent en silhouette. Il affiche aussi les composants ou les mots formés.
@@ -217,6 +220,8 @@ Une translittération est une représentation d'une forme, pas une nouvelle raci
 
 Les objets linguistiques décrivent les faits. Les objets ludiques décrivent la manière de les découvrir. Cette séparation permet de rééquilibrer le jeu sans réécrire l'histoire des mots.
 
+Le schéma relationnel des langues, mots, préfixes et suffixes est décrit dans le [modèle de données](modele-donnees.md) ([ADR 0013](adr/0013-schema-des-briques.md)).
+
 ## Progression
 
 ### Structure
@@ -238,6 +243,17 @@ Le contenu forme un graphe plutôt qu'une suite linéaire :
 - La validation d'atteignabilité simule aussi les quantités : un joueur qui ouvre des plis peut toujours finir par découvrir chaque mot publié.
 - Un contenu cyclique n'est publiable que si au moins un point d'entrée externe existe.
 - Toute version du catalogue passe une validation d'atteignabilité avant publication.
+
+### Fascicules
+
+Voir l'[ADR 0014](adr/0014-sources-et-fascicules.md) et la [page des plis](plis.html#fascicules). Le contenu arrive par fascicules, environ tous les 30 jours :
+
+- un fascicule publie 20 à 40 mots, et déclare tous les préfixes, suffixes et mots qui servent à les former ;
+- **un fascicule ne dévoile pas son contenu** : son annonce et sa présentation n'affichent que des nombres (mots, préfixes, suffixes, langues), légendaires exclues. Avant sa parution, même ces nombres restent cachés. Dans le codex, les silhouettes gardent leur piste de sens ;
+- un mot n'appartient qu'à un seul fascicule ; une brique peut être reprise d'un fascicule à l'autre ;
+- chaque fascicule a sa jaquette et son pli : dès sa publication, le joueur peut ouvrir ses plis, qui ne tirent que parmi ses briques, et revenir à tout moment aux plis d'un ancien fascicule. Les fusions entre fascicules sont permises ;
+- **fermeture** : si des briques publiées, de n'importe quels fascicules, forment un mot attesté par une source de référence, ce mot est publié. Les mots « croisés » ouverts par un nouvel affixe appartiennent au nouveau fascicule et comptent dans ses 20 à 40 mots ;
+- une combinaison attestée ne peut être écartée que par une exclusion déclarée et justifiée (mot archaïque, rare, offensant ou analyse non établie).
 
 ### Indices
 
@@ -271,10 +287,10 @@ Les indices peuvent être débloqués par l'expérimentation, le temps, des obje
 
 ### Interface dédiée
 
-Les plis ont leur propre écran, distinct de la table de fusion. On y retrouve :
+Les plis ont leur propre écran, distinct de la table de fusion. Le joueur y **choisit d'abord un fascicule** parmi ceux qui sont parus : chacun montre sa jaquette, ses briques connues et ses exemplaires en réserve. Il ouvre ensuite le pli de ce fascicule, et peut revenir au choix à tout moment. Sur l'écran d'ouverture, on retrouve :
 
 - l'énergie et le temps de recharge ;
-- les chances par rareté et par type, et les chances exactes de chaque brique (les briques inconnues restent en silhouette) ;
+- les chances du fascicule choisi par rareté et par type, et les chances exactes de chaque brique (les briques inconnues restent en silhouette). Les légendaires inconnues sont regroupées en une seule ligne, avec la somme exacte de leurs chances mais sans leur nombre ;
 - la garantie de nouveauté et le filet d'utilité, avec leurs compteurs ;
 - la réserve de chaque brique (« ×2 / 5 » ou « épuisée ») ;
 - l'encre disponible et l'échange contre un indice ;
@@ -283,7 +299,7 @@ Les plis ont leur propre écran, distinct de la table de fusion. On y retrouve :
 
 ### Jaquettes
 
-Chaque pli porte une jaquette illustrée sur l'écriture et l'histoire des langues. Dix modèles tournent selon le numéro du pli :
+Chaque fascicule a sa jaquette, illustrée sur l'écriture et l'histoire des langues, et tous ses plis la portent ([ADR 0016](adr/0016-plis-et-jaquettes-par-fascicule.md)). Les dix premiers fascicules reçoivent, dans l'ordre :
 
 1. **Rosette** : trois écritures pour un même texte (Égypte, 196 av. J.-C.) ;
 2. **Argile** : signes cunéiformes pressés dans une tablette (Mésopotamie) ;
@@ -298,7 +314,8 @@ Chaque pli porte une jaquette illustrée sur l'écriture et l'histoire des langu
 
 Règles :
 
-- **rien ne se devine** : la jaquette dépend uniquement du numéro du pli. Ni le motif ni la couleur ne trahissent la brique, sa rareté ou sa langue. La brique n'est tirée qu'au moment de l'ouverture ;
+- **rien ne se devine** : la jaquette dit seulement de quel fascicule vient le pli, que le joueur a choisi. Ni le motif ni la couleur ne trahissent la brique, sa rareté ou sa langue. La brique n'est tirée qu'au moment de l'ouverture ;
+- **au-delà de dix fascicules**, chaque fascicule demande une jaquette nouvelle ;
 - **palette du pli** : neutres et Ambre seulement, car les couleurs de préfixe, de suffixe ou de langue annonceraient le contenu ;
 - **style** : interprétations graphiques et plates, jamais de parchemin ou de plume en trompe-l'œil (voir la boussole) ;
 - **en recharge** : le pli devient une silhouette en pointillé (ce qui manque encore), jamais une carte grisée qui laisserait croire à un contenu caché.
@@ -316,14 +333,14 @@ Une brique déjà connue suit le même rituel. La révélation affiche alors « 
 
 ### Contenu d'un pli
 
-Voir l'[ADR 0011](adr/0011-plis-raretes-et-doublons.md) et l'[ADR 0012](adr/0012-briques-rationnees.md). En résumé :
+Voir l'[ADR 0011](adr/0011-plis-raretes-et-doublons.md), l'[ADR 0012](adr/0012-briques-rationnees.md) et l'[ADR 0016](adr/0016-plis-et-jaquettes-par-fascicule.md). En résumé :
 
-- chaque pli tire une brique dans tout le catalogue du pli : **les doublons font partie du jeu** ;
+- chaque pli tire une brique parmi les briques de son fascicule, nouvelles ou reprises : **les doublons font partie du jeu** ;
 - les chances dépendent de la **rareté** (quatre niveaux : triangle commune, carré peu commune, pentagone rare, diamant légendaire) et du **type** (les suffixes sortent un peu plus souvent) ;
 - un doublon ajoute **un exemplaire** à la réserve, jusqu'à 5 par brique ; au-delà, il rapporte des **gouttes d'encre**, d'autant plus que la brique est rare ; l'encre s'échange contre des indices ;
-- une brique nouvelle est **garantie au plus tard au 6ᵉ pli** après la dernière nouveauté ;
-- si la réserve ne permet plus aucune découverte, une brique utile est **garantie au plus tard au 5ᵉ pli** ;
-- objectif de rythme : le codex ne doit pas se remplir trop vite. Sur le catalogue de démonstration (9 mots, réserve de départ 4 × 2), il faut 22 plis en médiane pour tout découvrir, soit environ onze jours, et jamais plus de 30 plis dans la simulation.
+- une brique nouvelle est **garantie au plus tard au 6ᵉ pli** du même fascicule après sa dernière nouveauté ;
+- si la réserve ne permet plus aucune découverte, une brique utile de ce fascicule est **garantie au plus tard au 5ᵉ pli** du même fascicule. Si aucune de ses briques ne peut aider, l'écran invite à choisir un autre fascicule ;
+- objectif de rythme : le codex ne doit pas se remplir trop vite. Sur le catalogue de démonstration (9 mots, réserve de départ 4 × 2), il faut 22 plis en médiane pour tout découvrir, soit environ onze jours, et jamais plus de 30 plis dans la simulation. Ce rythme, calculé sur un catalogue unique, est à recalculer par fascicule.
 
 Les poids, les raretés et la garantie relèvent de l'équilibrage. Ils doivent être observables et modifiables sans changer les données linguistiques.
 
@@ -412,7 +429,7 @@ Le niveau de confiance ne doit pas être transformé en rareté ludique.
 
 - Distinguer composition synchronique, dérivation historique, héritage et emprunt.
 - Montrer les formes intermédiaires utiles plutôt que prétendre à un saut direct.
-- Sourcer les faits éditoriaux.
+- Sourcer les faits éditoriaux auprès de sources de référence (TLFi, Académie française, Gaffiot, Bailly, Chantraine…). Le Wiktionnaire aide à repérer des pistes, mais aucun de ses textes n'est repris et il ne suffit jamais à publier un fait ([ADR 0014](adr/0014-sources-et-fascicules.md)).
 - Expliquer les simplifications nécessaires au gameplay.
 - Ne pas valider une fusion sur la seule ressemblance de deux chaînes de caractères.
 - Permettre la correction et la migration d'un contenu déjà publié.
@@ -516,5 +533,6 @@ Comparer une révélation instantanée à une révélation en trois temps :
 - Combien de briques une recette peut-elle utiliser sans devenir illisible ?
 - Quand un indice « presque » aide-t-il sans transformer le jeu en recherche exhaustive ?
 - Une découverte doit-elle débloquer toutes ses briques immédiatement ou certaines via des mini-objectifs ?
-- Quel volume de contenu permet de tester la rétention sans surinvestir dans l'éditorial ?
+- Quel volume de contenu permet de tester la rétention sans surinvestir dans l'éditorial ? Hypothèse : des fascicules de 20 à 40 mots tous les 30 jours.
+- Sous quelle licence publier le catalogue, sachant qu'aucun texte du Wiktionnaire n'y est repris ?
 - Le compte utilisateur est-il obligatoire, facultatif ou différé jusqu'à la synchronisation multi-appareil ?

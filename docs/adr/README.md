@@ -24,8 +24,12 @@ Une modification importante se fait dans un nouvel ADR. Les corrections factuell
 | [0008](0008-energie-et-plis.md) | Énergie et plis gratuits, paiements hors MVP | Accepté, contenu des plis remplacé par 0011 |
 | [0009](0009-contenu-et-equilibrage.md) | Séparation des faits linguistiques et de l'équilibrage | Accepté |
 | [0010](0010-observabilite-et-vie-privee.md) | Observabilité minimale et respectueuse de la vie privée | Accepté |
-| [0011](0011-plis-raretes-et-doublons.md) | Plis à raretés, doublons convertis en encre | Accepté, valeur des doublons remplacée par 0012 |
-| [0012](0012-briques-rationnees.md) | Briques rationnées, exemplaires obtenus par les plis | Accepté |
+| [0011](0011-plis-raretes-et-doublons.md) | Plis à raretés, doublons convertis en encre | Accepté, valeur des doublons remplacée par 0012, légendaires inconnues par 0015, catalogue du tirage par 0016 |
+| [0012](0012-briques-rationnees.md) | Briques rationnées, exemplaires obtenus par les plis | Accepté, filet par fascicule remplacé par 0016 |
+| [0013](0013-schema-des-briques.md) | Schéma relationnel des langues, mots, préfixes et suffixes | Proposé |
+| [0014](0014-sources-et-fascicules.md) | Sources de référence et publication par fascicules | Proposé |
+| [0015](0015-codex-fascicules-et-legendaires.md) | Codex par fascicule et légendaires secrètes | Accepté |
+| [0016](0016-plis-et-jaquettes-par-fascicule.md) | Un pli et une jaquette par fascicule | Accepté |
 
 ## Page HTML
 

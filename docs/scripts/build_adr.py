@@ -29,6 +29,10 @@ XREFS = {
     "0010": [("design-system.html#accessibilite", "Accessibilité et respect du joueur")],
     "0011": [("plis.html#chances", "Chances par rareté et par brique"), ("identite.html#formes", "Les formes de rareté")],
     "0012": [("jeu.html#table", "Compteurs, « −1 » et briques épuisées"), ("plis.html", "Exemplaires, plafond et filet"), ("design-system.html#ds-3-2", "Réserve et rationnement")],
+    "0016": [("plis.html#pkChooser", "Choisir un fascicule"), ("plis.html#jaquettes", "Une jaquette par fascicule")],
+    "0015": [("codex.html#codex", "Complétude par fascicule"), ("plis.html#chances", "Légendaires inconnues regroupées")],
+    "0014": [("modele.html#sources", "Sources et fascicules"), ("plis.html#fascicules", "Les fascicules côté joueur")],
+    "0013": [("modele.html", "Le modèle de données"), ("modele.html#decisions", "Quatre cas, quatre règles"), ("codex.html#filiation", "Formes et filiation dans le codex")],
 }
 
 

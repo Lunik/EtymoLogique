@@ -25,7 +25,7 @@
     <div class="wrap">
       <div class="sec-head">
         <div data-reveal><span class="sec-num">Jeu · Codex</span><h2>Cartes à <em>collectionner</em></h2></div>
-        <div class="sec-intro" data-reveal style="--d:120ms"><p>Dans le codex, chaque entrée est une carte éditoriale qui réagit à la main. Les états — découvert, nouveau, silhouette, famille — se lisent sans texte.</p><p class="xrefs"><span>Voir aussi</span><a class="xref" href="jeu.html#table">Découvrir de nouveaux mots</a><a class="xref" href="identite.html#ressources">La couleur des bandeaux</a><a class="xref" href="adr.html#adr-0002" data-kind="adr">ADR 0002 : graphe éditorial</a><a class="xref" href="adr.html#adr-0006" data-kind="adr">ADR 0006 : multilingue</a></p></div>
+        <div class="sec-intro" data-reveal style="--d:120ms"><p>Dans le codex, chaque entrée est une carte éditoriale qui réagit à la main. Les états — découvert, nouveau, silhouette, famille — se lisent sans texte.</p><p class="xrefs"><span>Voir aussi</span><a class="xref" href="jeu.html#table">Découvrir de nouveaux mots</a><a class="xref" href="identite.html#ressources">La couleur des bandeaux</a><a class="xref" href="adr.html#adr-0002" data-kind="adr">ADR 0002 : graphe éditorial</a><a class="xref" href="adr.html#adr-0006" data-kind="adr">ADR 0006 : multilingue</a><a class="xref" href="adr.html#adr-0015" data-kind="adr">ADR 0015 : fascicules et légendaires</a></p></div>
       </div>
       <div class="cards">
         <article class="ccard tilt" data-reveal>
@@ -60,10 +60,11 @@
         <div class="cb-head">
           <div>
             <h3 class="cb-title">Vue <em>globale</em></h3>
-            <p class="cb-sub">Touchez une carte pour l’agrandir, puis retournez-la pour voir toutes les formes trouvées.</p>
+            <p class="cb-sub">Touchez une carte pour l’agrandir, puis retournez-la pour voir toutes les formes trouvées. Touchez un fascicule pour n’afficher que ses cartes.</p>
           </div>
           <span class="cb-count" id="cbCount"></span>
         </div>
+        <div class="cb-fasc" id="cbFasc" role="group" aria-label="Complétude par fascicule, touchez pour filtrer"></div>
         <div class="cb-toolbar">
           <div class="cb-filters" id="cbFilters" role="group" aria-label="Filtrer les cartes par type"></div>
           <div class="cb-sort-wrap">
@@ -72,6 +73,7 @@
               <button type="button" data-sort="n" aria-pressed="true">N°</button>
               <button type="button" data-sort="az" aria-pressed="false">A → Z</button>
               <button type="button" data-sort="type" aria-pressed="false">Type</button>
+              <button type="button" data-sort="fasc" aria-pressed="false">Fascicule</button>
             </div>
           </div>
         </div>

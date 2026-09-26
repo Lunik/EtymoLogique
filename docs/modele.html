@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Le modèle de données des briques d’ÉtymoLogique : langues, mots, préfixes et suffixes.">
+  <meta name="theme-color" content="#f3eee3">
+  <title>Modèle de données · ÉtymoLogique</title>
+  <link rel="stylesheet" href="assets/site-nav.css">
+  <link rel="stylesheet" href="assets/etymo.css">
+</head>
+<body>
+<div class="progress" aria-hidden="true"></div>
+<a class="skip-link" href="#contenu">Aller au contenu</a>
+<header class="site-nav"></header>
+
+<main id="contenu">
+  <section class="section" id="modele">
+    <div class="wrap">
+      <div class="sec-head">
+        <div data-reveal><span class="sec-num">Décisions · Modèle de données</span><h2>Quatre types, <em>un seul graphe</em></h2></div>
+        <div class="sec-intro" data-reveal style="--d:120ms"><p>Avant les briques, il y a des faits : une langue, un mot, un préfixe, un suffixe, et les relations qui les relient. Ce schéma relationnel les décrit sans choisir de base de données.</p><p class="xrefs"><span>Voir aussi</span><a class="xref" href="adr.html#adr-0013" data-kind="adr">ADR 0013 : le schéma</a><a class="xref" href="adr.html#adr-0009" data-kind="adr">ADR 0009 : faits et équilibrage</a><a class="xref" href="modele-donnees.md">Modèle détaillé (Markdown)</a></p></div>
+      </div>
+
+      <div class="dm-types">
+        <article class="dm-type" data-type="langue" data-reveal>
+          <div class="dm-band"><span>Type 01</span><span>Langue</span></div>
+          <p class="dm-example"><span class="chip"><i style="--c:var(--c-lang)"></i>grec ancien</span></p>
+          <p>Le contexte d’une forme. Elle a une filiation (le français descend du latin) et un nom affiché dans chaque langue d’interface.</p>
+          <dl class="dm-facts"><dt>Sur la table</dt><dd>Jamais</dd><dt>Dans le codex</dt><dd>Une carte par langue</dd></dl>
+        </article>
+        <article class="dm-type" data-type="mot" data-reveal style="--d:80ms">
+          <div class="dm-band"><span>Type 02</span><span>Mot</span></div>
+          <p class="dm-example"><span class="dm-word">géologie</span></p>
+          <p>Un lexème autonome. Il est le résultat d’une composition, et peut redevenir un ingrédient : <span class="bchip" data-kind="mot">biologie</span> + <span class="bchip" data-kind="suffixe">-iste</span>.</p>
+          <dl class="dm-facts"><dt>Sur la table</dt><dd>Oui, une fois découvert</dd><dt>Dans le codex</dt><dd>Une carte</dd></dl>
+        </article>
+        <article class="dm-type" data-type="prefixe" data-reveal style="--d:160ms">
+          <div class="dm-band"><span>Type 03</span><span>Préfixe</span></div>
+          <p class="dm-example"><span class="bchip" data-kind="préfixe">géo-</span></p>
+          <p>Un élément placé en tête. C’est une unité <strong>du français</strong>, reliée à son étymon, le grec <i lang="grc">γῆ</i> (<i>gê</i>) « terre ».</p>
+          <dl class="dm-facts"><dt>Sur la table</dt><dd>Oui</dd><dt>Dans le codex</dt><dd>Une carte</dd></dl>
+        </article>
+        <article class="dm-type" data-type="suffixe" data-reveal style="--d:240ms">
+          <div class="dm-band"><span>Type 04</span><span>Suffixe</span></div>
+          <p class="dm-example"><span class="bchip" data-kind="suffixe">-logie</span></p>
+          <p>Un élément placé en fin de mot. Même structure que le préfixe : seule la position change, et elle vient du type, pas du texte.</p>
+          <dl class="dm-facts"><dt>Sur la table</dt><dd>Oui</dd><dt>Dans le codex</dt><dd>Une carte</dd></dl>
+        </article>
+      </div>
+
+      <div class="dm-principles" data-reveal>
+        <h3>Six principes</h3>
+        <ol>
+          <li><b>Des identifiants opaques.</b> Corriger un accent ne crée jamais une nouvelle brique.</li>
+          <li><b>Une unité lexicale</b> pour les mots, préfixes et suffixes : tout se relie à la même cible.</li>
+          <li><b>La langue n’est pas une unité.</b> Aucune langue ne peut donc devenir une brique.</li>
+          <li><b>Pas de type « étymon ».</b> Un étymon est simplement une unité d’une langue source.</li>
+          <li><b>Une forme sans trait d’union.</b> La position vient du type ; le rendu montre une brique.</li>
+          <li><b>Tout ce qui est affirmé est un fait</b>, avec sa confiance, sa relecture et ses sources.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="schema">
+    <div class="wrap">
+      <div class="sec-head">
+        <div data-reveal><span class="sec-num">Modèle · Schéma</span><h2>Des tables, <em>pas des chaînes</em></h2></div>
+        <div class="sec-intro" data-reveal style="--d:120ms"><p>Quatre blocs de faits et un bloc de jeu. Touchez une clé étrangère pour rejoindre la table qu’elle référence.</p><p class="dm-legend"><span class="dm-k pk">PK</span>clé primaire <span class="dm-k uk">UK</span>unique <span class="dm-k fk">FK</span>référence</p></div>
+      </div>
+
+      <div class="dm-block" data-reveal>
+        <div class="dm-block-head"><span>Bloc 1</span><h3>Langues et écritures</h3><p>Trois langues dans le MVP, sans variété : grec ancien, latin, français.</p></div>
+        <div class="dm-tables">
+          <article class="dm-table" id="t-langue">
+            <h4>langue</h4>
+            <ul>
+              <li><code>id</code><span class="dm-k pk">PK</span></li>
+              <li><code>code_interne</code><span class="dm-k uk">UK</span><small>jamais affiché</small></li>
+              <li><code>langue_parente_id</code><a class="dm-k fk" href="#t-langue">langue</a></li>
+              <li><code>periode_debut</code><code>periode_fin</code></li>
+              <li><code>systeme_ecriture_defaut_id</code><a class="dm-k fk" href="#t-systeme_ecriture">systeme_ecriture</a></li>
+            </ul>
+          </article>
+          <article class="dm-table" id="t-langue_libelle">
+            <h4>langue_libelle</h4>
+            <ul>
+              <li><code>langue_id</code><span class="dm-k pk">PK</span><a class="dm-k fk" href="#t-langue">langue</a></li>
+              <li><code>locale</code><span class="dm-k pk">PK</span><small>langue d’interface</small></li>
+              <li><code>nom</code><small>« grec ancien »</small></li>
+              <li><code>description</code></li>
+            </ul>
+          </article>
+          <article class="dm-table" id="t-systeme_ecriture">
+            <h4>systeme_ecriture</h4>
+            <ul>
+              <li><code>id</code><span class="dm-k pk">PK</span></li>
+              <li><code>code_iso15924</code><span class="dm-k uk">UK</span></li>
+              <li><code>direction</code><small>gauche à droite ou inverse</small></li>
+            </ul>
+          </article>
+        </div>
+      </div>
+
+      <div class="dm-block" data-reveal>
+        <div class="dm-block-head"><span>Bloc 2</span><h3>Unités, formes et sens</h3><p>Un supertype, deux sous-types exclusifs. Une unité s’écrit par ses formes et signifie par ses sens.</p></div>
+        <div class="dm-tables">
+          <article class="dm-table is-core" id="t-unite_lexicale">
+            <h4>unite_lexicale</h4>
+            <ul>
+              <li><code>id</code><span class="dm-k pk">PK</span><a class="dm-k fk" href="#t-fait">fait</a></li>
+              <li><code>nature</code><small>mot, préfixe ou suffixe</small></li>
+              <li><code>langue_id</code><a class="dm-k fk" href="#t-langue">langue</a></li>
+            </ul>
+          </article>
+          <article class="dm-table" id="t-mot">
+            <h4>mot</h4>
+            <ul>
+              <li><code>unite_id</code><span class="dm-k pk">PK</span><a class="dm-k fk" href="#t-unite_lexicale">unite_lexicale</a></li>
+              <li><code>categorie</code><small>nom, adjectif, verbe…</small></li>
+            </ul>
+          </article>
+          <article class="dm-table" id="t-affixe">
+            <h4>affixe</h4>
+            <ul>
+              <li><code>unite_id</code><span class="dm-k pk">PK</span><a class="dm-k fk" href="#t-unite_lexicale">unite_lexicale</a></li>
+              <li><code>nature</code><small>préfixe ou suffixe</small></li>
+              <li><code>statut</code><small>affixe ou élément de composition</small></li>
+            </ul>
+          </article>
+          <article class="dm-table" id="t-forme">
+            <h4>forme</h4>
+            <ul>
+              <li><code>id</code><span class="dm-k pk">PK</span><a class="dm-k fk" href="#t-fait">fait</a></li>
+              <li><code>unite_id</code><a class="dm-k fk" href="#t-unite_lexicale">unite_lexicale</a></li>
+              <li><code>texte</code><small>Unicode, sans trait d’union</small></li>
+              <li><code>cle_normalisee</code><small>NFC, pour comparer</small></li>
+              <li><code>systeme_ecriture_id</code><a class="dm-k fk" href="#t-systeme_ecriture">systeme_ecriture</a></li>
+              <li><code>role</code><small>canonique, allomorphe, graphie ancienne</small></li>
+            </ul>
+          </article>
+          <article class="dm-table" id="t-translitteration">
+            <h4>translitteration</h4>
+            <ul>
+              <li><code>forme_id</code><span class="dm-k pk">PK</span><a class="dm-k fk" href="#t-forme">forme</a></li>
+              <li><code>convention_id</code><span class="dm-k pk">PK</span><small>convention déclarée</small></li>
+              <li><code>texte</code><small>« gê »</small></li>
+            </ul>
+          </article>
+          <article class="dm-table" id="t-sens">
+            <h4>sens</h4>
+            <ul>
+              <li><code>id</code><span class="dm-k pk">PK</span><a class="dm-k fk" href="#t-fait">fait</a></li>
+              <li><code>unite_id</code><a class="dm-k fk" href="#t-unite_lexicale">unite_lexicale</a></li>
+              <li><code>rang</code></li>
+            </ul>
+          </article>
+          <article class="dm-table" id="t-sens_libelle">
+            <h4>sens_libelle</h4>
+            <ul>
+              <li><code>sens_id</code><span class="dm-k pk">PK</span><a class="dm-k fk" href="#t-sens">sens</a></li>
+              <li><code>locale</code><span class="dm-k pk">PK</span></li>
+              <li><code>glose</code><small>« terre »</small></li>
+              <li><code>definition</code><small>sens actuel</small></li>
+            </ul>
+          </article>
+        </div>
+      </div>
+
+      <div class="dm-block" data-reveal>
+        <div class="dm-block-head"><span>Bloc 3</span><h3>Compositions et relations</h3><p>Une composition découpe un mot en parties ordonnées. Une relation relie deux unités.</p></div>
+        <div class="dm-tables">
+          <article class="dm-table" id="t-composition">
+            <h4>composition</h4>
+            <ul>
+              <li><code>id</code><span class="dm-k pk">PK</span><a class="dm-k fk" href="#t-fait">fait</a></li>
+              <li><code>mot_id</code><a class="dm-k fk" href="#t-mot">mot</a></li>
+              <li><code>forme_resultat_id</code><a class="dm-k fk" href="#t-forme">forme</a></li>
+              <li><code>type_analyse</code><small>synchronique ou historique</small></li>
+              <li><code>preferee</code><small>analyse affichée</small></li>
+            </ul>
+          </article>
+          <article class="dm-table" id="t-partie_composition">
+            <h4>partie_composition</h4>
+            <ul>
+              <li><code>composition_id</code><span class="dm-k pk">PK</span><a class="dm-k fk" href="#t-composition">composition</a></li>
+              <li><code>rang</code><span class="dm-k pk">PK</span><small>1, 2, 3…</small></li>
+              <li><code>unite_id</code><a class="dm-k fk" href="#t-unite_lexicale">unite_lexicale</a></li>
+              <li><code>sens_id</code><a class="dm-k fk" href="#t-sens">sens</a></li>
+              <li><code>forme_id</code><a class="dm-k fk" href="#t-forme">forme</a></li>
+              <li><code>segment_debut</code><code>segment_fin</code><small>pour le surlignage</small></li>
+            </ul>
+          </article>
+          <article class="dm-table" id="t-composition_libelle">
+            <h4>composition_libelle</h4>
+            <ul>
+              <li><code>composition_id</code><span class="dm-k pk">PK</span><a class="dm-k fk" href="#t-composition">composition</a></li>
+              <li><code>locale</code><span class="dm-k pk">PK</span></li>
+              <li><code>sens_litteral</code><small>« étude de la terre »</small></li>
+              <li><code>explication_courte</code><code>explication_detaillee</code></li>
+            </ul>
+          </article>
+          <article class="dm-table" id="t-transformation">
+            <h4>transformation</h4>
+            <ul>
+              <li><code>id</code><span class="dm-k pk">PK</span></li>
+              <li><code>composition_id</code><a class="dm-k fk" href="#t-composition">composition</a></li>
+              <li><code>rang_partie</code><small>ou toute la composition</small></li>
+              <li><code>type_code</code><small>élision, allomorphie…</small></li>
+            </ul>
+          </article>
+          <article class="dm-table" id="t-relation_etymologique">
+            <h4>relation_etymologique</h4>
+            <ul>
+              <li><code>id</code><span class="dm-k pk">PK</span><a class="dm-k fk" href="#t-fait">fait</a></li>
+              <li><code>unite_source_id</code><a class="dm-k fk" href="#t-unite_lexicale">unite_lexicale</a></li>
+              <li><code>unite_cible_id</code><a class="dm-k fk" href="#t-unite_lexicale">unite_lexicale</a></li>
+              <li><code>type_code</code><small>vocabulaire contrôlé</small></li>
+            </ul>
+          </article>
+        </div>
+        <div class="dm-vocab">
+          <span>Relations</span>
+          <b>héritage</b><b>emprunt</b><b>dérivation</b><b>forme de composition</b><b>adaptation</b><b>apparentement</b>
+          <small>« Ressemble à » n’est pas une relation.</small>
+        </div>
+      </div>
+
+      <div class="dm-block" data-reveal>
+        <div class="dm-block-head"><span>Bloc 4</span><h3>Socle éditorial</h3><p>Unités, formes, sens, compositions et relations partagent l’identifiant d’un fait. Un seul lien suffit pour sourcer n’importe quelle affirmation.</p></div>
+        <div class="dm-tables">
+          <article class="dm-table is-core" id="t-fait">
+            <h4>fait</h4>
+            <ul>
+              <li><code>id</code><span class="dm-k pk">PK</span></li>
+              <li><code>confiance</code><small>établie, probable, discutée, non retenue</small></li>
+              <li><code>etat_relecture</code></li>
+              <li><code>note_interne</code><small>jamais publiée</small></li>
+            </ul>
+          </article>
+          <article class="dm-table" id="t-source">
+            <h4>source</h4>
+            <ul>
+              <li><code>id</code><span class="dm-k pk">PK</span></li>
+              <li><code>role</code><small>référence ou repérage</small></li>
+              <li><code>reference</code></li>
+              <li><code>edition</code><small>ou date de l’import</small></li>
+              <li><code>licence</code></li>
+            </ul>
+          </article>
+          <article class="dm-table" id="t-fait_source">
+            <h4>fait_source</h4>
+            <ul>
+              <li><code>fait_id</code><span class="dm-k pk">PK</span><a class="dm-k fk" href="#t-fait">fait</a></li>
+              <li><code>source_id</code><span class="dm-k pk">PK</span><a class="dm-k fk" href="#t-source">source</a></li>
+              <li><code>localisation</code><small>entrée, page</small></li>
+            </ul>
+          </article>
+        </div>
+      </div>
+
+      <div class="dm-block is-game" data-reveal>
+        <div class="dm-block-head"><span>Couche ludique · esquisse</span><h3>Briques et recettes</h3><p>Le jeu référence les faits, jamais l’inverse. La rareté vit ici, jamais le niveau de confiance.</p></div>
+        <div class="dm-tables">
+          <article class="dm-table" id="t-brique">
+            <h4>brique</h4>
+            <ul>
+              <li><code>id</code><span class="dm-k pk">PK</span></li>
+              <li><code>unite_id</code><span class="dm-k uk">UK</span><a class="dm-k fk" href="#t-unite_lexicale">unite_lexicale</a></li>
+              <li><code>forme_affichee_id</code><a class="dm-k fk" href="#t-forme">forme</a></li>
+              <li><code>sens_affiche_id</code><a class="dm-k fk" href="#t-sens">sens</a></li>
+              <li><code>rarete</code></li>
+            </ul>
+          </article>
+          <article class="dm-table" id="t-recette">
+            <h4>recette</h4>
+            <ul>
+              <li><code>id</code><span class="dm-k pk">PK</span></li>
+              <li><code>composition_id</code><a class="dm-k fk" href="#t-composition">composition</a></li>
+              <li><code>emplacements</code><small>ordonnés, briques acceptées</small></li>
+            </ul>
+          </article>
+          <article class="dm-table" id="t-fascicule">
+            <h4>fascicule</h4>
+            <ul>
+              <li><code>id</code><span class="dm-k pk">PK</span></li>
+              <li><code>numero</code><span class="dm-k uk">UK</span></li>
+              <li><code>publication</code><small>environ tous les 30 jours</small></li>
+            </ul>
+          </article>
+          <article class="dm-table" id="t-fascicule_unite">
+            <h4>fascicule_unite</h4>
+            <ul>
+              <li><code>fascicule_id</code><span class="dm-k pk">PK</span><a class="dm-k fk" href="#t-fascicule">fascicule</a></li>
+              <li><code>unite_id</code><span class="dm-k pk">PK</span><a class="dm-k fk" href="#t-unite_lexicale">unite_lexicale</a></li>
+              <li><code>role</code><small>résultat (un seul fascicule par mot) ou ingrédient</small></li>
+            </ul>
+          </article>
+          <article class="dm-table" id="t-exclusion">
+            <h4>exclusion</h4>
+            <ul>
+              <li><code>id</code><span class="dm-k pk">PK</span></li>
+              <li><code>fascicule_id</code><a class="dm-k fk" href="#t-fascicule">fascicule</a></li>
+              <li><code>combinaison</code><small>suite ordonnée de briques</small></li>
+              <li><code>raison</code><small>archaïque, rare, offensant, analyse non établie</small></li>
+            </ul>
+          </article>
+          <article class="dm-table is-derived">
+            <h4>carte du codex</h4>
+            <p>Calculée, jamais stockée. Une unité a sa carte si elle est une brique ou le résultat d’une recette.</p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="exemple">
+    <div class="wrap">
+      <div class="sec-head">
+        <div data-reveal><span class="sec-num">Modèle · Exemple</span><h2>Suivre <em>géologie</em></h2></div>
+        <div class="sec-intro" data-reveal style="--d:120ms"><p>Cinq unités, deux relations et une composition suffisent à expliquer le mot, à le surligner morceau par morceau et à remplir le verso de sa carte.</p><p class="xrefs"><span>Voir aussi</span><a class="xref" href="codex.html#carte-geologie">La carte « géologie »</a><a class="xref" href="codex.html#filiation">La filiation</a></p></div>
+      </div>
+      <div class="dm-flow" data-reveal>
+        <div class="dm-col">
+          <span class="dm-col-k">Étymons · grec ancien</span>
+          <div class="dm-unit"><span class="dm-id">unt_01 · mot</span><b lang="grc">γῆ</b><small><i>gê</i> · « terre »</small></div>
+          <div class="dm-unit"><span class="dm-id">unt_03 · suffixe</span><b lang="grc">λογία</b><small><i>logía</i> · « étude »</small></div>
+        </div>
+        <div class="dm-col dm-arrows"><span>forme de composition</span><span>emprunt</span></div>
+        <div class="dm-col">
+          <span class="dm-col-k">Briques · français</span>
+          <div class="dm-unit"><span class="dm-id">unt_02 · préfixe</span><span class="bchip" data-kind="préfixe">géo-</span><small>« terre »</small></div>
+          <div class="dm-unit"><span class="dm-id">unt_04 · suffixe</span><span class="bchip" data-kind="suffixe">-logie</span><small>« étude »</small></div>
+        </div>
+        <div class="dm-col dm-arrows"><span>composition</span></div>
+        <div class="dm-col">
+          <span class="dm-col-k">Résultat · français</span>
+          <div class="dm-unit is-result">
+            <span class="dm-id">unt_05 · mot · cmp_01</span>
+            <b class="dm-word"><span class="seg" style="--c:var(--c-prefix)">géo</span><span class="seg" style="--c:var(--c-suffix)">logie</span></b>
+            <small>rang 1 : segment [0, 3) · rang 2 : segment [3, 8)</small>
+            <small>sens littéral : « étude de la terre »</small>
+          </div>
+        </div>
+      </div>
+      <p class="dm-note" data-reveal>Les étymons n’ont pas de carte propre : <i lang="grc">γῆ</i> et <i lang="grc">λογία</i> apparaissent au verso de <span class="bchip" data-kind="préfixe">géo-</span> et de <span class="bchip" data-kind="suffixe">-logie</span>, et sur la carte « grec ancien ». Exemples à vérifier et à sourcer avant publication.</p>
+    </div>
+  </section>
+
+  <section class="section" id="sources">
+    <div class="wrap">
+      <div class="sec-head">
+        <div data-reveal><span class="sec-num">Modèle · Sources et fascicules</span><h2>Repérer, <em>puis attester</em></h2></div>
+        <div class="sec-intro" data-reveal style="--d:120ms"><p>Le Wiktionnaire propose des pistes ; seules les sources de référence permettent de publier. Le contenu arrive par fascicules, environ tous les 30 jours.</p><p class="xrefs"><span>Voir aussi</span><a class="xref" href="adr.html#adr-0014" data-kind="adr">ADR 0014 : sources et fascicules</a><a class="xref" href="adr.html#adr-0005" data-kind="adr">ADR 0005 : circuit de publication</a></p></div>
+      </div>
+
+      <div class="dm-sources">
+        <article class="dm-source is-reperage" data-reveal>
+          <span class="dm-source-k">Repérage</span>
+          <h3>Wiktionnaire</h3>
+          <p>Couverture très large, données structurées (Wiktextract, kaikki.org). Sert à proposer des unités, des formes, des relations et des combinaisons candidates.</p>
+          <ul class="dm-checks">
+            <li class="no">Aucun texte copié : licence CC BY-SA 4.0</li>
+            <li class="no">Ne suffit jamais pour publier</li>
+            <li>Import daté, gardé hors du catalogue</li>
+          </ul>
+        </article>
+        <article class="dm-source" data-reveal style="--d:100ms">
+          <span class="dm-source-k">Référence</span>
+          <h3>Dictionnaires et ouvrages savants</h3>
+          <dl class="dm-refs">
+            <dt>Français</dt><dd>TLFi, Académie française (9ᵉ édition), Littré</dd>
+            <dt>Latin</dt><dd>Gaffiot, Ernout-Meillet</dd>
+            <dt>Grec ancien</dt><dd>Bailly, LSJ, Chantraine</dd>
+          </dl>
+          <p>Citées avec l’entrée et l’édition consultées, jamais recopiées. Les textes du jeu sont rédigés par l’équipe.</p>
+        </article>
+        <article class="dm-source" data-reveal style="--d:200ms">
+          <span class="dm-source-k">Confiance</span>
+          <h3>Ce qu’il faut pour publier</h3>
+          <dl class="dm-refs">
+            <dt>Établie</dt><dd>une source de référence l’affirme</dd>
+            <dt>Probable</dt><dd>une source de référence en fait une hypothèse</dd>
+            <dt>Discutée</dt><dd>deux sources de référence sont en désaccord</dd>
+            <dt>Non retenue</dt><dd>jamais publiée comme solution</dd>
+          </dl>
+        </article>
+      </div>
+
+      <ol class="dm-steps" data-reveal>
+        <li><b>Import</b><span>Une version datée du Wiktionnaire, comparée à la précédente.</span></li>
+        <li><b>Choix</b><span>20 à 40 mots, et les préfixes et suffixes qui les forment.</span></li>
+        <li><b>Fermeture</b><span>Un script cherche les mots croisés avec les briques des anciens fascicules.</span></li>
+        <li><b>Recoupement</b><span>Chaque fait est vérifié dans une source de référence.</span></li>
+        <li><b>Rédaction</b><span>Gloses, définitions, sens littéraux et explications écrits par l’équipe.</span></li>
+        <li><b>Publication</b><span>Nouvelle version validée ; les briques entrent dans les plis.</span></li>
+      </ol>
+
+      <div class="dm-fasc" data-reveal>
+        <div class="dm-fasc-col">
+          <span class="dm-col-k">Fascicule 1</span>
+          <p class="dm-fasc-bricks"><span class="bchip" data-kind="préfixe">bio-</span><span class="bchip" data-kind="préfixe">géo-</span><span class="bchip" data-kind="suffixe">-logie</span></p>
+          <p class="dm-fasc-words"><span>biologie</span><span>géologie</span></p>
+        </div>
+        <div class="dm-fasc-col is-new">
+          <span class="dm-col-k">Fascicule 2 · trois briques nouvelles</span>
+          <p class="dm-fasc-bricks"><span class="bchip" data-kind="préfixe">philo-</span><span class="bchip" data-kind="suffixe">-sophie</span><span class="bchip" data-kind="suffixe">-graphie</span></p>
+          <p class="dm-fasc-words"><span>philosophie</span><span class="is-cross">philologie</span><span class="is-cross">biographie</span><span class="is-cross">géographie</span></p>
+          <p class="dm-fasc-note">Soulignés : mots croisés, qui associent une brique nouvelle à une brique du fascicule 1. La fermeture les impose ; ils appartiennent au fascicule 2 et comptent dans ses 20 à 40 mots. <span class="bchip" data-kind="préfixe">philo-</span> + <span class="bchip" data-kind="suffixe">-graphie</span> ne forme aucun mot attesté : rien à publier. Exemples à vérifier.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="decisions">
+    <div class="wrap">
+      <div class="sec-head">
+        <div data-reveal><span class="sec-num">Modèle · Décisions</span><h2>Quatre cas, <em>quatre règles</em></h2></div>
+        <div class="sec-intro" data-reveal style="--d:120ms"><p>Les cas limites ont fixé la forme du schéma. Chacun est tranché dans l’ADR 0013.</p><p class="xrefs"><span>Voir aussi</span><a class="xref" href="adr.html#adr-0013" data-kind="adr">ADR 0013</a><a class="xref" href="adr.html#adr-0003" data-kind="adr">ADR 0003 : transformations</a></p></div>
+      </div>
+      <div class="pillars">
+        <article class="pillar" data-reveal>
+          <span>Règle 01</span><h3>Une brique par unité</h3>
+          <p>Un allomorphe n’est jamais une brique à part. Pour <i>philanthrope</i>, le joueur pose <span class="bchip" data-kind="préfixe">philo-</span> : la recette déclare que le o tombe devant une voyelle.</p>
+        </article>
+        <article class="pillar" data-reveal style="--d:80ms">
+          <span>Règle 02</span><h3>Trois langues</h3>
+          <p>Grec ancien, latin et français, sans variété. Une forme tardive ou médiévale reste dans sa langue ; la précision va dans l’explication.</p>
+        </article>
+        <article class="pillar" data-reveal style="--d:160ms">
+          <span>Règle 03</span><h3>Pas de carte d’étymon</h3>
+          <p>Le grec <i>phílos</i> relie <span class="bchip" data-kind="préfixe">philo-</span> et <span class="bchip" data-kind="suffixe">-phile</span>, mais il n’a pas de carte : il vit au verso de ses descendants.</p>
+        </article>
+        <article class="pillar" data-reveal style="--d:240ms">
+          <span>Règle 04</span><h3>Deux homographes, deux cartes</h3>
+          <p>Aucun numéro : la glose et l’étymon les distinguent. Le validateur refuse deux homographes indiscernables.</p>
+          <p class="dm-pair"><span class="brick" data-kind="préfixe"><span class="b-label">a-</span><span class="b-meta">«&nbsp;sans&nbsp;» · grec</span></span><span class="brick" data-kind="préfixe"><span class="b-label">a-</span><span class="b-meta">«&nbsp;vers&nbsp;» · latin</span></span></p>
+        </article>
+      </div>
+
+      <div class="rules">
+        <article class="rule-col do" data-reveal>
+          <h3><span>✓</span>Vérifié à la publication</h3>
+          <ol>
+            <li><span>Chaque unité a un seul sous-type, au moins un sens et une seule forme canonique.</span></li>
+            <li><span>Une forme ne commence ni ne finit par un trait d’union.</span></li>
+            <li><span>Une composition a au moins deux parties, dans l’ordre, sans cycle ; un préfixe n’est jamais en dernier, un suffixe jamais en premier.</span></li>
+            <li><span>Une relation relie deux unités différentes ; héritage et emprunt ne forment pas de cycle.</span></li>
+            <li><span>Tout fait publié est relu et sourcé ; « non retenue » n’est jamais une solution.</span></li>
+          </ol>
+        </article>
+        <article class="rule-col dont" data-reveal style="--d:120ms">
+          <h3><span>?</span>Encore ouvert</h3>
+          <ol>
+            <li><span>Compter les segments en points de code ou en graphèmes ?</span></li>
+            <li><span>Les familles : regroupement éditorial ou notion dérivée des relations ?</span></li>
+            <li><span>Une locale de référence unique pour les gloses et définitions ?</span></li>
+            <li><span>Sous quelle licence publier le catalogue ?</span></li>
+            <li><span>Que dit le jeu devant une combinaison attestée mais exclue ?</span></li>
+            <li><span>Le mauvais homographe sur la table : échec neutre, ou indice « même forme, autre sens » ?</span></li>
+            <li><span>Dans une petite brique en ligne, comment distinguer deux homographes ?</span></li>
+          </ol>
+        </article>
+      </div>
+    </div>
+  </section>
+</main>
+<nav class="site-pager" aria-label="Page précédente et page suivante"></nav>
+
+<footer class="footer">
+  <div class="foot-seal" aria-hidden="true">
+    <svg viewBox="0 0 200 200"><defs><path id="circ" d="M100 100 m-78 0 a78 78 0 1 1 156 0 a78 78 0 1 1 -156 0"></path></defs><text textLength="486" lengthAdjust="spacing"><textPath href="#circ">ÉtymoLogique · remonter le fil · ÉtymoLogique · remonter le fil ·</textPath></text></svg>
+    <b>ÉL</b>
+  </div>
+  <p class="foot-phrase"><span class="sr-only">Chaque mot est une piste.</span><span aria-hidden="true">Chaque mot est une <em id="footWord">piste</em>.</span></p>
+  <div class="foot-meta"><span>ÉtymoLogique · Direction visuelle 02</span><span>Cabinet linguistique contemporain</span><span>Dossier de direction · 2026</span></div>
+</footer>
+
+<div class="toast" role="status" aria-live="polite"></div>
+<script src="assets/site-nav.js"></script>
+<script src="assets/etymo.js"></script>
+</body>
+</html>

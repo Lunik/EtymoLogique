@@ -222,14 +222,13 @@
     "astro+nomie": { word: "astronomie", lit: "loi des astres", def: "Science qui étudie les astres et l’Univers.", note: "Grec ancien ástron « astre » + -nomía « loi, règle ».", tr: { brick: "astro", text: "forme de composition de ástron." } },
   };
   const RECIPE_KEYS = Object.keys(RECIPES);
-  const PACK_POOL = Object.keys(BRICKS);
 
   /* ---------- Réserve partagée entre les pages (démo, stockage local) ---------- */
   // Briques rationnées : réserve de départ, puis seuls les plis donnent des exemplaires.
   const STARTER = { bio: 2, geo: 2, logie: 2, graphie: 2 };
   const CAP = 5;
   const STORE_KEY = "etymologique.demo.v1";
-  const freshStore = () => ({ owned: Object.keys(STARTER), copies: { ...STARTER }, found: [], ink: 0, packCount: 0, sinceNew: 0, blockedPacks: 0, nextPackAt: 0, history: [], hint: null });
+  const freshStore = () => ({ owned: Object.keys(STARTER), copies: { ...STARTER }, found: [], ink: 0, packCount: 0, byFasc: {}, nextPackAt: 0, history: [], hint: null });
   function loadStore() {
     try {
       const saved = JSON.parse(localStorage.getItem(STORE_KEY));
@@ -423,55 +422,75 @@
   const KIND_FR = { prefixe: "préfixe", suffixe: "suffixe" };
   const fm = (lang, form, isFound = true, tr = "") => ({ lang, form, found: isFound, tr });
   const CODEX = [
-    { id: "etymologique", n: 1, type: "mot", lang: "fr", word: "étymologique", def: "Qui concerne l’origine et l’histoire des mots.", lit: "qui relève de l’étymologie", parts: [{ label: "étymologie", kind: "mot", gloss: "étude du sens vrai" }, { label: "-ique", kind: "suffixe", gloss: "relatif à" }], conf: "Établie",
+    { id: "etymologique", n: 1, fasc: 1, type: "mot", lang: "fr", word: "étymologique", def: "Qui concerne l’origine et l’histoire des mots.", lit: "qui relève de l’étymologie", parts: [{ label: "étymologie", kind: "mot", gloss: "étude du sens vrai" }, { label: "-ique", kind: "suffixe", gloss: "relatif à" }], conf: "Établie",
       forms: [fm("fr", "étymologique"), fm("la", "etymologicus"), fm("grc", "ἐτυμολογικός", true, "etumologikós")],
       links: { label: "Composants", items: [["étymologie", true], ["-ique", false]] } },
-    { id: "francais", n: 2, type: "langue", key: "fr", word: "Français", glyph: "É", conf: "Établie",
+    { id: "francais", n: 2, fasc: 1, type: "langue", key: "fr", word: "Français", glyph: "É", conf: "Établie",
       def: "Langue romane issue du latin parlé ; elle a emprunté de nombreux mots savants au latin et au grec." },
-    { id: "latin", n: 3, type: "langue", key: "la", word: "Latin", glyph: "Æ", conf: "Établie",
+    { id: "latin", n: 3, fasc: 1, type: "langue", key: "la", word: "Latin", glyph: "Æ", conf: "Établie",
       def: "Langue de la Rome antique ; elle a transmis au français l’essentiel de son vocabulaire." },
-    { id: "grec", n: 4, type: "langue", key: "grc", word: "Grec ancien", glyph: "Ω", conf: "Établie",
+    { id: "grec", n: 4, fasc: 1, type: "langue", key: "grc", word: "Grec ancien", glyph: "Ω", conf: "Établie",
       def: "Langue de la Grèce antique, écrite en alphabet grec ; source de nombreux mots savants." },
-    { id: "etymologie", n: 5, type: "mot", lang: "fr", word: "étymologie", def: "Étude de l’origine et de l’histoire des mots.", lit: "étude du sens vrai", parts: [{ label: "étymo-", kind: "préfixe", gloss: "vrai" }, { label: "-logie", kind: "suffixe", gloss: "étude" }], conf: "Établie",
+    { id: "etymologie", n: 5, fasc: 1, type: "mot", lang: "fr", word: "étymologie", def: "Étude de l’origine et de l’histoire des mots.", lit: "étude du sens vrai", parts: [{ label: "étymo-", kind: "préfixe", gloss: "vrai" }, { label: "-logie", kind: "suffixe", gloss: "étude" }], conf: "Établie",
       forms: [fm("fr", "étymologie"), fm("la", "etymologia"), fm("grc", "ἐτυμολογία", true, "etumología")],
       links: { label: "Composants", items: [["étymo-", true], ["-logie", true]] } },
-    { id: "logie", n: 6, type: "suffixe", lang: "fr", word: "-logie", gloss: "étude", def: "Suffixe des sciences et des discours : « étude de… ».", lit: "« parole, discours, étude »", conf: "Établie",
+    { id: "logie", n: 6, fasc: 1, rar: "commune", type: "suffixe", lang: "fr", word: "-logie", gloss: "étude", def: "Suffixe des sciences et des discours : « étude de… ».", lit: "« parole, discours, étude »", conf: "Établie",
       forms: [fm("fr", "-logie"), fm("la", "-logia"), fm("grc", "-λογία", true, "-logía")],
       links: { label: "Mots formés", items: [["étymologie", true], ["biologie", true], ["géologie", true], ["philologie", true], ["astrologie", false]] } },
-    { id: "bio", n: 7, type: "prefixe", lang: "fr", word: "bio-", gloss: "vie", def: "Élément savant qui signifie « vie ».", conf: "Établie",
+    { id: "bio", n: 7, fasc: 1, rar: "commune", type: "prefixe", lang: "fr", word: "bio-", gloss: "vie", def: "Élément savant qui signifie « vie ».", conf: "Établie",
       forms: [fm("fr", "bio-"), fm("grc", "βίος", true, "bíos")],
       links: { label: "Mots formés", items: [["biologie", true], ["biographie", false]] } },
-    { id: "biologie", n: 8, type: "mot", lang: "fr", word: "biologie", def: "Science qui étudie les êtres vivants.", lit: "étude de la vie", parts: [{ label: "bio-", kind: "préfixe", gloss: "vie" }, { label: "-logie", kind: "suffixe", gloss: "étude" }], note: "Composé savant formé vers 1800 à partir d’éléments grecs.", conf: "Établie",
+    { id: "biologie", n: 8, fasc: 1, type: "mot", lang: "fr", word: "biologie", def: "Science qui étudie les êtres vivants.", lit: "étude de la vie", parts: [{ label: "bio-", kind: "préfixe", gloss: "vie" }, { label: "-logie", kind: "suffixe", gloss: "étude" }], note: "Composé savant formé vers 1800 à partir d’éléments grecs.", conf: "Établie",
       forms: [fm("fr", "biologie")],
       links: { label: "Composants", items: [["bio-", true], ["-logie", true]] } },
-    { id: "philo", n: 9, type: "prefixe", lang: "fr", word: "philo-", gloss: "qui aime", def: "Élément savant qui signifie « qui aime ».", conf: "Établie",
+    { id: "philo", n: 9, fasc: 2, rar: "peu", type: "prefixe", lang: "fr", word: "philo-", gloss: "qui aime", def: "Élément savant qui signifie « qui aime ».", conf: "Établie",
       forms: [fm("fr", "philo-"), fm("grc", "φιλο-", true, "philo-")],
       links: { label: "Mots formés", items: [["philosophie", true], ["philologie", true]] } },
-    { id: "philosophie", n: 10, type: "mot", lang: "fr", word: "philosophie", def: "Réflexion critique sur le savoir, l’existence et les valeurs.", lit: "amour de la sagesse", parts: [{ label: "philo-", kind: "préfixe", gloss: "qui aime" }, { label: "-sophie", kind: "suffixe", gloss: "sagesse" }], conf: "Établie",
+    { id: "philosophie", n: 10, fasc: 2, type: "mot", lang: "fr", word: "philosophie", def: "Réflexion critique sur le savoir, l’existence et les valeurs.", lit: "amour de la sagesse", parts: [{ label: "philo-", kind: "préfixe", gloss: "qui aime" }, { label: "-sophie", kind: "suffixe", gloss: "sagesse" }], conf: "Établie",
       forms: [fm("fr", "philosophie"), fm("la", "philosophia"), fm("grc", "φιλοσοφία", false, "philosophía")],
       links: { label: "Composants", items: [["philo-", true], ["-sophie", true]] } },
-    { id: "sophie", n: 11, type: "suffixe", lang: "fr", word: "-sophie", gloss: "sagesse", def: "Élément savant qui signifie « sagesse, savoir ».", conf: "Établie",
+    { id: "sophie", n: 11, fasc: 2, rar: "rare", type: "suffixe", lang: "fr", word: "-sophie", gloss: "sagesse", def: "Élément savant qui signifie « sagesse, savoir ».", conf: "Établie",
       forms: [fm("fr", "-sophie"), fm("grc", "σοφία", false, "sophía")],
       links: { label: "Mots formés", items: [["philosophie", true], ["théosophie", false]] } },
-    { id: "geo", n: 12, type: "prefixe", lang: "fr", word: "géo-", gloss: "terre", def: "Élément savant qui signifie « terre ».", note: "Forme de composition du grec gê « terre ».", conf: "Établie",
+    { id: "geo", n: 12, fasc: 1, rar: "commune", type: "prefixe", lang: "fr", word: "géo-", gloss: "terre", def: "Élément savant qui signifie « terre ».", note: "Forme de composition du grec gê « terre ».", conf: "Établie",
       forms: [fm("fr", "géo-"), fm("grc", "γεω-", true, "geō-")],
       links: { label: "Mots formés", items: [["géographie", true], ["géologie", true]] } },
-    { id: "geographie", n: 13, type: "mot", lang: "fr", word: "géographie", def: "Science qui décrit la surface de la Terre, ses paysages et ses populations.", lit: "description de la terre", parts: [{ label: "géo-", kind: "préfixe", gloss: "terre" }, { label: "-graphie", kind: "suffixe", gloss: "description" }], conf: "Établie",
+    { id: "geographie", n: 13, fasc: 2, type: "mot", lang: "fr", word: "géographie", def: "Science qui décrit la surface de la Terre, ses paysages et ses populations.", lit: "description de la terre", parts: [{ label: "géo-", kind: "préfixe", gloss: "terre" }, { label: "-graphie", kind: "suffixe", gloss: "description" }], conf: "Établie",
       forms: [fm("fr", "géographie"), fm("la", "geographia", false), fm("grc", "γεωγραφία", false, "geōgraphía")],
       links: { label: "Composants", items: [["géo-", true], ["-graphie", true]] } },
-    { id: "graphie", n: 14, type: "suffixe", lang: "fr", word: "-graphie", gloss: "écriture", def: "Élément savant qui signifie « écriture, description ».", conf: "Établie",
+    { id: "graphie", n: 14, fasc: 2, rar: "peu", type: "suffixe", lang: "fr", word: "-graphie", gloss: "écriture", def: "Élément savant qui signifie « écriture, description ».", conf: "Établie",
       forms: [fm("fr", "-graphie"), fm("la", "-graphia", false), fm("grc", "-γραφία", false, "-graphía")],
       links: { label: "Mots formés", items: [["géographie", true], ["biographie", false]] } },
-    { id: "geologie", n: 15, type: "mot", lang: "fr", word: "géologie", def: "Science qui étudie la Terre : ses roches, sa structure et son histoire.", lit: "étude de la terre", parts: [{ label: "géo-", kind: "préfixe", gloss: "terre" }, { label: "-logie", kind: "suffixe", gloss: "étude" }], conf: "Établie",
+    { id: "geologie", n: 15, fasc: 1, type: "mot", lang: "fr", word: "géologie", def: "Science qui étudie la Terre : ses roches, sa structure et son histoire.", lit: "étude de la terre", parts: [{ label: "géo-", kind: "préfixe", gloss: "terre" }, { label: "-logie", kind: "suffixe", gloss: "étude" }], conf: "Établie",
       forms: [fm("fr", "géologie"), fm("la", "geologia", false)],
       links: { label: "Composants", items: [["géo-", true], ["-logie", true]] } },
-    { id: "philologie", n: 16, type: "mot", lang: "fr", word: "philologie", def: "Étude des langues à travers leurs textes, en particulier les textes anciens.", lit: "amour des mots", parts: [{ label: "philo-", kind: "préfixe", gloss: "qui aime" }, { label: "-logie", kind: "suffixe", gloss: "parole" }], conf: "Établie",
+    { id: "philologie", n: 16, fasc: 2, type: "mot", lang: "fr", word: "philologie", def: "Étude des langues à travers leurs textes, en particulier les textes anciens.", lit: "amour des mots", parts: [{ label: "philo-", kind: "préfixe", gloss: "qui aime" }, { label: "-logie", kind: "suffixe", gloss: "parole" }], conf: "Établie",
       forms: [fm("fr", "philologie"), fm("la", "philologia"), fm("grc", "φιλολογία", false, "philología")],
       links: { label: "Composants", items: [["philo-", true], ["-logie", true]] } },
-    { id: "x-mot", n: 17, type: "mot", locked: true, hint: "« loi des astres »" },
-    { id: "x-suffixe", n: 18, type: "suffixe", locked: true, hint: "« loi, règle »" },
+    { id: "etymo", n: 17, fasc: 1, rar: "legendaire", type: "prefixe", lang: "fr", word: "étymo-", gloss: "vrai", def: "Élément savant qui signifie « vrai, authentique ».", note: "Forme de composition du grec étumon « le sens vrai ».", conf: "Établie",
+      forms: [fm("fr", "étymo-"), fm("grc", "ἐτυμο-", true, "etumo-")],
+      links: { label: "Mots formés", items: [["étymologie", true]] } },
+    { id: "x-ique", n: 18, fasc: 1, rar: "commune", type: "suffixe", locked: true, hint: "« relatif à »" },
+    { id: "x-mot", n: 19, fasc: 2, type: "mot", locked: true, hint: "« loi des astres »" },
+    { id: "x-suffixe", n: 20, fasc: 2, rar: "rare", type: "suffixe", locked: true, hint: "« loi, règle »" },
+    { id: "x-astro", n: 21, fasc: 2, rar: "peu", type: "prefixe", locked: true, hint: "« astre »" },
+    { id: "x-astrologie", n: 22, fasc: 2, type: "mot", locked: true, hint: "« discours sur les astres »" },
+    { id: "x-biographie", n: 23, fasc: 2, type: "mot", locked: true, hint: "« récit d’une vie »" },
+    // Légendaire encore inconnue : ni carte, ni silhouette, ni compteur, pour garder le suspense (ADR 0015).
+    { id: "x-legendaire", n: 24, fasc: 2, rar: "legendaire", type: "prefixe", locked: true },
+    { id: "x-legendaire-mot", n: 25, fasc: 2, type: "mot", locked: true, needs: ["x-legendaire"] },
   ];
   const byId = new Map(CODEX.map((e) => [e.id, e]));
+  // Chaque fascicule a sa jaquette et son catalogue de plis : ses briques nouvelles et celles qu'il reprend.
+  const FASCICULES = [
+    { n: 1, label: "Fascicule n° 01", when: "Jour 1", jacket: "rosette", pool: ["bio", "geo", "logie", "etymo"] },
+    { n: 2, label: "Fascicule n° 02", when: "Jour 30", jacket: "argile", pool: ["philo", "sophie", "graphie", "astro", "nomie", "logie", "geo", "bio"] },
+  ];
+  const NEXT_FASCICULE = { n: 3, label: "Fascicule n° 03", when: "Jour 60" };
+  const isLegend = (e) => e.rar === "legendaire";
+  // Une légendaire inconnue, ou un mot qui en dépend, reste secret : aucune trace dans le codex.
+  const isSecret = (e) => e.locked && (isLegend(e) || (e.needs || []).some((id) => { const dep = byId.get(id); return dep && dep.locked && isLegend(dep); }));
+  const isCounted = (e) => !isLegend(e) && !isSecret(e);
   const byWord = new Map(CODEX.filter((e) => !e.locked).map((e) => [e.word, e.id]));
   const langCard = (key) => CODEX.find((e) => e.type === "langue" && e.key === key)?.id;
 
@@ -897,16 +916,22 @@
     let packCount = store.packCount;
     let openedAt = 0;
     let ink = store.ink;
-    let sinceNew = store.sinceNew;
+    // Garantie et filet se comptent par fascicule : chaque fascicule a son propre catalogue de plis.
+    let fascN = null;
+    const fasc = () => FASCICULES.find((f) => f.n === fascN);
+    const POOL = () => fasc().pool;
+    const fstate = (n) => (store.byFasc[n] ||= { sinceNew: 0, blocked: 0 });
+    let sinceNew = 0;
     let energy = Date.now() >= store.nextPackAt ? 1 : 0;
     const persist = () => {
-      Object.assign(store, { packCount, ink, sinceNew, blockedPacks });
+      if (fascN) Object.assign(fstate(fascN), { sinceNew, blocked: blockedPacks });
+      Object.assign(store, { packCount, ink });
       saveStore();
     };
     const PITY = 6;
     // Filet : si la réserve ne permet plus aucune découverte, le 5ᵉ pli d'affilée donne une brique utile.
     const NET = 5;
-    let blockedPacks = store.blockedPacks;
+    let blockedPacks = 0;
     const canDiscover = (extra) => RECIPE_KEYS.some((k) => !found.has(k) && k.split("+").every((id) => (copies[id] || 0) + (id === extra ? 1 : 0) >= 1));
     const HINT_COST = 10;
 
@@ -919,12 +944,17 @@
       const canOpen = energy >= 1 && !packBusy;
       openBtn.disabled = !canOpen;
       pkPack.disabled = !canOpen || pkStage.dataset.state !== "ready";
+      paintChooserEnergy();
+    }
+    function paintChooserEnergy() {
+      const box = $("#pkChooserEnergy");
+      if (box) box.textContent = energy >= 1 ? "Énergie 1 / 1 : un pli est prêt." : `Énergie 0 / 1 · ${timer.textContent}.`;
     }
 
     // Poids d'une brique : poids de sa rareté × poids de son type, partagé entre les briques de même rareté et de même type.
     function brickWeight(id) {
       const b = BRICKS[id];
-      const siblings = PACK_POOL.filter((x) => BRICKS[x].rarity === b.rarity && BRICKS[x].kind === b.kind).length;
+      const siblings = POOL().filter((x) => BRICKS[x].rarity === b.rarity && BRICKS[x].kind === b.kind).length;
       return (RARITY[b.rarity].weight * TYPE_WEIGHT[b.kind]) / siblings;
     }
     function odds(ids) {
@@ -933,11 +963,11 @@
     }
     function drawBrick() {
       const guaranteed = sinceNew >= PITY - 1;
-      const unknown = PACK_POOL.filter((id) => !owned.includes(id));
-      let pool = guaranteed && unknown.length ? unknown : PACK_POOL;
+      const unknown = POOL().filter((id) => !owned.includes(id));
+      let pool = guaranteed && unknown.length ? unknown : POOL();
       if (!canDiscover() && blockedPacks >= NET - 1) {
-        const useful = PACK_POOL.filter((id) => canDiscover(id));
-        const missing = PACK_POOL.filter((id) => !copies[id] && RECIPE_KEYS.some((k) => !found.has(k) && k.split("+").includes(id)));
+        const useful = POOL().filter((id) => canDiscover(id));
+        const missing = POOL().filter((id) => !copies[id] && RECIPE_KEYS.some((k) => !found.has(k) && k.split("+").includes(id)));
         pool = useful.length ? useful : missing.length ? missing : pool;
       }
       const p = odds(pool);
@@ -947,13 +977,13 @@
     }
     const pct = (x) => `${(x * 100).toFixed(x < 0.1 ? 1 : 0).replace(".", ",")} %`;
     function renderPool() {
-      const p = odds(PACK_POOL);
+      const p = odds(POOL());
       const byRarity = $("#pkRarity");
       byRarity.replaceChildren(...Object.entries(RARITY).map(([key, r]) => {
         const row = document.createElement("div");
         row.className = "pk-odd";
         const stars = rarityEl(key, false);
-        const total = PACK_POOL.filter((id) => BRICKS[id].rarity === key).reduce((sum, id) => sum + p[id], 0);
+        const total = POOL().filter((id) => BRICKS[id].rarity === key).reduce((sum, id) => sum + p[id], 0);
         row.append(stars, r.label, Object.assign(document.createElement("b"), { textContent: pct(total) }));
         return row;
       }));
@@ -961,12 +991,22 @@
       byType.replaceChildren(...["préfixe", "suffixe"].map((kind) => {
         const row = document.createElement("div");
         row.className = "pk-odd";
-        const total = PACK_POOL.filter((id) => BRICKS[id].kind === kind).reduce((sum, id) => sum + p[id], 0);
+        const total = POOL().filter((id) => BRICKS[id].kind === kind).reduce((sum, id) => sum + p[id], 0);
         row.append(chipEl(kind === "préfixe" ? "Préfixes" : "Suffixes", kind), Object.assign(document.createElement("b"), { textContent: pct(total) }));
         return row;
       }));
       const list = $("#pkPool");
-      list.replaceChildren(...PACK_POOL.slice().sort((a, b) => p[b] - p[a]).map((id) => {
+      // Les légendaires inconnues se regroupent en une ligne, sans nombre : le suspense reste entier (ADR 0015).
+      const hiddenLegends = POOL().filter((id) => BRICKS[id].rarity === "legendaire" && !owned.includes(id));
+      const legendRow = () => {
+        const item = document.createElement("div");
+        item.className = "pk-brickodd";
+        const count = document.createElement("small");
+        count.textContent = "légendaires inconnues";
+        item.append(chipEl("?", "mot", true), rarityEl("legendaire", true), count, Object.assign(document.createElement("b"), { textContent: pct(hiddenLegends.reduce((sum, id) => sum + p[id], 0)) }));
+        return item;
+      };
+      const rows = POOL().filter((id) => !hiddenLegends.includes(id)).sort((a, b) => p[b] - p[a]).map((id) => {
         const item = document.createElement("div");
         item.className = "pk-brickodd";
         const known = owned.includes(id);
@@ -976,15 +1016,20 @@
         count.textContent = known ? (copies[id] ? `×${copies[id]} / ${CAP}` : "épuisée") : "inconnue";
         item.append(chip, stars, count, Object.assign(document.createElement("b"), { textContent: pct(p[id]) }));
         return item;
-      }));
+      });
+      if (hiddenLegends.length) rows.push(legendRow());
+      list.replaceChildren(...rows);
       const left = PITY - 1 - sinceNew;
-      const unknownLeft = PACK_POOL.some((id) => !owned.includes(id));
+      const unknownLeft = POOL().some((id) => !owned.includes(id));
       $("#pkPity").textContent = unknownLeft
         ? (left <= 0 ? "Le prochain pli contient une brique nouvelle, garanti." : `Brique nouvelle garantie dans ${left + 1} plis au plus.`)
-        : "Toutes les briques sont connues : chaque pli remplit votre réserve.";
+        : "Toutes les briques de ce fascicule sont connues : chaque pli remplit votre réserve.";
       const blocked = !canDiscover() && found.size < RECIPE_KEYS.length;
       const netLeft = Math.max(1, NET - blockedPacks);
-      $("#pkNet").textContent = blocked
+      const canHelp = POOL().some((id) => canDiscover(id));
+      $("#pkNet").textContent = blocked && !canHelp
+        ? "Aucune brique de ce fascicule ne rend une découverte possible : choisissez un autre fascicule."
+        : blocked
         ? (netLeft === 1 ? "Votre réserve ne permet plus aucune découverte : le prochain pli contient une brique utile, garanti." : `Votre réserve ne permet plus aucune découverte : brique utile garantie dans ${netLeft} plis au plus.`)
         : `Filet : si votre réserve ne permet plus aucune découverte, une brique utile arrive au plus tard au ${NET}ᵉ pli.`;
       $("#pkPityBar").style.width = `${Math.min(100, (sinceNew / (PITY - 1)) * 100)}%`;
@@ -993,13 +1038,90 @@
       hintBtn.disabled = ink < HINT_COST;
     }
 
-    // La jaquette ne dépend que du numéro du pli : elle ne dit rien de la brique tirée à l'ouverture.
-    let previewJacket = null;
-    const nextJacket = () => JACKETS[packCount % JACKETS.length];
+    // La jaquette est celle du fascicule choisi : elle ne dit rien de la brique tirée à l'ouverture.
+    const jacketOf = (f) => JACKETS.find((jk) => jk.id === f.jacket);
     function applyJacket(jk) {
       $$(".pk-art", pkPack).forEach((art) => { art.innerHTML = jk.art(); });
-      $$(".pk-bottom", pkPack).forEach((label) => { label.textContent = `Jaquette « ${jk.name} »`; });
+      $$(".pk-bottom", pkPack).forEach((label) => { label.textContent = `${fasc().label} · ${jk.name}`; });
       $$("#jkGrid .jk").forEach((btn) => btn.setAttribute("aria-pressed", String(btn.dataset.jacket === jk.id)));
+    }
+    const chooser = $("#pkChooser");
+    const layout = $("#pkLayout");
+    const current = $("#pkCurrent");
+    function selectFascicule(n) {
+      if (packBusy) return;
+      if (fascN) Object.assign(fstate(fascN), { sinceNew, blocked: blockedPacks });
+      fascN = n;
+      ({ sinceNew, blocked: blockedPacks } = fstate(n));
+      chooser.hidden = true;
+      layout.hidden = false;
+      layout.classList.add("in");
+      const jk = jacketOf(fasc());
+      $("b", current).textContent = `${fasc().label} · jaquette « ${jk.name} »`;
+      current.hidden = false;
+      renderPool();
+      renderHint();
+      showPack(energy >= 1 ? "ready" : "recharging");
+      current.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    }
+    function showChooser() {
+      if (packBusy) return;
+      persist();
+      fascN = null;
+      layout.hidden = true;
+      current.hidden = true;
+      renderChooser();
+      chooser.hidden = false;
+      chooser.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    }
+    $("button", current).addEventListener("click", showChooser);
+    function renderChooser() {
+      const list = $("#pkFascList");
+      list.replaceChildren(...FASCICULES.map((f) => {
+        const jk = jacketOf(f);
+        // Les légendaires inconnues ne comptent pas : leur nombre reste secret (ADR 0015).
+        const counted = f.pool.filter((id) => BRICKS[id].rarity !== "legendaire");
+        const known = counted.filter((id) => owned.includes(id)).length;
+        const legends = f.pool.filter((id) => BRICKS[id].rarity === "legendaire" && owned.includes(id)).length;
+        const reserve = f.pool.reduce((sum, id) => sum + (copies[id] || 0), 0);
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "pk-fasc";
+        const mini = document.createElement("span");
+        mini.className = "jk-mini";
+        const art = document.createElement("span");
+        art.className = "jk-art";
+        art.innerHTML = jk.art();
+        mini.append(art);
+        const info = document.createElement("span");
+        info.className = "pk-fasc-info";
+        info.append(
+          Object.assign(document.createElement("span"), { className: "pk-fasc-k", textContent: `${f.when} · jaquette « ${jk.name} »` }),
+          Object.assign(document.createElement("b"), { textContent: f.label }),
+          Object.assign(document.createElement("span"), { textContent: `${known} / ${counted.length} briques connues · ${reserve} exemplaires en réserve` }),
+        );
+        if (legends) {
+          const note = document.createElement("span");
+          note.className = "cb-legend";
+          note.append(rarityEl("legendaire"), `${legends}\u00a0légendaire${legends > 1 ? "s" : ""} trouvée${legends > 1 ? "s" : ""}`);
+          info.append(note);
+        }
+        info.append(Object.assign(document.createElement("span"), { className: "pk-fasc-go", textContent: "Ouvrir un pli de ce fascicule →" }));
+        btn.append(mini, info);
+        btn.setAttribute("aria-label", `${f.label}, jaquette ${jk.name} : ${known} briques connues sur ${counted.length}. Ouvrir un pli de ce fascicule`);
+        btn.addEventListener("click", () => selectFascicule(f.n));
+        return btn;
+      }), (() => {
+        const next = document.createElement("div");
+        next.className = "pk-fasc is-next";
+        next.append(Object.assign(document.createElement("span"), { className: "jk-mini is-empty" }), Object.assign(document.createElement("span"), { className: "pk-fasc-info" }));
+        next.lastChild.append(
+          Object.assign(document.createElement("span"), { className: "pk-fasc-k", textContent: `${NEXT_FASCICULE.when} · à paraître` }),
+          Object.assign(document.createElement("b"), { textContent: NEXT_FASCICULE.label }),
+          Object.assign(document.createElement("span"), { textContent: "Son contenu ne sera révélé qu’à sa parution." }),
+        );
+        return next;
+      })());
     }
     function renderGallery() {
       const grid = $("#jkGrid");
@@ -1011,21 +1133,22 @@
         btn.dataset.jacket = jk.id;
         btn.setAttribute("role", "listitem");
         btn.setAttribute("aria-pressed", "false");
-        btn.setAttribute("aria-label", `Essayer la jaquette ${jk.name} (${jk.era}) sur le pli`);
         const mini = document.createElement("span");
         mini.className = "jk-mini";
         const art = document.createElement("span");
         art.className = "jk-art";
         art.innerHTML = jk.art();
         mini.append(art);
-        const nums = [i + 1, i + 11, i + 21].map((n) => String(n).padStart(2, "0")).join(" · ");
-        const info = [["span", "jk-num", `Plis n° ${nums}`], ["b", "", jk.name], ["span", "jk-era", jk.era], ["span", "jk-idea", jk.idea]].map(([tag, cls, text]) => Object.assign(document.createElement(tag), { className: cls, textContent: text }));
+        const f = FASCICULES.find((x) => x.jacket === jk.id);
+        const num = `Fascicule n° ${String(i + 1).padStart(2, "0")}${f ? "" : " · à paraître"}`;
+        if (!f) btn.classList.add("is-future");
+        btn.setAttribute("aria-label", f ? `Ouvrir un pli du ${f.label}, jaquette ${jk.name} (${jk.era})` : `Jaquette ${jk.name} (${jk.era}), fascicule à paraître`);
+        const info = [["span", "jk-num", num], ["b", "", jk.name], ["span", "jk-era", jk.era], ["span", "jk-idea", jk.idea]].map(([tag, cls, text]) => Object.assign(document.createElement(tag), { className: cls, textContent: text }));
         btn.append(mini, ...info);
         btn.addEventListener("click", () => {
           if (pkStage.dataset.state === "opening") return;
-          previewJacket = jk;
-          applyJacket(jk);
-          pkStage.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+          if (f) selectFascicule(f.n);
+          else showToast(`${num.replace(" · à paraître", "")} : à paraître. Sa jaquette sera « ${jk.name} ».`);
         });
         return btn;
       }));
@@ -1054,7 +1177,7 @@
 
     function showPack(state) {
       delete pkStage.dataset.rarity;
-      applyJacket(previewJacket || nextJacket());
+      applyJacket(jacketOf(fasc()));
       pkStage.classList.add("pk-no-trans");
       pkStage.classList.remove("pk-charging", "pk-writing", "pk-burst", "pk-revealed");
       pkReveal.hidden = true;
@@ -1080,10 +1203,11 @@
         const p = Math.min(1, 1 - (store.nextPackAt - Date.now()) / RECHARGE_MS);
         ring.style.strokeDashoffset = String(CIRC * (1 - p));
         timer.textContent = `Prochain pli dans ${formatHours((1 - p) * 12 * 3600)}`;
+        paintChooserEnergy();
         if (p < 1) { requestAnimationFrame(frame); return; }
         energy = 1;
         timer.textContent = "Pli prêt";
-        if (pkStage.dataset.state === "recharging") showPack("ready");
+        if (fascN && pkStage.dataset.state === "recharging") showPack("ready");
         else { openBtn.textContent = "Ouvrir un nouveau pli"; updateEnergy(); }
       };
       requestAnimationFrame(frame);
@@ -1192,7 +1316,7 @@
       history.replaceChildren(...store.history.map((h) => {
         const item = document.createElement("div");
         item.className = h.isNew ? "pk-hist-item" : "pk-hist-item dup";
-        const n = `n° ${String(h.n).padStart(2, "0")}`;
+        const n = `n° ${String(h.n).padStart(2, "0")}${h.f ? ` · fasc. ${String(h.f).padStart(2, "0")}` : ""}`;
         const meta = document.createElement("small");
         meta.textContent = h.isNew ? `Nouvelle · ${n}` : h.gained ? `Pleine, +${h.gained} gouttes · ${n}` : `+1 · ×${h.copies} · ${n}`;
         item.append(chipEl(BRICKS[h.id].label, BRICKS[h.id].kind), rarityEl(BRICKS[h.id].rarity, true), meta);
@@ -1201,13 +1325,13 @@
     }
 
     function addHistory(id, isNew, gained) {
-      store.history.unshift({ id, isNew, gained, n: packCount, copies: copies[id] });
+      store.history.unshift({ id, isNew, gained, n: packCount, copies: copies[id], f: fascN });
       store.history.length = Math.min(store.history.length, 6);
       renderHistory();
     }
 
     async function openPack() {
-      if (packBusy || energy < 1) return;
+      if (packBusy || energy < 1 || !fascN) return;
       packBusy = true;
       skipPack = false;
       energy = 0;
@@ -1245,7 +1369,6 @@
       glyphBurst();
       await pause(260);
       packCount += 1;
-      previewJacket = null;
       let gained = 0;
       if (isNew) {
         owned.push(id);
@@ -1297,12 +1420,11 @@
     document.addEventListener("keydown", (event) => {
       if (pkStage.dataset.state === "opening" && (event.key === "Escape" || event.key === " ")) { skipPack = true; event.preventDefault(); }
     });
-    renderPool();
     renderHistory();
-    renderHint();
     renderGallery();
-    if (energy >= 1) showPack("ready");
-    else { showPack("recharging"); recharge(); }
+    renderChooser();
+    updateEnergy();
+    if (energy < 1) recharge();
   }
 
   /* ---------- Codex ---------- */
@@ -1355,10 +1477,13 @@
       const top = mk("span", "m-top");
       top.append(mk("span", null, `N°\u00a0${pad(e.n)}`), mk("span", "m-kind", TYPES[e.type].label));
       card.append(top);
+      // La rareté se pose sous le bandeau, jamais sur une couleur vive ni sur une brique.
+      if (e.rar) { const r = rarityEl(e.rar, true); r.classList.add("m-rar"); card.append(r); }
+      if (isLegend(e)) card.classList.add("is-legend");
       if (e.locked) {
         card.classList.add("locked");
         card.append(mk("span", "m-q", "?"), mk("span", "m-foot", `Piste : ${e.hint}`));
-        card.setAttribute("aria-label", `Carte ${e.n} : ${TYPES[e.type].label.toLowerCase()} à découvrir`);
+        card.setAttribute("aria-label", `Carte ${e.n}, fascicule ${e.fasc} : ${TYPES[e.type].label.toLowerCase()} à découvrir`);
       } else {
         const forms = formsOf(e);
         const got = forms.filter((x) => x.found).length;
@@ -1381,19 +1506,68 @@
           foot.append(lang, dots);
         }
         card.append(foot);
-        card.setAttribute("aria-label", `${e.word}, ${TYPES[e.type].label.toLowerCase()}, ${got} formes trouvées sur ${forms.length}`);
+        card.setAttribute("aria-label", `${e.word}, ${TYPES[e.type].label.toLowerCase()}, fascicule ${e.fasc}, ${got} formes trouvées sur ${forms.length}`);
       }
       card.addEventListener("click", () => openViewer(e.id, card));
       return card;
     }
-    CODEX.forEach((e) => { const card = buildMini(e); miniById.set(e.id, card); cbGrid.append(card); });
+    const SHOWN = CODEX.filter((e) => !isSecret(e));
+    SHOWN.forEach((e) => { const card = buildMini(e); miniById.set(e.id, card); cbGrid.append(card); });
+    let cbFasc = "all";
+    const fascHeads = new Map();
+    const progressOf = (list) => {
+      const counted = list.filter(isCounted);
+      return { got: counted.filter((e) => !e.locked).length, total: counted.length, legends: list.filter((e) => isLegend(e) && !e.locked).length };
+    };
+    const legendNote = (n) => {
+      const note = mk("span", "cb-legend");
+      note.append(rarityEl("legendaire"), `${n}\u00a0légendaire${n > 1 ? "s" : ""} trouvée${n > 1 ? "s" : ""}`);
+      return note;
+    };
+    FASCICULES.forEach((f) => {
+      const head = mk("div", "cb-group");
+      head.setAttribute("role", "presentation");
+      fascHeads.set(f.n, head);
+    });
 
     const sortKey = (e) => (e.locked ? "" : e.word.replace(/^-/, ""));
     const SORTERS = {
       n: (a, b) => a.n - b.n,
       az: (a, b) => (Number(!!a.locked) - Number(!!b.locked)) || sortKey(a).localeCompare(sortKey(b), "fr", { sensitivity: "base" }),
       type: (a, b) => (TYPE_ORDER.indexOf(a.type) - TYPE_ORDER.indexOf(b.type)) || a.n - b.n,
+      fasc: (a, b) => (a.fasc - b.fasc) || (Number(!!a.locked) - Number(!!b.locked)) || a.n - b.n,
     };
+
+    // Complétude par fascicule : les légendaires ne comptent jamais, pour garder le suspense.
+    const fascBox = $("#cbFasc");
+    const fascBtns = FASCICULES.map((f) => {
+      const btn = mk("button", "cb-fasc-btn");
+      btn.type = "button";
+      btn.dataset.fasc = String(f.n);
+      btn.addEventListener("click", () => { cbFasc = cbFasc === f.n ? "all" : f.n; renderCodex(); });
+      fascBox?.append(btn);
+      return [f, btn];
+    });
+    function paintFascicules() {
+      fascBtns.forEach(([f, btn]) => {
+        const { got, total, legends } = progressOf(SHOWN.filter((e) => e.fasc === f.n));
+        const bar = mk("span", "cb-fasc-bar");
+        const fill = mk("i");
+        fill.style.width = `${total ? (got / total) * 100 : 0}%`;
+        bar.append(fill);
+        const head = mk("span", "cb-fasc-head");
+        head.append(mk("b", null, f.label), mk("span", null, `${f.when} · ${JACKETS.find((jk) => jk.id === f.jacket)?.name || ""}`));
+        const count = mk("span", "cb-fasc-count");
+        count.append(mk("b", null, `${got} / ${total}`), " cartes");
+        if (got === total) count.append(" · complet");
+        btn.replaceChildren(head, bar, count);
+        if (legends) btn.append(legendNote(legends));
+        btn.setAttribute("aria-pressed", String(cbFasc === f.n));
+        btn.setAttribute("aria-label", `${f.label} : ${got} cartes découvertes sur ${total}${legends ? `, et ${legends} légendaire trouvée` : ""}. ${cbFasc === f.n ? "Afficher tous les fascicules" : "Afficher ce fascicule seulement"}`);
+        const gh = fascHeads.get(f.n);
+        gh.replaceChildren(mk("b", null, f.label), mk("span", null, `${got} / ${total} cartes`));
+      });
+    }
 
     const filterBox = $("#cbFilters");
     [["all", "Tout", null], ...TYPE_ORDER.map((t) => [t, TYPES[t].plural, TYPES[t].c])].forEach(([key, label, color]) => {
@@ -1401,8 +1575,7 @@
       chip.type = "button";
       chip.dataset.filter = key;
       if (color) { const sw = mk("i"); sw.style.background = color; chip.append(sw); }
-      const count = key === "all" ? CODEX.length : CODEX.filter((e) => e.type === key).length;
-      chip.append(mk("span", null, label), mk("b", null, String(count)));
+      chip.append(mk("span", null, label), mk("b", null, ""));
       chip.addEventListener("click", () => { cbFilter = key; renderCodex(); });
       filterBox.append(chip);
     });
@@ -1413,11 +1586,22 @@
       const doAnimate = animate && !reduce;
       const first = new Map();
       if (doAnimate) miniById.forEach((card) => { if (!card.hidden) first.set(card, card.getBoundingClientRect()); });
-      const list = CODEX.filter((e) => cbFilter === "all" || e.type === cbFilter).sort(SORTERS[cbSort]);
+      const inFasc = SHOWN.filter((e) => cbFasc === "all" || e.fasc === cbFasc);
+      const list = inFasc.filter((e) => cbFilter === "all" || e.type === cbFilter).sort(SORTERS[cbSort]);
       visibleIds = list.map((e) => e.id);
       const shown = new Set(visibleIds);
       miniById.forEach((card, id) => { card.hidden = !shown.has(id); });
-      list.forEach((e) => cbGrid.append(miniById.get(e.id)));
+      fascHeads.forEach((head) => { head.hidden = true; });
+      let lastFasc = null;
+      list.forEach((e) => {
+        if (cbSort === "fasc" && e.fasc !== lastFasc) { const head = fascHeads.get(e.fasc); head.hidden = false; cbGrid.append(head); lastFasc = e.fasc; }
+        cbGrid.append(miniById.get(e.id));
+      });
+      $$(".cb-chip", filterBox).forEach((chip) => {
+        const key = chip.dataset.filter;
+        $("b", chip).textContent = String(inFasc.filter((e) => key === "all" || e.type === key).length);
+      });
+      paintFascicules();
       if (doAnimate) {
         list.forEach((e, i) => {
           const card = miniById.get(e.id);
@@ -1434,7 +1618,10 @@
       }
       $$(".cb-chip", filterBox).forEach((chip) => chip.setAttribute("aria-pressed", String(chip.dataset.filter === cbFilter)));
       sortBtns.forEach((btn) => btn.setAttribute("aria-pressed", String(btn.dataset.sort === cbSort)));
-      $("#cbCount").textContent = `${CODEX.filter((e) => !e.locked).length} / ${CODEX.length} cartes découvertes`;
+      const all = progressOf(SHOWN);
+      const countEl = $("#cbCount");
+      countEl.replaceChildren(`${all.got} / ${all.total} cartes découvertes`);
+      if (all.legends) countEl.append(" · ", legendNote(all.legends));
     }
     renderCodex(false);
 

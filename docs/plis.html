@@ -25,10 +25,26 @@
     <div class="wrap">
       <div class="sec-head">
         <div data-reveal><span class="sec-num">Jeu · Plis</span><h2>L’atelier <em>des plis</em></h2></div>
-        <div class="sec-intro" data-reveal style="--d:120ms"><p>Une interface à part, pensée comme un petit rituel. Toutes les 12 heures, un pli gratuit tente d’écrire une racine : parfois nouvelle, parfois un exemplaire de plus pour votre réserve. C’est la seule façon d’obtenir des briques. Les briques rares se méritent, pour que le codex ne se remplisse jamais trop vite.</p><p class="xrefs"><span>Voir aussi</span><a class="xref" href="adr.html#adr-0011" data-kind="adr">ADR 0011 : raretés et doublons</a><a class="xref" href="adr.html#adr-0012" data-kind="adr">ADR 0012 : réserve et filet</a><a class="xref" href="identite.html#formes">Les formes de rareté</a><a class="xref" href="mouvement.html">Le rythme du rituel</a></p></div>
+        <div class="sec-intro" data-reveal style="--d:120ms"><p>Une interface à part, pensée comme un petit rituel. Toutes les 12 heures, un pli gratuit tente d’écrire une racine : parfois nouvelle, parfois un exemplaire de plus pour votre réserve. Choisissez d’abord le fascicule dont vous ouvrez le pli : il porte sa jaquette et ne contient que ses briques. C’est la seule façon d’obtenir des briques. Les briques rares se méritent, pour que le codex ne se remplisse jamais trop vite.</p><p class="xrefs"><span>Voir aussi</span><a class="xref" href="adr.html#adr-0011" data-kind="adr">ADR 0011 : raretés et doublons</a><a class="xref" href="adr.html#adr-0012" data-kind="adr">ADR 0012 : réserve et filet</a><a class="xref" href="adr.html#adr-0016" data-kind="adr">ADR 0016 : plis par fascicule</a><a class="xref" href="identite.html#formes">Les formes de rareté</a><a class="xref" href="mouvement.html">Le rythme du rituel</a></p></div>
       </div>
 
-      <div class="pk-layout" data-reveal>
+      <div class="pk-chooser" id="pkChooser" data-reveal>
+        <div class="pk-chooser-head">
+          <div><p class="pk-label">Étape 1</p><h3 class="jk-title">Choisir <em>un fascicule</em></h3></div>
+          <div>
+            <p class="pk-note">Chaque fascicule a sa jaquette et son propre pli. Ouvrez celui d’un fascicule récent pour trouver ses briques nouvelles, ou celui d’un ancien pour refaire votre réserve.</p>
+            <p class="pk-note" id="pkChooserEnergy"></p>
+          </div>
+        </div>
+        <div class="pk-fasc-list" id="pkFascList"></div>
+      </div>
+
+      <div class="pk-current" id="pkCurrent" hidden>
+        <p><span class="pk-label">Étape 2 · pli du</span> <b></b></p>
+        <button class="btn btn-secondary" type="button">← Changer de fascicule</button>
+      </div>
+
+      <div class="pk-layout" id="pkLayout" hidden>
         <aside class="pk-side">
           <div class="pk-card">
             <p class="pk-label">Énergie</p>
@@ -55,13 +71,15 @@
             <ul class="pk-rules">
               <li>Gratuit, et seule source d’exemplaires après les briques de départ.</li>
               <li>Doublons possibles : chacun ajoute un exemplaire à votre réserve, 5 au plus par brique. Au-delà, il se change en encre.</li>
-              <li>Chances affichées pour chaque rareté, chaque type et chaque brique.</li>
+              <li>Chances affichées pour chaque rareté, chaque type et chaque brique. Les légendaires inconnues forment une seule ligne : leur nombre reste secret.</li>
               <li>Une brique nouvelle garantie au moins tous les 6 plis.</li>
               <li>Réserve bloquée : une brique utile garantie au plus tard au 5ᵉ pli.</li>
               <li>Les briques de départ permettent les premières découvertes sans pli.</li>
               <li>Le temps de recharge est toujours affiché.</li>
+              <li><span>Vous choisissez le <a href="#fascicules">fascicule</a> du pli : il porte sa jaquette et ne tire que parmi ses briques, nouvelles ou reprises.</span></li>
+              <li>La garantie de nouveauté et le filet se comptent par fascicule.</li>
             </ul>
-            <p class="xrefs"><span>Décisions</span><a class="xref" href="adr.html#adr-0008" data-kind="adr">ADR 0008</a><a class="xref" href="adr.html#adr-0011" data-kind="adr">ADR 0011</a><a class="xref" href="adr.html#adr-0012" data-kind="adr">ADR 0012</a></p>
+            <p class="xrefs"><span>Décisions</span><a class="xref" href="adr.html#adr-0008" data-kind="adr">ADR 0008</a><a class="xref" href="adr.html#adr-0011" data-kind="adr">ADR 0011</a><a class="xref" href="adr.html#adr-0012" data-kind="adr">ADR 0012</a><a class="xref" href="adr.html#adr-0014" data-kind="adr">ADR 0014</a><a class="xref" href="adr.html#adr-0015" data-kind="adr">ADR 0015</a><a class="xref" href="adr.html#adr-0016" data-kind="adr">ADR 0016</a></p>
           </div>
         </aside>
 
@@ -89,7 +107,7 @@
             <p class="pk-note pk-hint" id="pkHint" hidden></p>
           </div>
           <div class="pk-card">
-            <p class="pk-label">Toutes les briques du pli</p>
+            <p class="pk-label">Toutes les briques du fascicule</p>
             <div class="pk-pool" id="pkPool"></div>
           </div>
           <div class="pk-card">
@@ -101,17 +119,60 @@
       </div>
       <div class="jk-block" id="jaquettes" data-reveal>
         <div class="jk-head">
-          <div><span class="sec-num">Plis · Jaquettes</span><h3 class="jk-title">Dix jaquettes, <em>dix époques</em></h3></div>
+          <div><span class="sec-num">Plis · Jaquettes</span><h3 class="jk-title">Une jaquette <em>par fascicule</em></h3></div>
           <div class="jk-intro">
-            <p>La jaquette change à chaque numéro de pli : l’écriture et l’histoire des langues, en version graphique et plate, jamais en parchemin ni en plume. Touchez une jaquette pour l’essayer sur le pli.</p>
+            <p>Chaque fascicule a sa jaquette, tirée de l’écriture et de l’histoire des langues, en version graphique et plate, jamais en parchemin ni en plume. Tous les plis d’un fascicule la portent. Touchez la jaquette d’un fascicule paru pour ouvrir son pli.</p>
             <ul class="jk-rules">
-              <li><b>Rien ne se devine.</b> La jaquette dépend du numéro du pli, jamais de son contenu : ni le motif, ni la couleur ne trahissent la brique, sa rareté ou sa langue.</li>
+              <li><b>Rien ne se devine.</b> La jaquette dit seulement de quel fascicule vient le pli, que vous avez choisi : ni le motif, ni la couleur ne trahissent la brique tirée, sa rareté ou sa langue.</li>
               <li><b>Palette du pli.</b> Neutres et Ambre uniquement : les couleurs de préfixe, de suffixe ou de langue annonceraient le contenu.</li>
               <li><b>Le sceau reste au centre.</b> Motifs discrets en haut et en bas pour laisser lire le numéro du pli et le nom de la jaquette.</li>
             </ul>
           </div>
         </div>
         <div class="jk-grid" id="jkGrid" role="list"></div>
+      </div>
+
+      <div class="jk-block" id="fascicules" data-reveal>
+        <div class="jk-head">
+          <div><span class="sec-num">Plis · Fascicules</span><h3 class="jk-title">Un fascicule, <em>tous les 30 jours</em></h3></div>
+          <div class="jk-intro">
+            <p>Comme les grands dictionnaires, qui paraissaient par fascicules, le jeu s’enrichit par étapes : environ tous les 30 jours, un nouvel ensemble de mots, avec leurs briques, leurs langues et sa propre jaquette. Dès sa parution, vous pouvez ouvrir ses plis.</p>
+            <ul class="jk-rules">
+              <li><b>Des nombres, pas de noms.</b> Un fascicule annonce seulement combien de mots, de préfixes, de suffixes et de langues il contient, légendaires exclues. Tout le reste se découvre.</li>
+              <li><b>Complet.</b> Chaque fascicule apporte toutes les briques dont ses mots ont besoin : aucun mot n’attend une brique à venir.</li>
+              <li><b>Ouvert aux anciens.</b> Les briques de tous les fascicules se fusionnent entre elles. Une brique nouvelle peut former des mots avec celles que vous avez déjà.</li>
+              <li><b>Sans faux échec.</b> Si des briques publiées forment un vrai mot, ce mot est dans le jeu.</li>
+              <li><b>Son pli, à tout moment.</b> Chaque fascicule garde son pli : ouvrez celui d’un ancien fascicule pour refaire votre réserve de ses briques.</li>
+              <li><b>Rien ne se perd.</b> Votre réserve, votre encre et vos découvertes restent intactes d’un fascicule à l’autre.</li>
+            </ul>
+            <p class="xrefs"><span>Décisions</span><a class="xref" href="adr.html#adr-0014" data-kind="adr">ADR 0014 : fascicules</a><a class="xref" href="modele.html#sources">Sources et fascicules</a></p>
+          </div>
+        </div>
+
+        <ol class="fs-timeline">
+          <li class="fs-item">
+            <div class="fs-head"><span class="fs-num">Fascicule n° 01</span><span class="fs-when">Jour 1 · Rosette</span></div>
+            <p class="fs-count"><b>11</b> éléments à découvrir</p>
+            <dl class="fs-counts"><div><dt><i style="--c:var(--ink)"></i>Mots</dt><dd>4</dd></div><div><dt><i style="--c:var(--c-prefix)"></i>Préfixes</dt><dd>2</dd></div><div><dt><i style="--c:var(--c-suffix)"></i>Suffixes</dt><dd>2</dd></div><div><dt><i style="--c:var(--c-lang)"></i>Langues</dt><dd>3</dd></div></dl>
+          </li>
+          <li class="fs-item is-current">
+            <div class="fs-head"><span class="fs-num">Fascicule n° 02</span><span class="fs-when">Jour 30 · Argile</span></div>
+            <p class="fs-count"><b>11</b> éléments à découvrir</p>
+            <dl class="fs-counts"><div><dt><i style="--c:var(--ink)"></i>Mots</dt><dd>6</dd></div><div><dt><i style="--c:var(--c-prefix)"></i>Préfixes</dt><dd>2</dd></div><div><dt><i style="--c:var(--c-suffix)"></i>Suffixes</dt><dd>3</dd></div><div><dt><i style="--c:var(--c-lang)"></i>Langues</dt><dd>0</dd></div></dl>
+            <p class="fs-note">Dont 4 mots croisés, formés avec des briques du fascicule n° 01.</p>
+          </li>
+          <li class="fs-item is-next">
+            <div class="fs-head"><span class="fs-num">Fascicule n° 03</span><span class="fs-when">Jour 60 · à paraître</span></div>
+            <p class="fs-count">À paraître</p>
+            <p class="fs-note">Ses nombres d’éléments seront annoncés à sa parution.</p>
+          </li>
+        </ol>
+
+        <div class="fs-announce">
+          <span class="fs-announce-k">À la parution</span>
+          <p>« Fascicule n° 02 paru : 6 mots et 5 briques à découvrir. »</p>
+          <small>Chiffres de la démonstration, identiques à ceux du codex. Un vrai fascicule compte 20 à 40 mots, mots croisés compris. Les légendaires ne sont jamais comptées.</small>
+        </div>
       </div>
     </div>
   </section>

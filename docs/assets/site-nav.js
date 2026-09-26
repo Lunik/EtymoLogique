@@ -22,6 +22,7 @@
       label: "Décisions",
       pages: [
         { file: "adr.html", title: "ADR", desc: "Les décisions d’architecture et de produit, avec leur contexte." },
+        { file: "modele.html", title: "Modèle de données", desc: "Langues, mots, préfixes et suffixes : le schéma des briques." },
         { file: "boussole.html", title: "Boussole", desc: "Ce qu’il faut cultiver et ce qu’il faut éviter." },
       ],
     },
